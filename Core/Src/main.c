@@ -21,6 +21,7 @@
 #include "adc.h"
 #include "can.h"
 #include "spi.h"
+#include "tim.h"
 #include "usart.h"
 #include "gpio.h"
 
@@ -95,6 +96,8 @@ int main(void)
   MX_SPI3_Init();
   MX_UART5_Init();
   MX_USART1_UART_Init();
+  MX_ADC3_Init();
+  MX_TIM12_Init();
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */

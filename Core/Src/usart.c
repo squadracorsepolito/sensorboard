@@ -103,19 +103,19 @@ void HAL_UART_MspInit(UART_HandleTypeDef* uartHandle)
     PC12     ------> UART5_TX
     PD2     ------> UART5_RX
     */
-    GPIO_InitStruct.Pin = GPIO_PIN_12;
+    GPIO_InitStruct.Pin = ADS112U04_RX_UART5_TX_Pin;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
     GPIO_InitStruct.Alternate = GPIO_AF8_UART5;
-    HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+    HAL_GPIO_Init(ADS112U04_RX_UART5_TX_GPIO_Port, &GPIO_InitStruct);
 
-    GPIO_InitStruct.Pin = GPIO_PIN_2;
+    GPIO_InitStruct.Pin = ADS112U04_TX_UART5_RX_Pin;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
     GPIO_InitStruct.Alternate = GPIO_AF8_UART5;
-    HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
+    HAL_GPIO_Init(ADS112U04_TX_UART5_RX_GPIO_Port, &GPIO_InitStruct);
 
   /* USER CODE BEGIN UART5_MspInit 1 */
 
@@ -134,7 +134,7 @@ void HAL_UART_MspInit(UART_HandleTypeDef* uartHandle)
     PA9     ------> USART1_TX
     PA10     ------> USART1_RX
     */
-    GPIO_InitStruct.Pin = GPIO_PIN_9|GPIO_PIN_10;
+    GPIO_InitStruct.Pin = T_VCP_TX_USART1_TX_Pin|T_VCP_RX_USART1_RX_Pin;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
@@ -162,9 +162,9 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
     PC12     ------> UART5_TX
     PD2     ------> UART5_RX
     */
-    HAL_GPIO_DeInit(GPIOC, GPIO_PIN_12);
+    HAL_GPIO_DeInit(ADS112U04_RX_UART5_TX_GPIO_Port, ADS112U04_RX_UART5_TX_Pin);
 
-    HAL_GPIO_DeInit(GPIOD, GPIO_PIN_2);
+    HAL_GPIO_DeInit(ADS112U04_TX_UART5_RX_GPIO_Port, ADS112U04_TX_UART5_RX_Pin);
 
   /* USER CODE BEGIN UART5_MspDeInit 1 */
 
@@ -182,7 +182,7 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
     PA9     ------> USART1_TX
     PA10     ------> USART1_RX
     */
-    HAL_GPIO_DeInit(GPIOA, GPIO_PIN_9|GPIO_PIN_10);
+    HAL_GPIO_DeInit(GPIOA, T_VCP_TX_USART1_TX_Pin|T_VCP_RX_USART1_RX_Pin);
 
   /* USER CODE BEGIN USART1_MspDeInit 1 */
 
