@@ -1,0 +1,449 @@
+ARM GAS  /tmp/ccl1XaPd.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"pwm.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Lib/stmlibs/pwm/pwm.c"
+  20              		.section	.text.PWM_init,"ax",%progbits
+  21              		.align	1
+  22              		.global	PWM_init
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	PWM_init:
+  28              	.LVL0:
+  29              	.LFB235:
+   1:Lib/stmlibs/pwm/pwm.c **** /*
+   2:Lib/stmlibs/pwm/pwm.c ****  * "THE BEER-WARE LICENSE" (Revision 69):
+   3:Lib/stmlibs/pwm/pwm.c ****  * Squadra Corse firmware team wrote this file. As long as you retain this notice
+   4:Lib/stmlibs/pwm/pwm.c ****  * you can do whatever you want with this stuff. If we meet some day, and you 
+   5:Lib/stmlibs/pwm/pwm.c ****  * think this stuff is worth it, you can buy us a beer in return.
+   6:Lib/stmlibs/pwm/pwm.c ****  * 
+   7:Lib/stmlibs/pwm/pwm.c ****  * Authors
+   8:Lib/stmlibs/pwm/pwm.c ****  * - Federico Carbone [federico.carbone.sc@gmail.com]
+   9:Lib/stmlibs/pwm/pwm.c ****  */
+  10:Lib/stmlibs/pwm/pwm.c **** 
+  11:Lib/stmlibs/pwm/pwm.c **** #include "pwm.h"
+  12:Lib/stmlibs/pwm/pwm.c **** 
+  13:Lib/stmlibs/pwm/pwm.c **** #include "timer_utils.h"
+  14:Lib/stmlibs/pwm/pwm.c **** 
+  15:Lib/stmlibs/pwm/pwm.c **** STMLIBS_StatusTypeDef PWM_init(TIM_HandleTypeDef *htim, float period_ms) {
+  30              		.loc 1 15 74 view -0
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  16:Lib/stmlibs/pwm/pwm.c ****     if (htim == NULL) {
+  34              		.loc 1 16 5 view .LVU1
+  35              		.loc 1 16 8 is_stmt 0 view .LVU2
+  36 0000 40B3     		cbz	r0, .L3
+  15:Lib/stmlibs/pwm/pwm.c ****     if (htim == NULL) {
+  37              		.loc 1 15 74 view .LVU3
+  38 0002 10B5     		push	{r4, lr}
+  39              		.cfi_def_cfa_offset 8
+  40              		.cfi_offset 4, -8
+  41              		.cfi_offset 14, -4
+ARM GAS  /tmp/ccl1XaPd.s 			page 2
+
+
+  42 0004 2DED028B 		vpush.64	{d8}
+  43              		.cfi_def_cfa_offset 16
+  44              		.cfi_offset 80, -16
+  45              		.cfi_offset 81, -12
+  46 0008 B0EE408A 		vmov.f32	s16, s0
+  47 000c 0446     		mov	r4, r0
+  17:Lib/stmlibs/pwm/pwm.c ****         return STMLIBS_ERROR;
+  18:Lib/stmlibs/pwm/pwm.c ****     }
+  19:Lib/stmlibs/pwm/pwm.c **** 
+  20:Lib/stmlibs/pwm/pwm.c ****     uint32_t ticks = TIM_MS_TO_TICKS(htim, period_ms) - 1;
+  48              		.loc 1 20 5 is_stmt 1 view .LVU4
+  49              		.loc 1 20 22 is_stmt 0 view .LVU5
+  50 000e FFF7FEFF 		bl	TIM_GetInternalClkFreq
+  51              	.LVL1:
+  52              		.loc 1 20 22 view .LVU6
+  53 0012 06EE900A 		vmov	s13, r0	@ int
+  54              		.loc 1 20 22 discriminator 1 view .LVU7
+  55 0016 F8EE666A 		vcvt.f32.u32	s13, s13
+  56 001a 2268     		ldr	r2, [r4]
+  57 001c 936A     		ldr	r3, [r2, #40]
+  58 001e 0133     		adds	r3, r3, #1
+  59 0020 07EE903A 		vmov	s15, r3	@ int
+  60 0024 F8EE677A 		vcvt.f32.u32	s15, s15
+  61 0028 86EEA77A 		vdiv.f32	s14, s13, s15
+  62 002c 27EE087A 		vmul.f32	s14, s14, s16
+  63 0030 DFED0A6A 		vldr.32	s13, .L9
+  64 0034 C7EE267A 		vdiv.f32	s15, s14, s13
+  65 0038 FCEEE77A 		vcvt.u32.f32	s15, s15
+  66 003c 17EE903A 		vmov	r3, s15	@ int
+  67              		.loc 1 20 14 discriminator 1 view .LVU8
+  68 0040 013B     		subs	r3, r3, #1
+  69              	.LVL2:
+  21:Lib/stmlibs/pwm/pwm.c ****     if (ticks > __HAL_TIM_GetAutoreload(htim)) {
+  70              		.loc 1 21 5 is_stmt 1 view .LVU9
+  71              		.loc 1 21 17 is_stmt 0 view .LVU10
+  72 0042 D16A     		ldr	r1, [r2, #44]
+  73              		.loc 1 21 8 view .LVU11
+  74 0044 9942     		cmp	r1, r3
+  75 0046 07D3     		bcc	.L4
+  22:Lib/stmlibs/pwm/pwm.c ****         return STMLIBS_ERROR;
+  23:Lib/stmlibs/pwm/pwm.c ****     }
+  24:Lib/stmlibs/pwm/pwm.c **** 
+  25:Lib/stmlibs/pwm/pwm.c ****     __HAL_TIM_SetAutoreload(htim, ticks);
+  76              		.loc 1 25 5 is_stmt 1 view .LVU12
+  77              		.loc 1 25 5 view .LVU13
+  78 0048 D362     		str	r3, [r2, #44]
+  79              		.loc 1 25 5 view .LVU14
+  80 004a E360     		str	r3, [r4, #12]
+  81              		.loc 1 25 5 view .LVU15
+  26:Lib/stmlibs/pwm/pwm.c **** 
+  27:Lib/stmlibs/pwm/pwm.c ****     return STMLIBS_OK;
+  82              		.loc 1 27 5 view .LVU16
+  83              		.loc 1 27 12 is_stmt 0 view .LVU17
+  84 004c 0020     		movs	r0, #0
+  85              	.L2:
+  28:Lib/stmlibs/pwm/pwm.c **** }
+  86              		.loc 1 28 1 view .LVU18
+ARM GAS  /tmp/ccl1XaPd.s 			page 3
+
+
+  87 004e BDEC028B 		vldm	sp!, {d8}
+  88              		.cfi_restore 80
+  89              		.cfi_restore 81
+  90              		.cfi_def_cfa_offset 8
+  91              	.LVL3:
+  92              		.loc 1 28 1 view .LVU19
+  93 0052 10BD     		pop	{r4, pc}
+  94              	.LVL4:
+  95              	.L3:
+  96              		.cfi_def_cfa_offset 0
+  97              		.cfi_restore 4
+  98              		.cfi_restore 14
+  17:Lib/stmlibs/pwm/pwm.c ****     }
+  99              		.loc 1 17 16 view .LVU20
+ 100 0054 0120     		movs	r0, #1
+ 101              	.LVL5:
+ 102              		.loc 1 28 1 view .LVU21
+ 103 0056 7047     		bx	lr
+ 104              	.LVL6:
+ 105              	.L4:
+ 106              		.cfi_def_cfa_offset 16
+ 107              		.cfi_offset 4, -8
+ 108              		.cfi_offset 14, -4
+ 109              		.cfi_offset 80, -16
+ 110              		.cfi_offset 81, -12
+  22:Lib/stmlibs/pwm/pwm.c ****     }
+ 111              		.loc 1 22 16 view .LVU22
+ 112 0058 0120     		movs	r0, #1
+ 113 005a F8E7     		b	.L2
+ 114              	.L10:
+ 115              		.align	2
+ 116              	.L9:
+ 117 005c 00007A44 		.word	1148846080
+ 118              		.cfi_endproc
+ 119              	.LFE235:
+ 121              		.section	.text.PWM_stop,"ax",%progbits
+ 122              		.align	1
+ 123              		.global	PWM_stop
+ 124              		.syntax unified
+ 125              		.thumb
+ 126              		.thumb_func
+ 128              	PWM_stop:
+ 129              	.LVL7:
+ 130              	.LFB237:
+  29:Lib/stmlibs/pwm/pwm.c **** 
+  30:Lib/stmlibs/pwm/pwm.c **** STMLIBS_StatusTypeDef PWM_start(TIM_HandleTypeDef *htim, float duty_cycle, uint32_t channel) {
+  31:Lib/stmlibs/pwm/pwm.c ****     if (PWM_update_duty_cycle(htim, duty_cycle, channel) != STMLIBS_OK) {
+  32:Lib/stmlibs/pwm/pwm.c ****         return STMLIBS_ERROR;
+  33:Lib/stmlibs/pwm/pwm.c ****     }
+  34:Lib/stmlibs/pwm/pwm.c **** 
+  35:Lib/stmlibs/pwm/pwm.c ****     return HAL_TIM_PWM_Start(htim, channel);
+  36:Lib/stmlibs/pwm/pwm.c **** }
+  37:Lib/stmlibs/pwm/pwm.c **** 
+  38:Lib/stmlibs/pwm/pwm.c **** STMLIBS_StatusTypeDef PWM_stop(TIM_HandleTypeDef *htim, uint32_t channel) {
+ 131              		.loc 1 38 75 is_stmt 1 view -0
+ 132              		.cfi_startproc
+ 133              		@ args = 0, pretend = 0, frame = 0
+ARM GAS  /tmp/ccl1XaPd.s 			page 4
+
+
+ 134              		@ frame_needed = 0, uses_anonymous_args = 0
+  39:Lib/stmlibs/pwm/pwm.c ****     if (htim == NULL) {
+ 135              		.loc 1 39 5 view .LVU24
+ 136              		.loc 1 39 8 is_stmt 0 view .LVU25
+ 137 0000 18B1     		cbz	r0, .L13
+  38:Lib/stmlibs/pwm/pwm.c ****     if (htim == NULL) {
+ 138              		.loc 1 38 75 view .LVU26
+ 139 0002 08B5     		push	{r3, lr}
+ 140              		.cfi_def_cfa_offset 8
+ 141              		.cfi_offset 3, -8
+ 142              		.cfi_offset 14, -4
+  40:Lib/stmlibs/pwm/pwm.c ****         return STMLIBS_ERROR;
+  41:Lib/stmlibs/pwm/pwm.c ****     }
+  42:Lib/stmlibs/pwm/pwm.c **** 
+  43:Lib/stmlibs/pwm/pwm.c ****     return HAL_TIM_PWM_Stop(htim, channel);
+ 143              		.loc 1 43 5 is_stmt 1 view .LVU27
+ 144              		.loc 1 43 12 is_stmt 0 view .LVU28
+ 145 0004 FFF7FEFF 		bl	HAL_TIM_PWM_Stop
+ 146              	.LVL8:
+  44:Lib/stmlibs/pwm/pwm.c **** }
+ 147              		.loc 1 44 1 view .LVU29
+ 148 0008 08BD     		pop	{r3, pc}
+ 149              	.LVL9:
+ 150              	.L13:
+ 151              		.cfi_def_cfa_offset 0
+ 152              		.cfi_restore 3
+ 153              		.cfi_restore 14
+  40:Lib/stmlibs/pwm/pwm.c ****         return STMLIBS_ERROR;
+ 154              		.loc 1 40 16 view .LVU30
+ 155 000a 0120     		movs	r0, #1
+ 156              	.LVL10:
+ 157              		.loc 1 44 1 view .LVU31
+ 158 000c 7047     		bx	lr
+ 159              		.cfi_endproc
+ 160              	.LFE237:
+ 162              		.section	.text.PWM_update_duty_cycle,"ax",%progbits
+ 163              		.align	1
+ 164              		.global	PWM_update_duty_cycle
+ 165              		.syntax unified
+ 166              		.thumb
+ 167              		.thumb_func
+ 169              	PWM_update_duty_cycle:
+ 170              	.LVL11:
+ 171              	.LFB238:
+  45:Lib/stmlibs/pwm/pwm.c **** 
+  46:Lib/stmlibs/pwm/pwm.c **** STMLIBS_StatusTypeDef PWM_update_duty_cycle(TIM_HandleTypeDef *htim, float duty_cycle, uint32_t cha
+ 172              		.loc 1 46 106 is_stmt 1 view -0
+ 173              		.cfi_startproc
+ 174              		@ args = 0, pretend = 0, frame = 0
+ 175              		@ frame_needed = 0, uses_anonymous_args = 0
+ 176              		@ link register save eliminated.
+  47:Lib/stmlibs/pwm/pwm.c ****     if (htim == NULL) {
+ 177              		.loc 1 47 5 view .LVU33
+ 178              		.loc 1 47 8 is_stmt 0 view .LVU34
+ 179 0000 0028     		cmp	r0, #0
+ 180 0002 44D0     		beq	.L23
+  48:Lib/stmlibs/pwm/pwm.c ****         return STMLIBS_ERROR;
+ARM GAS  /tmp/ccl1XaPd.s 			page 5
+
+
+  49:Lib/stmlibs/pwm/pwm.c ****     }
+  50:Lib/stmlibs/pwm/pwm.c **** 
+  51:Lib/stmlibs/pwm/pwm.c ****     if (duty_cycle < 0 || duty_cycle > 1) {
+ 181              		.loc 1 51 5 is_stmt 1 view .LVU35
+ 182              		.loc 1 51 8 is_stmt 0 view .LVU36
+ 183 0004 B5EEC00A 		vcmpe.f32	s0, #0
+ 184 0008 F1EE10FA 		vmrs	APSR_nzcv, FPSCR
+ 185 000c 41D4     		bmi	.L24
+ 186              		.loc 1 51 24 discriminator 1 view .LVU37
+ 187 000e F7EE007A 		vmov.f32	s15, #1.0e+0
+ 188 0012 B4EEE70A 		vcmpe.f32	s0, s15
+ 189 0016 F1EE10FA 		vmrs	APSR_nzcv, FPSCR
+ 190 001a 3CDC     		bgt	.L25
+  52:Lib/stmlibs/pwm/pwm.c ****         return STMLIBS_ERROR;
+  53:Lib/stmlibs/pwm/pwm.c ****     }
+  54:Lib/stmlibs/pwm/pwm.c **** 
+  55:Lib/stmlibs/pwm/pwm.c ****     __HAL_TIM_SetCompare(htim, channel, __HAL_TIM_GetAutoreload(htim) * duty_cycle);
+ 191              		.loc 1 55 5 is_stmt 1 view .LVU38
+ 192 001c 61B9     		cbnz	r1, .L20
+ 193              		.loc 1 55 5 is_stmt 0 discriminator 1 view .LVU39
+ 194 001e 0368     		ldr	r3, [r0]
+ 195 0020 D3ED0B7A 		vldr.32	s15, [r3, #44]	@ int
+ 196 0024 F8EE677A 		vcvt.f32.u32	s15, s15
+ 197 0028 67EE807A 		vmul.f32	s15, s15, s0
+ 198 002c FCEEE77A 		vcvt.u32.f32	s15, s15
+ 199 0030 C3ED0D7A 		vstr.32	s15, [r3, #52]	@ int
+  56:Lib/stmlibs/pwm/pwm.c **** 
+  57:Lib/stmlibs/pwm/pwm.c ****     return STMLIBS_OK;
+ 200              		.loc 1 57 12 view .LVU40
+ 201 0034 0020     		movs	r0, #0
+ 202              	.LVL12:
+ 203              		.loc 1 57 12 view .LVU41
+ 204 0036 7047     		bx	lr
+ 205              	.LVL13:
+ 206              	.L20:
+  55:Lib/stmlibs/pwm/pwm.c **** 
+ 207              		.loc 1 55 5 discriminator 2 view .LVU42
+ 208 0038 0429     		cmp	r1, #4
+ 209 003a 0ED0     		beq	.L26
+  55:Lib/stmlibs/pwm/pwm.c **** 
+ 210              		.loc 1 55 5 discriminator 4 view .LVU43
+ 211 003c 0829     		cmp	r1, #8
+ 212 003e 19D0     		beq	.L27
+  55:Lib/stmlibs/pwm/pwm.c **** 
+ 213              		.loc 1 55 5 discriminator 7 view .LVU44
+ 214 0040 0368     		ldr	r3, [r0]
+ 215 0042 D3ED0B7A 		vldr.32	s15, [r3, #44]	@ int
+ 216 0046 F8EE677A 		vcvt.f32.u32	s15, s15
+ 217 004a 67EE807A 		vmul.f32	s15, s15, s0
+ 218 004e FCEEE77A 		vcvt.u32.f32	s15, s15
+ 219 0052 C3ED107A 		vstr.32	s15, [r3, #64]	@ int
+ 220              		.loc 1 57 12 view .LVU45
+ 221 0056 0020     		movs	r0, #0
+ 222              	.LVL14:
+ 223              		.loc 1 57 12 view .LVU46
+ 224 0058 7047     		bx	lr
+ 225              	.LVL15:
+ARM GAS  /tmp/ccl1XaPd.s 			page 6
+
+
+ 226              	.L26:
+  55:Lib/stmlibs/pwm/pwm.c **** 
+ 227              		.loc 1 55 5 discriminator 3 view .LVU47
+ 228 005a 0368     		ldr	r3, [r0]
+ 229 005c D3ED0B7A 		vldr.32	s15, [r3, #44]	@ int
+ 230 0060 F8EE677A 		vcvt.f32.u32	s15, s15
+ 231 0064 67EE807A 		vmul.f32	s15, s15, s0
+ 232 0068 FCEEE77A 		vcvt.u32.f32	s15, s15
+ 233 006c C3ED0E7A 		vstr.32	s15, [r3, #56]	@ int
+ 234              		.loc 1 57 12 view .LVU48
+ 235 0070 0020     		movs	r0, #0
+ 236              	.LVL16:
+ 237              		.loc 1 57 12 view .LVU49
+ 238 0072 7047     		bx	lr
+ 239              	.LVL17:
+ 240              	.L27:
+  55:Lib/stmlibs/pwm/pwm.c **** 
+ 241              		.loc 1 55 5 discriminator 6 view .LVU50
+ 242 0074 0368     		ldr	r3, [r0]
+ 243 0076 D3ED0B7A 		vldr.32	s15, [r3, #44]	@ int
+ 244 007a F8EE677A 		vcvt.f32.u32	s15, s15
+ 245 007e 67EE807A 		vmul.f32	s15, s15, s0
+ 246 0082 FCEEE77A 		vcvt.u32.f32	s15, s15
+ 247 0086 C3ED0F7A 		vstr.32	s15, [r3, #60]	@ int
+ 248              		.loc 1 57 12 view .LVU51
+ 249 008a 0020     		movs	r0, #0
+ 250              	.LVL18:
+ 251              		.loc 1 57 12 view .LVU52
+ 252 008c 7047     		bx	lr
+ 253              	.LVL19:
+ 254              	.L23:
+  48:Lib/stmlibs/pwm/pwm.c ****     }
+ 255              		.loc 1 48 16 view .LVU53
+ 256 008e 0120     		movs	r0, #1
+ 257              	.LVL20:
+  48:Lib/stmlibs/pwm/pwm.c ****     }
+ 258              		.loc 1 48 16 view .LVU54
+ 259 0090 7047     		bx	lr
+ 260              	.LVL21:
+ 261              	.L24:
+  52:Lib/stmlibs/pwm/pwm.c ****     }
+ 262              		.loc 1 52 16 view .LVU55
+ 263 0092 0120     		movs	r0, #1
+ 264              	.LVL22:
+  52:Lib/stmlibs/pwm/pwm.c ****     }
+ 265              		.loc 1 52 16 view .LVU56
+ 266 0094 7047     		bx	lr
+ 267              	.LVL23:
+ 268              	.L25:
+  52:Lib/stmlibs/pwm/pwm.c ****     }
+ 269              		.loc 1 52 16 view .LVU57
+ 270 0096 0120     		movs	r0, #1
+ 271              	.LVL24:
+  58:Lib/stmlibs/pwm/pwm.c **** }...
+ 272              		.loc 1 58 1 view .LVU58
+ 273 0098 7047     		bx	lr
+ 274              		.cfi_endproc
+ARM GAS  /tmp/ccl1XaPd.s 			page 7
+
+
+ 275              	.LFE238:
+ 277              		.section	.text.PWM_start,"ax",%progbits
+ 278              		.align	1
+ 279              		.global	PWM_start
+ 280              		.syntax unified
+ 281              		.thumb
+ 282              		.thumb_func
+ 284              	PWM_start:
+ 285              	.LVL25:
+ 286              	.LFB236:
+  30:Lib/stmlibs/pwm/pwm.c **** STMLIBS_StatusTypeDef PWM_start(TIM_HandleTypeDef *htim, float duty_cycle, uint32_t channel) {
+ 287              		.loc 1 30 94 is_stmt 1 view -0
+ 288              		.cfi_startproc
+ 289              		@ args = 0, pretend = 0, frame = 0
+ 290              		@ frame_needed = 0, uses_anonymous_args = 0
+  30:Lib/stmlibs/pwm/pwm.c **** STMLIBS_StatusTypeDef PWM_start(TIM_HandleTypeDef *htim, float duty_cycle, uint32_t channel) {
+ 291              		.loc 1 30 94 is_stmt 0 view .LVU60
+ 292 0000 38B5     		push	{r3, r4, r5, lr}
+ 293              		.cfi_def_cfa_offset 16
+ 294              		.cfi_offset 3, -16
+ 295              		.cfi_offset 4, -12
+ 296              		.cfi_offset 5, -8
+ 297              		.cfi_offset 14, -4
+ 298 0002 0446     		mov	r4, r0
+ 299 0004 0D46     		mov	r5, r1
+  31:Lib/stmlibs/pwm/pwm.c ****     if (PWM_update_duty_cycle(htim, duty_cycle, channel) != STMLIBS_OK) {
+ 300              		.loc 1 31 5 is_stmt 1 view .LVU61
+  31:Lib/stmlibs/pwm/pwm.c ****     if (PWM_update_duty_cycle(htim, duty_cycle, channel) != STMLIBS_OK) {
+ 301              		.loc 1 31 9 is_stmt 0 view .LVU62
+ 302 0006 FFF7FEFF 		bl	PWM_update_duty_cycle
+ 303              	.LVL26:
+  31:Lib/stmlibs/pwm/pwm.c ****     if (PWM_update_duty_cycle(htim, duty_cycle, channel) != STMLIBS_OK) {
+ 304              		.loc 1 31 8 discriminator 1 view .LVU63
+ 305 000a 08B1     		cbz	r0, .L32
+  32:Lib/stmlibs/pwm/pwm.c ****         return STMLIBS_ERROR;
+ 306              		.loc 1 32 16 view .LVU64
+ 307 000c 0120     		movs	r0, #1
+ 308              	.L29:
+  36:Lib/stmlibs/pwm/pwm.c **** }
+ 309              		.loc 1 36 1 view .LVU65
+ 310 000e 38BD     		pop	{r3, r4, r5, pc}
+ 311              	.LVL27:
+ 312              	.L32:
+  35:Lib/stmlibs/pwm/pwm.c ****     return HAL_TIM_PWM_Start(htim, channel);
+ 313              		.loc 1 35 5 is_stmt 1 view .LVU66
+  35:Lib/stmlibs/pwm/pwm.c ****     return HAL_TIM_PWM_Start(htim, channel);
+ 314              		.loc 1 35 12 is_stmt 0 view .LVU67
+ 315 0010 2946     		mov	r1, r5
+ 316 0012 2046     		mov	r0, r4
+ 317 0014 FFF7FEFF 		bl	HAL_TIM_PWM_Start
+ 318              	.LVL28:
+ 319 0018 F9E7     		b	.L29
+ 320              		.cfi_endproc
+ 321              	.LFE236:
+ 323              		.text
+ 324              	.Letext0:
+ 325              		.file 2 "/usr/arm-none-eabi/include/machine/_default_types.h"
+ARM GAS  /tmp/ccl1XaPd.s 			page 8
+
+
+ 326              		.file 3 "/usr/arm-none-eabi/include/sys/_stdint.h"
+ 327              		.file 4 "Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f446xx.h"
+ 328              		.file 5 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_def.h"
+ 329              		.file 6 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dma.h"
+ 330              		.file 7 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h"
+ 331              		.file 8 "Lib/stmlibs/stmlibs_status.h"
+ 332              		.file 9 "Lib/stmlibs/timer_utils/timer_utils.h"
+ARM GAS  /tmp/ccl1XaPd.s 			page 9
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 pwm.c
+     /tmp/ccl1XaPd.s:21     .text.PWM_init:00000000 $t
+     /tmp/ccl1XaPd.s:27     .text.PWM_init:00000000 PWM_init
+     /tmp/ccl1XaPd.s:117    .text.PWM_init:0000005c $d
+     /tmp/ccl1XaPd.s:122    .text.PWM_stop:00000000 $t
+     /tmp/ccl1XaPd.s:128    .text.PWM_stop:00000000 PWM_stop
+     /tmp/ccl1XaPd.s:163    .text.PWM_update_duty_cycle:00000000 $t
+     /tmp/ccl1XaPd.s:169    .text.PWM_update_duty_cycle:00000000 PWM_update_duty_cycle
+     /tmp/ccl1XaPd.s:278    .text.PWM_start:00000000 $t
+     /tmp/ccl1XaPd.s:284    .text.PWM_start:00000000 PWM_start
+
+UNDEFINED SYMBOLS
+TIM_GetInternalClkFreq
+HAL_TIM_PWM_Stop
+HAL_TIM_PWM_Start

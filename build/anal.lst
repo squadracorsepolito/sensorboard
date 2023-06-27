@@ -1,0 +1,360 @@
+ARM GAS  /tmp/ccSfi55f.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"anal.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/anal.c"
+  20              		.section	.text.anal_init,"ax",%progbits
+  21              		.align	1
+  22              		.global	anal_init
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	anal_init:
+  28              	.LFB235:
+   1:Core/Src/anal.c **** #include "anal.h"
+   2:Core/Src/anal.c **** #include <memory.h>
+   3:Core/Src/anal.c **** 
+   4:Core/Src/anal.c **** #define ANAL_SMOOTH_ALPHA 0.1f
+   5:Core/Src/anal.c **** uint16_t anal_data[ANAL_PIN_COUNT];
+   6:Core/Src/anal.c **** 
+   7:Core/Src/anal.c **** uint16_t anal_dma_data[ANAL_PIN_COUNT];
+   8:Core/Src/anal.c **** 
+   9:Core/Src/anal.c **** void anal_init(void) {
+  29              		.loc 1 9 22 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33 0000 08B5     		push	{r3, lr}
+  34              		.cfi_def_cfa_offset 8
+  35              		.cfi_offset 3, -8
+  36              		.cfi_offset 14, -4
+  10:Core/Src/anal.c ****     memset(anal_dma_data, 0, sizeof(anal_dma_data));
+  37              		.loc 1 10 5 view .LVU1
+  38 0002 0B49     		ldr	r1, .L3
+  39 0004 0023     		movs	r3, #0
+  40 0006 0B60     		str	r3, [r1]
+  41 0008 4B60     		str	r3, [r1, #4]
+  42 000a 8B60     		str	r3, [r1, #8]
+  43 000c CB60     		str	r3, [r1, #12]
+  44 000e 0B61     		str	r3, [r1, #16]
+  45 0010 4B61     		str	r3, [r1, #20]
+  46 0012 0B83     		strh	r3, [r1, #24]	@ movhi
+  11:Core/Src/anal.c ****     memset(anal_data, 0, sizeof(anal_data));
+  47              		.loc 1 11 5 view .LVU2
+ARM GAS  /tmp/ccSfi55f.s 			page 2
+
+
+  48 0014 074A     		ldr	r2, .L3+4
+  49 0016 1360     		str	r3, [r2]
+  50 0018 5360     		str	r3, [r2, #4]
+  51 001a 9360     		str	r3, [r2, #8]
+  52 001c D360     		str	r3, [r2, #12]
+  53 001e 1361     		str	r3, [r2, #16]
+  54 0020 5361     		str	r3, [r2, #20]
+  55 0022 1383     		strh	r3, [r2, #24]	@ movhi
+  12:Core/Src/anal.c **** 
+  13:Core/Src/anal.c ****     HAL_ADC_Start_DMA(&hadc1, anal_dma_data, ANAL_PIN_COUNT);
+  56              		.loc 1 13 5 view .LVU3
+  57 0024 0D22     		movs	r2, #13
+  58 0026 0448     		ldr	r0, .L3+8
+  59 0028 FFF7FEFF 		bl	HAL_ADC_Start_DMA
+  60              	.LVL0:
+  14:Core/Src/anal.c **** }
+  61              		.loc 1 14 1 is_stmt 0 view .LVU4
+  62 002c 08BD     		pop	{r3, pc}
+  63              	.L4:
+  64 002e 00BF     		.align	2
+  65              	.L3:
+  66 0030 00000000 		.word	anal_dma_data
+  67 0034 00000000 		.word	anal_data
+  68 0038 00000000 		.word	hadc1
+  69              		.cfi_endproc
+  70              	.LFE235:
+  72              		.section	.text.anal_adc_callback,"ax",%progbits
+  73              		.align	1
+  74              		.global	anal_adc_callback
+  75              		.syntax unified
+  76              		.thumb
+  77              		.thumb_func
+  79              	anal_adc_callback:
+  80              	.LVL1:
+  81              	.LFB236:
+  15:Core/Src/anal.c **** 
+  16:Core/Src/anal.c **** void anal_adc_callback(ADC_HandleTypeDef *hadc) {
+  82              		.loc 1 16 49 is_stmt 1 view -0
+  83              		.cfi_startproc
+  84              		@ args = 0, pretend = 0, frame = 0
+  85              		@ frame_needed = 0, uses_anonymous_args = 0
+  86              		@ link register save eliminated.
+  17:Core/Src/anal.c ****     static uint8_t is_first = 1;
+  87              		.loc 1 17 5 view .LVU6
+  18:Core/Src/anal.c ****     if(hadc->Instance == hadc1.Instance) {
+  88              		.loc 1 18 5 view .LVU7
+  89              		.loc 1 18 12 is_stmt 0 view .LVU8
+  90 0000 0268     		ldr	r2, [r0]
+  91              		.loc 1 18 31 view .LVU9
+  92 0002 1D4B     		ldr	r3, .L15
+  93 0004 1B68     		ldr	r3, [r3]
+  94              		.loc 1 18 7 view .LVU10
+  95 0006 9A42     		cmp	r2, r3
+  96 0008 00D0     		beq	.L14
+  97 000a 7047     		bx	lr
+  98              	.L14:
+  16:Core/Src/anal.c ****     static uint8_t is_first = 1;
+ARM GAS  /tmp/ccSfi55f.s 			page 3
+
+
+  99              		.loc 1 16 49 view .LVU11
+ 100 000c 30B4     		push	{r4, r5}
+ 101              		.cfi_def_cfa_offset 8
+ 102              		.cfi_offset 4, -8
+ 103              		.cfi_offset 5, -4
+  19:Core/Src/anal.c ****         if(is_first) {
+ 104              		.loc 1 19 9 is_stmt 1 view .LVU12
+ 105              		.loc 1 19 12 is_stmt 0 view .LVU13
+ 106 000e 1B4B     		ldr	r3, .L15+4
+ 107 0010 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 108              		.loc 1 19 11 view .LVU14
+ 109 0012 53B1     		cbz	r3, .L7
+  20:Core/Src/anal.c ****             is_first = 0;
+ 110              		.loc 1 20 13 is_stmt 1 view .LVU15
+ 111              		.loc 1 20 22 is_stmt 0 view .LVU16
+ 112 0014 194B     		ldr	r3, .L15+4
+ 113 0016 0022     		movs	r2, #0
+ 114 0018 1A70     		strb	r2, [r3]
+  21:Core/Src/anal.c ****             memcpy(anal_data, anal_dma_data, sizeof(anal_data));
+ 115              		.loc 1 21 13 is_stmt 1 view .LVU17
+ 116 001a 194C     		ldr	r4, .L15+8
+ 117 001c 194D     		ldr	r5, .L15+12
+ 118 001e 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+ 119              	.LVL2:
+ 120              		.loc 1 21 13 is_stmt 0 view .LVU18
+ 121 0020 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+ 122 0022 95E80700 		ldm	r5, {r0, r1, r2}
+ 123 0026 03C4     		stmia	r4!, {r0, r1}
+ 124 0028 2280     		strh	r2, [r4]	@ movhi
+ 125              	.L7:
+  16:Core/Src/anal.c ****     static uint8_t is_first = 1;
+ 126              		.loc 1 16 49 view .LVU19
+ 127 002a 0023     		movs	r3, #0
+ 128 002c 1FE0     		b	.L8
+ 129              	.LVL3:
+ 130              	.L9:
+ 131              	.LBB2:
+  22:Core/Src/anal.c ****         }
+  23:Core/Src/anal.c ****         for(uint8_t i=0; i<ANAL_PIN_COUNT; ++i) {
+  24:Core/Src/anal.c ****             anal_data[i] = ANAL_SMOOTH_ALPHA*anal_dma_data[i] + (1-ANAL_SMOOTH_ALPHA)*anal_data[i];
+ 132              		.loc 1 24 13 is_stmt 1 view .LVU20
+ 133              		.loc 1 24 59 is_stmt 0 view .LVU21
+ 134 002e 154A     		ldr	r2, .L15+12
+ 135 0030 32F81320 		ldrh	r2, [r2, r3, lsl #1]
+ 136 0034 07EE902A 		vmov	s15, r2	@ int
+ 137              		.loc 1 24 45 view .LVU22
+ 138 0038 F8EEE77A 		vcvt.f32.s32	s15, s15
+ 139 003c 9FED127A 		vldr.32	s14, .L15+16
+ 140 0040 67EE877A 		vmul.f32	s15, s15, s14
+ 141              		.loc 1 24 96 view .LVU23
+ 142 0044 0E4A     		ldr	r2, .L15+8
+ 143 0046 32F81310 		ldrh	r1, [r2, r3, lsl #1]
+ 144 004a 07EE101A 		vmov	s14, r1	@ int
+ 145              		.loc 1 24 86 view .LVU24
+ 146 004e B8EEC77A 		vcvt.f32.s32	s14, s14
+ 147 0052 DFED0E6A 		vldr.32	s13, .L15+20
+ 148 0056 27EE267A 		vmul.f32	s14, s14, s13
+ARM GAS  /tmp/ccSfi55f.s 			page 4
+
+
+ 149              		.loc 1 24 63 view .LVU25
+ 150 005a 77EE877A 		vadd.f32	s15, s15, s14
+ 151              		.loc 1 24 26 view .LVU26
+ 152 005e FCEEE77A 		vcvt.u32.f32	s15, s15
+ 153 0062 17EE901A 		vmov	r1, s15	@ int
+ 154 0066 22F81310 		strh	r1, [r2, r3, lsl #1]	@ movhi
+  23:Core/Src/anal.c ****             anal_data[i] = ANAL_SMOOTH_ALPHA*anal_dma_data[i] + (1-ANAL_SMOOTH_ALPHA)*anal_data[i];
+ 155              		.loc 1 23 44 is_stmt 1 discriminator 3 view .LVU27
+ 156 006a 0133     		adds	r3, r3, #1
+ 157              	.LVL4:
+  23:Core/Src/anal.c ****             anal_data[i] = ANAL_SMOOTH_ALPHA*anal_dma_data[i] + (1-ANAL_SMOOTH_ALPHA)*anal_data[i];
+ 158              		.loc 1 23 44 is_stmt 0 discriminator 3 view .LVU28
+ 159 006c DBB2     		uxtb	r3, r3
+ 160              	.LVL5:
+ 161              	.L8:
+  23:Core/Src/anal.c ****             anal_data[i] = ANAL_SMOOTH_ALPHA*anal_dma_data[i] + (1-ANAL_SMOOTH_ALPHA)*anal_data[i];
+ 162              		.loc 1 23 27 is_stmt 1 discriminator 1 view .LVU29
+ 163 006e 0C2B     		cmp	r3, #12
+ 164 0070 DDD9     		bls	.L9
+ 165              	.LBE2:
+  25:Core/Src/anal.c ****         }
+  26:Core/Src/anal.c ****     }
+  27:Core/Src/anal.c **** }
+ 166              		.loc 1 27 1 is_stmt 0 view .LVU30
+ 167 0072 30BC     		pop	{r4, r5}
+ 168              		.cfi_restore 5
+ 169              		.cfi_restore 4
+ 170              		.cfi_def_cfa_offset 0
+ 171 0074 7047     		bx	lr
+ 172              	.L16:
+ 173 0076 00BF     		.align	2
+ 174              	.L15:
+ 175 0078 00000000 		.word	hadc1
+ 176 007c 00000000 		.word	is_first.0
+ 177 0080 00000000 		.word	anal_data
+ 178 0084 00000000 		.word	anal_dma_data
+ 179 0088 CDCCCC3D 		.word	1036831949
+ 180 008c 6666663F 		.word	1063675494
+ 181              		.cfi_endproc
+ 182              	.LFE236:
+ 184              		.section	.text.anal_get_pin_raw,"ax",%progbits
+ 185              		.align	1
+ 186              		.global	anal_get_pin_raw
+ 187              		.syntax unified
+ 188              		.thumb
+ 189              		.thumb_func
+ 191              	anal_get_pin_raw:
+ 192              	.LVL6:
+ 193              	.LFB237:
+  28:Core/Src/anal.c **** 
+  29:Core/Src/anal.c **** uint16_t anal_get_pin_raw(uint8_t index) {
+ 194              		.loc 1 29 42 is_stmt 1 view -0
+ 195              		.cfi_startproc
+ 196              		@ args = 0, pretend = 0, frame = 0
+ 197              		@ frame_needed = 0, uses_anonymous_args = 0
+ 198              		@ link register save eliminated.
+  30:Core/Src/anal.c ****     return anal_data[index];
+ARM GAS  /tmp/ccSfi55f.s 			page 5
+
+
+ 199              		.loc 1 30 5 view .LVU32
+  31:Core/Src/anal.c **** }
+ 200              		.loc 1 31 1 is_stmt 0 view .LVU33
+ 201 0000 014B     		ldr	r3, .L18
+ 202 0002 33F81000 		ldrh	r0, [r3, r0, lsl #1]
+ 203              	.LVL7:
+ 204              		.loc 1 31 1 view .LVU34
+ 205 0006 7047     		bx	lr
+ 206              	.L19:
+ 207              		.align	2
+ 208              	.L18:
+ 209 0008 00000000 		.word	anal_data
+ 210              		.cfi_endproc
+ 211              	.LFE237:
+ 213              		.section	.text.anal_get_pin_mv,"ax",%progbits
+ 214              		.align	1
+ 215              		.global	anal_get_pin_mv
+ 216              		.syntax unified
+ 217              		.thumb
+ 218              		.thumb_func
+ 220              	anal_get_pin_mv:
+ 221              	.LVL8:
+ 222              	.LFB238:
+  32:Core/Src/anal.c **** 
+  33:Core/Src/anal.c **** float anal_get_pin_mv(uint8_t index) {
+ 223              		.loc 1 33 38 is_stmt 1 view -0
+ 224              		.cfi_startproc
+ 225              		@ args = 0, pretend = 0, frame = 0
+ 226              		@ frame_needed = 0, uses_anonymous_args = 0
+ 227              		@ link register save eliminated.
+  34:Core/Src/anal.c ****     return (float)anal_data[index] * 3300 / 4095;
+ 228              		.loc 1 34 5 view .LVU36
+ 229              		.loc 1 34 28 is_stmt 0 view .LVU37
+ 230 0000 074B     		ldr	r3, .L21
+ 231 0002 33F81030 		ldrh	r3, [r3, r0, lsl #1]
+ 232 0006 07EE903A 		vmov	s15, r3	@ int
+ 233              		.loc 1 34 12 view .LVU38
+ 234 000a F8EE677A 		vcvt.f32.u32	s15, s15
+ 235              		.loc 1 34 36 view .LVU39
+ 236 000e 9FED057A 		vldr.32	s14, .L21+4
+ 237 0012 67EE877A 		vmul.f32	s15, s15, s14
+  35:Core/Src/anal.c **** }...
+ 238              		.loc 1 35 1 view .LVU40
+ 239 0016 9FED040A 		vldr.32	s0, .L21+8
+ 240 001a 87EE800A 		vdiv.f32	s0, s15, s0
+ 241 001e 7047     		bx	lr
+ 242              	.L22:
+ 243              		.align	2
+ 244              	.L21:
+ 245 0020 00000000 		.word	anal_data
+ 246 0024 00404E45 		.word	1162756096
+ 247 0028 00F07F45 		.word	1166012416
+ 248              		.cfi_endproc
+ 249              	.LFE238:
+ 251              		.section	.data.is_first.0,"aw"
+ 254              	is_first.0:
+ 255 0000 01       		.byte	1
+ARM GAS  /tmp/ccSfi55f.s 			page 6
+
+
+ 256              		.global	anal_dma_data
+ 257              		.section	.bss.anal_dma_data,"aw",%nobits
+ 258              		.align	2
+ 261              	anal_dma_data:
+ 262 0000 00000000 		.space	26
+ 262      00000000 
+ 262      00000000 
+ 262      00000000 
+ 262      00000000 
+ 263              		.global	anal_data
+ 264              		.section	.bss.anal_data,"aw",%nobits
+ 265              		.align	2
+ 268              	anal_data:
+ 269 0000 00000000 		.space	26
+ 269      00000000 
+ 269      00000000 
+ 269      00000000 
+ 269      00000000 
+ 270              		.text
+ 271              	.Letext0:
+ 272              		.file 2 "/usr/arm-none-eabi/include/machine/_default_types.h"
+ 273              		.file 3 "/usr/arm-none-eabi/include/sys/_stdint.h"
+ 274              		.file 4 "Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f446xx.h"
+ 275              		.file 5 "Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h"
+ 276              		.file 6 "/usr/lib/gcc/arm-none-eabi/13.1.0/include/stddef.h"
+ 277              		.file 7 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_def.h"
+ 278              		.file 8 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dma.h"
+ 279              		.file 9 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_adc.h"
+ 280              		.file 10 "Core/Inc/anal.h"
+ 281              		.file 11 "Core/Inc/adc.h"
+ 282              		.file 12 "/usr/arm-none-eabi/include/string.h"
+ARM GAS  /tmp/ccSfi55f.s 			page 7
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 anal.c
+     /tmp/ccSfi55f.s:21     .text.anal_init:00000000 $t
+     /tmp/ccSfi55f.s:27     .text.anal_init:00000000 anal_init
+     /tmp/ccSfi55f.s:66     .text.anal_init:00000030 $d
+     /tmp/ccSfi55f.s:261    .bss.anal_dma_data:00000000 anal_dma_data
+     /tmp/ccSfi55f.s:268    .bss.anal_data:00000000 anal_data
+     /tmp/ccSfi55f.s:73     .text.anal_adc_callback:00000000 $t
+     /tmp/ccSfi55f.s:79     .text.anal_adc_callback:00000000 anal_adc_callback
+     /tmp/ccSfi55f.s:175    .text.anal_adc_callback:00000078 $d
+     /tmp/ccSfi55f.s:254    .data.is_first.0:00000000 is_first.0
+     /tmp/ccSfi55f.s:185    .text.anal_get_pin_raw:00000000 $t
+     /tmp/ccSfi55f.s:191    .text.anal_get_pin_raw:00000000 anal_get_pin_raw
+     /tmp/ccSfi55f.s:209    .text.anal_get_pin_raw:00000008 $d
+     /tmp/ccSfi55f.s:214    .text.anal_get_pin_mv:00000000 $t
+     /tmp/ccSfi55f.s:220    .text.anal_get_pin_mv:00000000 anal_get_pin_mv
+     /tmp/ccSfi55f.s:245    .text.anal_get_pin_mv:00000020 $d
+     /tmp/ccSfi55f.s:258    .bss.anal_dma_data:00000000 $d
+     /tmp/ccSfi55f.s:265    .bss.anal_data:00000000 $d
+
+UNDEFINED SYMBOLS
+HAL_ADC_Start_DMA
+hadc1

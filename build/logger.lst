@@ -1,0 +1,1148 @@
+ARM GAS  /tmp/ccrzbFwY.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"logger.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Lib/stmlibs/logger/logger.c"
+  20              		.section	.text.LOGGER_init,"ax",%progbits
+  21              		.align	1
+  22              		.global	LOGGER_init
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	LOGGER_init:
+  28              	.LVL0:
+  29              	.LFB238:
+   1:Lib/stmlibs/logger/logger.c **** /*
+   2:Lib/stmlibs/logger/logger.c ****  * "THE BEER-WARE LICENSE" (Revision 69):
+   3:Lib/stmlibs/logger/logger.c ****  * Squadra Corse firmware team wrote this file. As long as you retain this notice
+   4:Lib/stmlibs/logger/logger.c ****  * you can do whatever you want with this stuff. If we meet some day, and you 
+   5:Lib/stmlibs/logger/logger.c ****  * think this stuff is worth it, you can buy us a beer in return.
+   6:Lib/stmlibs/logger/logger.c ****  * 
+   7:Lib/stmlibs/logger/logger.c ****  * Authors
+   8:Lib/stmlibs/logger/logger.c ****  * - Federico Carbone [federico.carbone.sc@gmail.com]
+   9:Lib/stmlibs/logger/logger.c ****  */
+  10:Lib/stmlibs/logger/logger.c **** 
+  11:Lib/stmlibs/logger/logger.c **** #include "logger.h"
+  12:Lib/stmlibs/logger/logger.c **** 
+  13:Lib/stmlibs/logger/logger.c **** #include "critical_section.h"
+  14:Lib/stmlibs/logger/logger.c **** 
+  15:Lib/stmlibs/logger/logger.c **** #include <stdarg.h>
+  16:Lib/stmlibs/logger/logger.c **** #include <stdio.h>
+  17:Lib/stmlibs/logger/logger.c **** #include <string.h>
+  18:Lib/stmlibs/logger/logger.c **** 
+  19:Lib/stmlibs/logger/logger.c **** #define NORMAL                 "\033[0m"
+  20:Lib/stmlibs/logger/logger.c **** #define WHITE_BG(S)            "\033[0;47m" S NORMAL
+  21:Lib/stmlibs/logger/logger.c **** #define RED_BG(S)              "\033[0;41m" S NORMAL
+  22:Lib/stmlibs/logger/logger.c **** #define GREEN_BG(S)            "\033[0;42m" S NORMAL
+  23:Lib/stmlibs/logger/logger.c **** #define YELLOW_BG(S)           "\033[0;43m" S NORMAL
+  24:Lib/stmlibs/logger/logger.c **** #define CYAN_BG(S)             "\033[0;46m" S NORMAL
+  25:Lib/stmlibs/logger/logger.c **** #define RED_BG_ON_YELLOW_FG(S) "\033[0;31;43m" S NORMAL
+  26:Lib/stmlibs/logger/logger.c **** 
+  27:Lib/stmlibs/logger/logger.c **** #define LOGGER_INFO_STRING    GREEN_BG("[INFO]")
+  28:Lib/stmlibs/logger/logger.c **** #define LOGGER_DEBUG_STRING   WHITE_BG("[DBG]")
+  29:Lib/stmlibs/logger/logger.c **** #define LOGGER_WARNING_STRING YELLOW_BG("[WRN]")
+ARM GAS  /tmp/ccrzbFwY.s 			page 2
+
+
+  30:Lib/stmlibs/logger/logger.c **** #define LOGGER_ERROR_STRING   RED_BG("[ERR]")
+  31:Lib/stmlibs/logger/logger.c **** 
+  32:Lib/stmlibs/logger/logger.c **** STMLIBS_StatusTypeDef LOGGER_init(LOGGER_HandleTypeDef *handle,
+  33:Lib/stmlibs/logger/logger.c ****                                   char *buffer,
+  34:Lib/stmlibs/logger/logger.c ****                                   uint32_t buffer_len,
+  35:Lib/stmlibs/logger/logger.c ****                                   LOGGER_flushTypeDef flush_raw) {
+  30              		.loc 1 35 66 view -0
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              		@ link register save eliminated.
+  36:Lib/stmlibs/logger/logger.c ****     if (handle == NULL) {
+  35              		.loc 1 36 5 view .LVU1
+  36              		.loc 1 36 8 is_stmt 0 view .LVU2
+  37 0000 8446     		mov	ip, r0
+  38 0002 48B1     		cbz	r0, .L3
+  37:Lib/stmlibs/logger/logger.c ****         return STMLIBS_ERROR;
+  38:Lib/stmlibs/logger/logger.c ****     }
+  39:Lib/stmlibs/logger/logger.c **** 
+  40:Lib/stmlibs/logger/logger.c ****     if (buffer == NULL) {
+  39              		.loc 1 40 5 is_stmt 1 view .LVU3
+  40              		.loc 1 40 8 is_stmt 0 view .LVU4
+  41 0004 51B1     		cbz	r1, .L4
+  41:Lib/stmlibs/logger/logger.c ****         return STMLIBS_ERROR;
+  42:Lib/stmlibs/logger/logger.c ****     }
+  43:Lib/stmlibs/logger/logger.c **** 
+  44:Lib/stmlibs/logger/logger.c ****     if (flush_raw == NULL) {
+  42              		.loc 1 44 5 is_stmt 1 view .LVU5
+  43              		.loc 1 44 8 is_stmt 0 view .LVU6
+  44 0006 5BB1     		cbz	r3, .L5
+  45:Lib/stmlibs/logger/logger.c ****         return STMLIBS_ERROR;
+  46:Lib/stmlibs/logger/logger.c ****     }
+  47:Lib/stmlibs/logger/logger.c **** 
+  48:Lib/stmlibs/logger/logger.c ****     handle->buffer     = buffer;
+  45              		.loc 1 48 5 is_stmt 1 view .LVU7
+  46              		.loc 1 48 24 is_stmt 0 view .LVU8
+  47 0008 0160     		str	r1, [r0]
+  49:Lib/stmlibs/logger/logger.c ****     handle->buffer_len = buffer_len;
+  48              		.loc 1 49 5 is_stmt 1 view .LVU9
+  49              		.loc 1 49 24 is_stmt 0 view .LVU10
+  50 000a 4260     		str	r2, [r0, #4]
+  50:Lib/stmlibs/logger/logger.c ****     handle->index      = 0;
+  51              		.loc 1 50 5 is_stmt 1 view .LVU11
+  52              		.loc 1 50 24 is_stmt 0 view .LVU12
+  53 000c 0020     		movs	r0, #0
+  54              	.LVL1:
+  55              		.loc 1 50 24 view .LVU13
+  56 000e CCF80800 		str	r0, [ip, #8]
+  51:Lib/stmlibs/logger/logger.c ****     handle->flush_raw  = flush_raw;
+  57              		.loc 1 51 5 is_stmt 1 view .LVU14
+  58              		.loc 1 51 24 is_stmt 0 view .LVU15
+  59 0012 CCF80C30 		str	r3, [ip, #12]
+  52:Lib/stmlibs/logger/logger.c **** 
+  53:Lib/stmlibs/logger/logger.c ****     return STMLIBS_OK;
+  60              		.loc 1 53 5 is_stmt 1 view .LVU16
+  61              		.loc 1 53 12 is_stmt 0 view .LVU17
+  62 0016 7047     		bx	lr
+ARM GAS  /tmp/ccrzbFwY.s 			page 3
+
+
+  63              	.LVL2:
+  64              	.L3:
+  37:Lib/stmlibs/logger/logger.c ****     }
+  65              		.loc 1 37 16 view .LVU18
+  66 0018 0120     		movs	r0, #1
+  67              	.LVL3:
+  37:Lib/stmlibs/logger/logger.c ****     }
+  68              		.loc 1 37 16 view .LVU19
+  69 001a 7047     		bx	lr
+  70              	.LVL4:
+  71              	.L4:
+  41:Lib/stmlibs/logger/logger.c ****     }
+  72              		.loc 1 41 16 view .LVU20
+  73 001c 0120     		movs	r0, #1
+  74              	.LVL5:
+  41:Lib/stmlibs/logger/logger.c ****     }
+  75              		.loc 1 41 16 view .LVU21
+  76 001e 7047     		bx	lr
+  77              	.LVL6:
+  78              	.L5:
+  45:Lib/stmlibs/logger/logger.c ****     }
+  79              		.loc 1 45 16 view .LVU22
+  80 0020 0120     		movs	r0, #1
+  81              	.LVL7:
+  54:Lib/stmlibs/logger/logger.c **** }
+  82              		.loc 1 54 1 view .LVU23
+  83 0022 7047     		bx	lr
+  84              		.cfi_endproc
+  85              	.LFE238:
+  87              		.section	.rodata.LOGGER_log.str1.4,"aMS",%progbits,1
+  88              		.align	2
+  89              	.LC0:
+  90 0000 1B5B303B 		.ascii	"\033[0;42m[INFO]\033[0m\000"
+  90      34326D5B 
+  90      494E464F 
+  90      5D1B5B30 
+  90      6D00
+  91 0012 0000     		.align	2
+  92              	.LC1:
+  93 0014 1B5B303B 		.ascii	"\033[0;47m[DBG]\033[0m\000"
+  93      34376D5B 
+  93      4442475D 
+  93      1B5B306D 
+  93      00
+  94 0025 000000   		.align	2
+  95              	.LC2:
+  96 0028 1B5B303B 		.ascii	"\033[0;43m[WRN]\033[0m\000"
+  96      34336D5B 
+  96      57524E5D 
+  96      1B5B306D 
+  96      00
+  97 0039 000000   		.align	2
+  98              	.LC3:
+  99 003c 1B5B303B 		.ascii	"\033[0;41m[ERR]\033[0m\000"
+  99      34316D5B 
+  99      4552525D 
+  99      1B5B306D 
+ARM GAS  /tmp/ccrzbFwY.s 			page 4
+
+
+  99      00
+ 100 004d 000000   		.align	2
+ 101              	.LC4:
+ 102 0050 25735B25 		.ascii	"%s[%5ld] \000"
+ 102      356C645D 
+ 102      2000
+ 103              		.section	.text.LOGGER_log,"ax",%progbits
+ 104              		.align	1
+ 105              		.global	LOGGER_log
+ 106              		.syntax unified
+ 107              		.thumb
+ 108              		.thumb_func
+ 110              	LOGGER_log:
+ 111              	.LVL8:
+ 112              	.LFB239:
+  55:Lib/stmlibs/logger/logger.c **** 
+  56:Lib/stmlibs/logger/logger.c **** STMLIBS_StatusTypeDef LOGGER_log(LOGGER_HandleTypeDef *handle, LOGGER_MODE mode, char *template, ..
+ 113              		.loc 1 56 103 is_stmt 1 view -0
+ 114              		.cfi_startproc
+ 115              		@ args = 4, pretend = 8, frame = 8
+ 116              		@ frame_needed = 0, uses_anonymous_args = 1
+ 117              		.loc 1 56 103 is_stmt 0 view .LVU25
+ 118 0000 0CB4     		push	{r2, r3}
+ 119              		.cfi_def_cfa_offset 8
+ 120              		.cfi_offset 2, -8
+ 121              		.cfi_offset 3, -4
+ 122 0002 2DE9F043 		push	{r4, r5, r6, r7, r8, r9, lr}
+ 123              		.cfi_def_cfa_offset 36
+ 124              		.cfi_offset 4, -36
+ 125              		.cfi_offset 5, -32
+ 126              		.cfi_offset 6, -28
+ 127              		.cfi_offset 7, -24
+ 128              		.cfi_offset 8, -20
+ 129              		.cfi_offset 9, -16
+ 130              		.cfi_offset 14, -12
+ 131 0006 85B0     		sub	sp, sp, #20
+ 132              		.cfi_def_cfa_offset 56
+ 133 0008 0C9D     		ldr	r5, [sp, #48]
+  57:Lib/stmlibs/logger/logger.c ****     if (handle == NULL) {
+ 134              		.loc 1 57 5 is_stmt 1 view .LVU26
+ 135              		.loc 1 57 8 is_stmt 0 view .LVU27
+ 136 000a 0028     		cmp	r0, #0
+ 137 000c 55D0     		beq	.L13
+ 138 000e 0446     		mov	r4, r0
+  58:Lib/stmlibs/logger/logger.c ****         return STMLIBS_ERROR;
+  59:Lib/stmlibs/logger/logger.c ****     }
+  60:Lib/stmlibs/logger/logger.c **** 
+  61:Lib/stmlibs/logger/logger.c ****     if (template == NULL) {
+ 139              		.loc 1 61 5 is_stmt 1 view .LVU28
+ 140              		.loc 1 61 8 is_stmt 0 view .LVU29
+ 141 0010 002D     		cmp	r5, #0
+ 142 0012 54D0     		beq	.L14
+  62:Lib/stmlibs/logger/logger.c ****         return STMLIBS_ERROR;
+  63:Lib/stmlibs/logger/logger.c ****     }
+  64:Lib/stmlibs/logger/logger.c **** 
+  65:Lib/stmlibs/logger/logger.c ****     if (handle->index >= handle->buffer_len - 1) {
+ 143              		.loc 1 65 5 is_stmt 1 view .LVU30
+ARM GAS  /tmp/ccrzbFwY.s 			page 5
+
+
+ 144              		.loc 1 65 15 is_stmt 0 view .LVU31
+ 145 0014 8268     		ldr	r2, [r0, #8]
+ 146              		.loc 1 65 32 view .LVU32
+ 147 0016 4368     		ldr	r3, [r0, #4]
+ 148              		.loc 1 65 45 view .LVU33
+ 149 0018 013B     		subs	r3, r3, #1
+ 150              		.loc 1 65 8 view .LVU34
+ 151 001a 9A42     		cmp	r2, r3
+ 152 001c 51D2     		bcs	.L15
+  66:Lib/stmlibs/logger/logger.c ****         return STMLIBS_ERROR;
+  67:Lib/stmlibs/logger/logger.c ****     }
+  68:Lib/stmlibs/logger/logger.c **** 
+  69:Lib/stmlibs/logger/logger.c ****     CS_ENTER();
+ 153              		.loc 1 69 5 is_stmt 1 view .LVU35
+ 154              	.LBB8:
+ 155              	.LBI8:
+ 156              		.file 2 "Drivers/CMSIS/Include/cmsis_gcc.h"
+   1:Drivers/CMSIS/Include/cmsis_gcc.h **** /**************************************************************************//**
+   2:Drivers/CMSIS/Include/cmsis_gcc.h ****  * @file     cmsis_gcc.h
+   3:Drivers/CMSIS/Include/cmsis_gcc.h ****  * @brief    CMSIS compiler GCC header file
+   4:Drivers/CMSIS/Include/cmsis_gcc.h ****  * @version  V5.0.4
+   5:Drivers/CMSIS/Include/cmsis_gcc.h ****  * @date     09. April 2018
+   6:Drivers/CMSIS/Include/cmsis_gcc.h ****  ******************************************************************************/
+   7:Drivers/CMSIS/Include/cmsis_gcc.h **** /*
+   8:Drivers/CMSIS/Include/cmsis_gcc.h ****  * Copyright (c) 2009-2018 Arm Limited. All rights reserved.
+   9:Drivers/CMSIS/Include/cmsis_gcc.h ****  *
+  10:Drivers/CMSIS/Include/cmsis_gcc.h ****  * SPDX-License-Identifier: Apache-2.0
+  11:Drivers/CMSIS/Include/cmsis_gcc.h ****  *
+  12:Drivers/CMSIS/Include/cmsis_gcc.h ****  * Licensed under the Apache License, Version 2.0 (the License); you may
+  13:Drivers/CMSIS/Include/cmsis_gcc.h ****  * not use this file except in compliance with the License.
+  14:Drivers/CMSIS/Include/cmsis_gcc.h ****  * You may obtain a copy of the License at
+  15:Drivers/CMSIS/Include/cmsis_gcc.h ****  *
+  16:Drivers/CMSIS/Include/cmsis_gcc.h ****  * www.apache.org/licenses/LICENSE-2.0
+  17:Drivers/CMSIS/Include/cmsis_gcc.h ****  *
+  18:Drivers/CMSIS/Include/cmsis_gcc.h ****  * Unless required by applicable law or agreed to in writing, software
+  19:Drivers/CMSIS/Include/cmsis_gcc.h ****  * distributed under the License is distributed on an AS IS BASIS, WITHOUT
+  20:Drivers/CMSIS/Include/cmsis_gcc.h ****  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  21:Drivers/CMSIS/Include/cmsis_gcc.h ****  * See the License for the specific language governing permissions and
+  22:Drivers/CMSIS/Include/cmsis_gcc.h ****  * limitations under the License.
+  23:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+  24:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+  25:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef __CMSIS_GCC_H
+  26:Drivers/CMSIS/Include/cmsis_gcc.h **** #define __CMSIS_GCC_H
+  27:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+  28:Drivers/CMSIS/Include/cmsis_gcc.h **** /* ignore some GCC warnings */
+  29:Drivers/CMSIS/Include/cmsis_gcc.h **** #pragma GCC diagnostic push
+  30:Drivers/CMSIS/Include/cmsis_gcc.h **** #pragma GCC diagnostic ignored "-Wsign-conversion"
+  31:Drivers/CMSIS/Include/cmsis_gcc.h **** #pragma GCC diagnostic ignored "-Wconversion"
+  32:Drivers/CMSIS/Include/cmsis_gcc.h **** #pragma GCC diagnostic ignored "-Wunused-parameter"
+  33:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+  34:Drivers/CMSIS/Include/cmsis_gcc.h **** /* Fallback for __has_builtin */
+  35:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef __has_builtin
+  36:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __has_builtin(x) (0)
+  37:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  38:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+  39:Drivers/CMSIS/Include/cmsis_gcc.h **** /* CMSIS compiler specific defines */
+  40:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __ASM
+ARM GAS  /tmp/ccrzbFwY.s 			page 6
+
+
+  41:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __ASM                                  __asm
+  42:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  43:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __INLINE
+  44:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __INLINE                               inline
+  45:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  46:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __STATIC_INLINE
+  47:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __STATIC_INLINE                        static inline
+  48:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  49:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __STATIC_FORCEINLINE                 
+  50:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __STATIC_FORCEINLINE                   __attribute__((always_inline)) static inline
+  51:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif                                           
+  52:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __NO_RETURN
+  53:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __NO_RETURN                            __attribute__((__noreturn__))
+  54:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  55:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __USED
+  56:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __USED                                 __attribute__((used))
+  57:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  58:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __WEAK
+  59:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __WEAK                                 __attribute__((weak))
+  60:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  61:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __PACKED
+  62:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __PACKED                               __attribute__((packed, aligned(1)))
+  63:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  64:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __PACKED_STRUCT
+  65:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __PACKED_STRUCT                        struct __attribute__((packed, aligned(1)))
+  66:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  67:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __PACKED_UNION
+  68:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __PACKED_UNION                         union __attribute__((packed, aligned(1)))
+  69:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  70:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT32        /* deprecated */
+  71:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic push
+  72:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+  73:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+  74:Drivers/CMSIS/Include/cmsis_gcc.h ****   struct __attribute__((packed)) T_UINT32 { uint32_t v; };
+  75:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+  76:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __UNALIGNED_UINT32(x)                  (((struct T_UINT32 *)(x))->v)
+  77:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  78:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT16_WRITE
+  79:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic push
+  80:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+  81:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+  82:Drivers/CMSIS/Include/cmsis_gcc.h ****   __PACKED_STRUCT T_UINT16_WRITE { uint16_t v; };
+  83:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+  84:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __UNALIGNED_UINT16_WRITE(addr, val)    (void)((((struct T_UINT16_WRITE *)(void *)(addr))-
+  85:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  86:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT16_READ
+  87:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic push
+  88:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+  89:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+  90:Drivers/CMSIS/Include/cmsis_gcc.h ****   __PACKED_STRUCT T_UINT16_READ { uint16_t v; };
+  91:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+  92:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __UNALIGNED_UINT16_READ(addr)          (((const struct T_UINT16_READ *)(const void *)(add
+  93:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  94:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT32_WRITE
+  95:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic push
+  96:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+  97:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+ARM GAS  /tmp/ccrzbFwY.s 			page 7
+
+
+  98:Drivers/CMSIS/Include/cmsis_gcc.h ****   __PACKED_STRUCT T_UINT32_WRITE { uint32_t v; };
+  99:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+ 100:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __UNALIGNED_UINT32_WRITE(addr, val)    (void)((((struct T_UINT32_WRITE *)(void *)(addr))-
+ 101:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+ 102:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT32_READ
+ 103:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic push
+ 104:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+ 105:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+ 106:Drivers/CMSIS/Include/cmsis_gcc.h ****   __PACKED_STRUCT T_UINT32_READ { uint32_t v; };
+ 107:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+ 108:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __UNALIGNED_UINT32_READ(addr)          (((const struct T_UINT32_READ *)(const void *)(add
+ 109:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+ 110:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __ALIGNED
+ 111:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __ALIGNED(x)                           __attribute__((aligned(x)))
+ 112:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+ 113:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __RESTRICT
+ 114:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __RESTRICT                             __restrict
+ 115:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+ 116:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 117:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 118:Drivers/CMSIS/Include/cmsis_gcc.h **** /* ###########################  Core Function Access  ########################### */
+ 119:Drivers/CMSIS/Include/cmsis_gcc.h **** /** \ingroup  CMSIS_Core_FunctionInterface
+ 120:Drivers/CMSIS/Include/cmsis_gcc.h ****     \defgroup CMSIS_Core_RegAccFunctions CMSIS Core Register Access Functions
+ 121:Drivers/CMSIS/Include/cmsis_gcc.h ****   @{
+ 122:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 123:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 124:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 125:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Enable IRQ Interrupts
+ 126:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Enables IRQ interrupts by clearing the I-bit in the CPSR.
+ 127:Drivers/CMSIS/Include/cmsis_gcc.h ****            Can only be executed in Privileged modes.
+ 128:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 129:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __enable_irq(void)
+ 130:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 131:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("cpsie i" : : : "memory");
+ 132:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 133:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 134:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 135:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 136:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Disable IRQ Interrupts
+ 137:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Disables IRQ interrupts by setting the I-bit in the CPSR.
+ 138:Drivers/CMSIS/Include/cmsis_gcc.h ****            Can only be executed in Privileged modes.
+ 139:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 140:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __disable_irq(void)
+ 141:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 142:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("cpsid i" : : : "memory");
+ 143:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 144:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 145:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 146:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 147:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Get Control Register
+ 148:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Returns the content of the Control Register.
+ 149:Drivers/CMSIS/Include/cmsis_gcc.h ****   \return               Control Register value
+ 150:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 151:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_CONTROL(void)
+ 152:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 153:Drivers/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 154:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ARM GAS  /tmp/ccrzbFwY.s 			page 8
+
+
+ 155:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, control" : "=r" (result) );
+ 156:Drivers/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 157:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 158:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 159:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 160:Drivers/CMSIS/Include/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 161:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 162:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Get Control Register (non-secure)
+ 163:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Returns the content of the non-secure Control Register when in secure mode.
+ 164:Drivers/CMSIS/Include/cmsis_gcc.h ****   \return               non-secure Control Register value
+ 165:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 166:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __TZ_get_CONTROL_NS(void)
+ 167:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 168:Drivers/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 169:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 170:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, control_ns" : "=r" (result) );
+ 171:Drivers/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 172:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 173:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+ 174:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 175:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 176:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 177:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Set Control Register
+ 178:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Writes the given value to the Control Register.
+ 179:Drivers/CMSIS/Include/cmsis_gcc.h ****   \param [in]    control  Control Register value to set
+ 180:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 181:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __set_CONTROL(uint32_t control)
+ 182:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 183:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MSR control, %0" : : "r" (control) : "memory");
+ 184:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 185:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 186:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 187:Drivers/CMSIS/Include/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 188:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 189:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Set Control Register (non-secure)
+ 190:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Writes the given value to the non-secure Control Register when in secure state.
+ 191:Drivers/CMSIS/Include/cmsis_gcc.h ****   \param [in]    control  Control Register value to set
+ 192:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 193:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __TZ_set_CONTROL_NS(uint32_t control)
+ 194:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 195:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MSR control_ns, %0" : : "r" (control) : "memory");
+ 196:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 197:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+ 198:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 199:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 200:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 201:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Get IPSR Register
+ 202:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Returns the content of the IPSR Register.
+ 203:Drivers/CMSIS/Include/cmsis_gcc.h ****   \return               IPSR Register value
+ 204:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 205:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_IPSR(void)
+ 206:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 207:Drivers/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 208:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 209:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, ipsr" : "=r" (result) );
+ 210:Drivers/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 211:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ARM GAS  /tmp/ccrzbFwY.s 			page 9
+
+
+ 212:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 213:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 214:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 215:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Get APSR Register
+ 216:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Returns the content of the APSR Register.
+ 217:Drivers/CMSIS/Include/cmsis_gcc.h ****   \return               APSR Register value
+ 218:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 219:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_APSR(void)
+ 220:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 221:Drivers/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 222:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 223:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, apsr" : "=r" (result) );
+ 224:Drivers/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 225:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 226:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 227:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 228:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 229:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Get xPSR Register
+ 230:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Returns the content of the xPSR Register.
+ 231:Drivers/CMSIS/Include/cmsis_gcc.h ****   \return               xPSR Register value
+ 232:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 233:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_xPSR(void)
+ 234:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 235:Drivers/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 236:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 237:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, xpsr" : "=r" (result) );
+ 238:Drivers/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 239:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 240:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 241:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 242:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 243:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Get Process Stack Pointer
+ 244:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Returns the current value of the Process Stack Pointer (PSP).
+ 245:Drivers/CMSIS/Include/cmsis_gcc.h ****   \return               PSP Register value
+ 246:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 247:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_PSP(void)
+ 248:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 249:Drivers/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 250:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 251:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, psp"  : "=r" (result) );
+ 252:Drivers/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 253:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 254:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 255:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 256:Drivers/CMSIS/Include/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 257:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 258:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Get Process Stack Pointer (non-secure)
+ 259:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Returns the current value of the non-secure Process Stack Pointer (PSP) when in secure s
+ 260:Drivers/CMSIS/Include/cmsis_gcc.h ****   \return               PSP Register value
+ 261:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 262:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __TZ_get_PSP_NS(void)
+ 263:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 264:Drivers/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 265:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 266:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, psp_ns"  : "=r" (result) );
+ 267:Drivers/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 268:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ARM GAS  /tmp/ccrzbFwY.s 			page 10
+
+
+ 269:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+ 270:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 271:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 272:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 273:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Set Process Stack Pointer
+ 274:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Assigns the given value to the Process Stack Pointer (PSP).
+ 275:Drivers/CMSIS/Include/cmsis_gcc.h ****   \param [in]    topOfProcStack  Process Stack Pointer value to set
+ 276:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 277:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __set_PSP(uint32_t topOfProcStack)
+ 278:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 279:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MSR psp, %0" : : "r" (topOfProcStack) : );
+ 280:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 281:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 282:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 283:Drivers/CMSIS/Include/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 284:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 285:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Set Process Stack Pointer (non-secure)
+ 286:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Assigns the given value to the non-secure Process Stack Pointer (PSP) when in secure sta
+ 287:Drivers/CMSIS/Include/cmsis_gcc.h ****   \param [in]    topOfProcStack  Process Stack Pointer value to set
+ 288:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 289:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __TZ_set_PSP_NS(uint32_t topOfProcStack)
+ 290:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 291:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MSR psp_ns, %0" : : "r" (topOfProcStack) : );
+ 292:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 293:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+ 294:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 295:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 296:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 297:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Get Main Stack Pointer
+ 298:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Returns the current value of the Main Stack Pointer (MSP).
+ 299:Drivers/CMSIS/Include/cmsis_gcc.h ****   \return               MSP Register value
+ 300:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 301:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_MSP(void)
+ 302:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 303:Drivers/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 304:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 305:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, msp" : "=r" (result) );
+ 306:Drivers/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 307:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 308:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 309:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 310:Drivers/CMSIS/Include/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 311:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 312:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Get Main Stack Pointer (non-secure)
+ 313:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Returns the current value of the non-secure Main Stack Pointer (MSP) when in secure stat
+ 314:Drivers/CMSIS/Include/cmsis_gcc.h ****   \return               MSP Register value
+ 315:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 316:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __TZ_get_MSP_NS(void)
+ 317:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 318:Drivers/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 319:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 320:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, msp_ns" : "=r" (result) );
+ 321:Drivers/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 322:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 323:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+ 324:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 325:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ARM GAS  /tmp/ccrzbFwY.s 			page 11
+
+
+ 326:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 327:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Set Main Stack Pointer
+ 328:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Assigns the given value to the Main Stack Pointer (MSP).
+ 329:Drivers/CMSIS/Include/cmsis_gcc.h ****   \param [in]    topOfMainStack  Main Stack Pointer value to set
+ 330:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 331:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __set_MSP(uint32_t topOfMainStack)
+ 332:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 333:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MSR msp, %0" : : "r" (topOfMainStack) : );
+ 334:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 335:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 336:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 337:Drivers/CMSIS/Include/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 338:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 339:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Set Main Stack Pointer (non-secure)
+ 340:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Assigns the given value to the non-secure Main Stack Pointer (MSP) when in secure state.
+ 341:Drivers/CMSIS/Include/cmsis_gcc.h ****   \param [in]    topOfMainStack  Main Stack Pointer value to set
+ 342:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 343:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __TZ_set_MSP_NS(uint32_t topOfMainStack)
+ 344:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 345:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MSR msp_ns, %0" : : "r" (topOfMainStack) : );
+ 346:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 347:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+ 348:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 349:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 350:Drivers/CMSIS/Include/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 351:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 352:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Get Stack Pointer (non-secure)
+ 353:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Returns the current value of the non-secure Stack Pointer (SP) when in secure state.
+ 354:Drivers/CMSIS/Include/cmsis_gcc.h ****   \return               SP Register value
+ 355:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 356:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __TZ_get_SP_NS(void)
+ 357:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 358:Drivers/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 359:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 360:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, sp_ns" : "=r" (result) );
+ 361:Drivers/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 362:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 363:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 364:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 365:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 366:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Set Stack Pointer (non-secure)
+ 367:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Assigns the given value to the non-secure Stack Pointer (SP) when in secure state.
+ 368:Drivers/CMSIS/Include/cmsis_gcc.h ****   \param [in]    topOfStack  Stack Pointer value to set
+ 369:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 370:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __TZ_set_SP_NS(uint32_t topOfStack)
+ 371:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 372:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MSR sp_ns, %0" : : "r" (topOfStack) : );
+ 373:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 374:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+ 375:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 376:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 377:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 378:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Get Priority Mask
+ 379:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Returns the current state of the priority mask bit from the Priority Mask Register.
+ 380:Drivers/CMSIS/Include/cmsis_gcc.h ****   \return               Priority Mask value
+ 381:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 382:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_PRIMASK(void)
+ARM GAS  /tmp/ccrzbFwY.s 			page 12
+
+
+ 157              		.loc 2 382 31 view .LVU36
+ 158              	.LBB9:
+ 383:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 384:Drivers/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 159              		.loc 2 384 3 view .LVU37
+ 385:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 386:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, primask" : "=r" (result) :: "memory");
+ 160              		.loc 2 386 3 view .LVU38
+ 161              		.syntax unified
+ 162              	@ 386 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 163 001e EFF31087 		MRS r7, primask
+ 164              	@ 0 "" 2
+ 165              	.LVL9:
+ 387:Drivers/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 166              		.loc 2 387 3 view .LVU39
+ 167              		.loc 2 387 3 is_stmt 0 view .LVU40
+ 168              		.thumb
+ 169              		.syntax unified
+ 170              	.LBE9:
+ 171              	.LBE8:
+ 172              		.loc 1 69 5 is_stmt 1 discriminator 1 view .LVU41
+ 173              	.LBB10:
+ 174              	.LBI10:
+ 388:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 389:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 390:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 391:Drivers/CMSIS/Include/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 392:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 393:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Get Priority Mask (non-secure)
+ 394:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Returns the current state of the non-secure priority mask bit from the Priority Mask Reg
+ 395:Drivers/CMSIS/Include/cmsis_gcc.h ****   \return               Priority Mask value
+ 396:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 397:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __TZ_get_PRIMASK_NS(void)
+ 398:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 399:Drivers/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 400:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 401:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, primask_ns" : "=r" (result) :: "memory");
+ 402:Drivers/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 403:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 404:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+ 405:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 406:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 407:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 408:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Set Priority Mask
+ 409:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Assigns the given value to the Priority Mask Register.
+ 410:Drivers/CMSIS/Include/cmsis_gcc.h ****   \param [in]    priMask  Priority Mask
+ 411:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 412:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __set_PRIMASK(uint32_t priMask)
+ 175              		.loc 2 412 27 view .LVU42
+ 176              	.LBB11:
+ 413:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 414:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MSR primask, %0" : : "r" (priMask) : "memory");
+ 177              		.loc 2 414 3 view .LVU43
+ 178 0022 0123     		movs	r3, #1
+ 179              		.syntax unified
+ 180              	@ 414 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 181 0024 83F31088 		MSR primask, r3
+ARM GAS  /tmp/ccrzbFwY.s 			page 13
+
+
+ 182              	@ 0 "" 2
+ 183              	.LVL10:
+ 184              		.loc 2 414 3 is_stmt 0 view .LVU44
+ 185              		.thumb
+ 186              		.syntax unified
+ 187              	.LBE11:
+ 188              	.LBE10:
+ 189              		.loc 1 69 15 is_stmt 1 discriminator 2 view .LVU45
+  70:Lib/stmlibs/logger/logger.c **** 
+  71:Lib/stmlibs/logger/logger.c ****     handle->buffer[handle->index++] = '\r';
+ 190              		.loc 1 71 5 view .LVU46
+ 191              		.loc 1 71 11 is_stmt 0 view .LVU47
+ 192 0028 0268     		ldr	r2, [r0]
+ 193              		.loc 1 71 26 view .LVU48
+ 194 002a 8368     		ldr	r3, [r0, #8]
+ 195              		.loc 1 71 33 view .LVU49
+ 196 002c 581C     		adds	r0, r3, #1
+ 197              	.LVL11:
+ 198              		.loc 1 71 33 view .LVU50
+ 199 002e A060     		str	r0, [r4, #8]
+ 200              		.loc 1 71 37 view .LVU51
+ 201 0030 0D20     		movs	r0, #13
+ 202 0032 D054     		strb	r0, [r2, r3]
+  72:Lib/stmlibs/logger/logger.c ****     handle->buffer[handle->index++] = '\n';
+ 203              		.loc 1 72 5 is_stmt 1 view .LVU52
+ 204              		.loc 1 72 11 is_stmt 0 view .LVU53
+ 205 0034 2268     		ldr	r2, [r4]
+ 206              		.loc 1 72 26 view .LVU54
+ 207 0036 A368     		ldr	r3, [r4, #8]
+ 208              		.loc 1 72 33 view .LVU55
+ 209 0038 581C     		adds	r0, r3, #1
+ 210 003a A060     		str	r0, [r4, #8]
+ 211              		.loc 1 72 37 view .LVU56
+ 212 003c 0A20     		movs	r0, #10
+ 213 003e D054     		strb	r0, [r2, r3]
+  73:Lib/stmlibs/logger/logger.c **** 
+  74:Lib/stmlibs/logger/logger.c ****     char *s = NULL;
+ 214              		.loc 1 74 5 is_stmt 1 view .LVU57
+ 215              	.LVL12:
+  75:Lib/stmlibs/logger/logger.c **** 
+  76:Lib/stmlibs/logger/logger.c ****     switch (mode) {
+ 216              		.loc 1 76 5 view .LVU58
+ 217 0040 0329     		cmp	r1, #3
+ 218 0042 40D8     		bhi	.L16
+ 219 0044 DFE801F0 		tbb	[pc, r1]
+ 220              	.L9:
+ 221 0048 02       		.byte	(.L12-.L9)/2
+ 222 0049 36       		.byte	(.L17-.L9)/2
+ 223 004a 30       		.byte	(.L10-.L9)/2
+ 224 004b 33       		.byte	(.L8-.L9)/2
+ 225              		.p2align 1
+ 226              	.L12:
+ 227 004c DFF88490 		ldr	r9, .L20+4
+ 228              	.LVL13:
+ 229              	.L11:
+  77:Lib/stmlibs/logger/logger.c ****         case LOGGER_INFO:
+  78:Lib/stmlibs/logger/logger.c ****             s = LOGGER_INFO_STRING;
+ARM GAS  /tmp/ccrzbFwY.s 			page 14
+
+
+  79:Lib/stmlibs/logger/logger.c ****             break;
+  80:Lib/stmlibs/logger/logger.c ****         case LOGGER_DEBUG:
+  81:Lib/stmlibs/logger/logger.c ****             s = LOGGER_DEBUG_STRING;
+  82:Lib/stmlibs/logger/logger.c ****             break;
+  83:Lib/stmlibs/logger/logger.c ****         case LOGGER_WARNING:
+  84:Lib/stmlibs/logger/logger.c ****             s = LOGGER_WARNING_STRING;
+  85:Lib/stmlibs/logger/logger.c ****             break;
+  86:Lib/stmlibs/logger/logger.c ****         case LOGGER_ERROR:
+  87:Lib/stmlibs/logger/logger.c ****             s = LOGGER_ERROR_STRING;
+  88:Lib/stmlibs/logger/logger.c ****             break;
+  89:Lib/stmlibs/logger/logger.c ****         default:
+  90:Lib/stmlibs/logger/logger.c ****             return STMLIBS_ERROR;
+  91:Lib/stmlibs/logger/logger.c ****     }
+  92:Lib/stmlibs/logger/logger.c **** 
+  93:Lib/stmlibs/logger/logger.c ****     handle->index += snprintf(handle->buffer + handle->index, handle->buffer_len - handle->index - 
+ 230              		.loc 1 93 5 view .LVU59
+ 231              		.loc 1 93 37 is_stmt 0 view .LVU60
+ 232 0050 2268     		ldr	r2, [r4]
+ 233              		.loc 1 93 54 view .LVU61
+ 234 0052 A368     		ldr	r3, [r4, #8]
+ 235              		.loc 1 93 22 view .LVU62
+ 236 0054 02EB0308 		add	r8, r2, r3
+ 237              		.loc 1 93 69 view .LVU63
+ 238 0058 6668     		ldr	r6, [r4, #4]
+ 239              		.loc 1 93 82 view .LVU64
+ 240 005a F61A     		subs	r6, r6, r3
+ 241              		.loc 1 93 98 view .LVU65
+ 242 005c 013E     		subs	r6, r6, #1
+ 243              		.loc 1 93 22 view .LVU66
+ 244 005e FFF7FEFF 		bl	HAL_GetTick
+ 245              	.LVL14:
+ 246              		.loc 1 93 22 discriminator 1 view .LVU67
+ 247 0062 0090     		str	r0, [sp]
+ 248 0064 4B46     		mov	r3, r9
+ 249 0066 1A4A     		ldr	r2, .L20
+ 250 0068 3146     		mov	r1, r6
+ 251 006a 4046     		mov	r0, r8
+ 252 006c FFF7FEFF 		bl	snprintf
+ 253              	.LVL15:
+ 254              		.loc 1 93 11 discriminator 2 view .LVU68
+ 255 0070 A368     		ldr	r3, [r4, #8]
+ 256              		.loc 1 93 19 discriminator 2 view .LVU69
+ 257 0072 1844     		add	r0, r0, r3
+ 258 0074 A060     		str	r0, [r4, #8]
+  94:Lib/stmlibs/logger/logger.c **** 
+  95:Lib/stmlibs/logger/logger.c ****     va_list args;
+ 259              		.loc 1 95 5 is_stmt 1 view .LVU70
+  96:Lib/stmlibs/logger/logger.c ****     va_start(args, template);
+ 260              		.loc 1 96 5 view .LVU71
+ 261 0076 0DAB     		add	r3, sp, #52
+ 262 0078 0393     		str	r3, [sp, #12]
+  97:Lib/stmlibs/logger/logger.c ****     handle->index += vsnprintf(handle->buffer + handle->index, handle->buffer_len - handle->index -
+ 263              		.loc 1 97 5 view .LVU72
+ 264              		.loc 1 97 38 is_stmt 0 view .LVU73
+ 265 007a 2668     		ldr	r6, [r4]
+ 266              		.loc 1 97 70 view .LVU74
+ 267 007c 6168     		ldr	r1, [r4, #4]
+ARM GAS  /tmp/ccrzbFwY.s 			page 15
+
+
+ 268              		.loc 1 97 83 view .LVU75
+ 269 007e 091A     		subs	r1, r1, r0
+ 270              		.loc 1 97 22 view .LVU76
+ 271 0080 2A46     		mov	r2, r5
+ 272 0082 0139     		subs	r1, r1, #1
+ 273 0084 3044     		add	r0, r0, r6
+ 274 0086 FFF7FEFF 		bl	vsnprintf
+ 275              	.LVL16:
+ 276              		.loc 1 97 11 discriminator 1 view .LVU77
+ 277 008a A368     		ldr	r3, [r4, #8]
+ 278              		.loc 1 97 19 discriminator 1 view .LVU78
+ 279 008c 0344     		add	r3, r3, r0
+ 280 008e A360     		str	r3, [r4, #8]
+  98:Lib/stmlibs/logger/logger.c ****     va_end(args);
+ 281              		.loc 1 98 5 is_stmt 1 view .LVU79
+  99:Lib/stmlibs/logger/logger.c **** 
+ 100:Lib/stmlibs/logger/logger.c ****     CS_EXIT();
+ 282              		.loc 1 100 5 view .LVU80
+ 283              	.LBB12:
+ 284              	.LBI12:
+ 412:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 285              		.loc 2 412 27 view .LVU81
+ 286              	.LBB13:
+ 287              		.loc 2 414 3 view .LVU82
+ 288              		.syntax unified
+ 289              	@ 414 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 290 0090 87F31088 		MSR primask, r7
+ 291              	@ 0 "" 2
+ 292              		.thumb
+ 293              		.syntax unified
+ 294              	.LBE13:
+ 295              	.LBE12:
+ 296              		.loc 1 100 14 discriminator 1 view .LVU83
+ 101:Lib/stmlibs/logger/logger.c **** 
+ 102:Lib/stmlibs/logger/logger.c ****     if (handle->index >= handle->buffer_len) {
+ 297              		.loc 1 102 5 view .LVU84
+ 298              		.loc 1 102 15 is_stmt 0 view .LVU85
+ 299 0094 A268     		ldr	r2, [r4, #8]
+ 300              		.loc 1 102 32 view .LVU86
+ 301 0096 6368     		ldr	r3, [r4, #4]
+ 302              		.loc 1 102 8 view .LVU87
+ 303 0098 9A42     		cmp	r2, r3
+ 304 009a 16D2     		bcs	.L18
+ 103:Lib/stmlibs/logger/logger.c ****         return STMLIBS_ERROR;
+ 104:Lib/stmlibs/logger/logger.c ****     }
+ 105:Lib/stmlibs/logger/logger.c **** 
+ 106:Lib/stmlibs/logger/logger.c ****     return STMLIBS_OK;
+ 305              		.loc 1 106 12 view .LVU88
+ 306 009c 0020     		movs	r0, #0
+ 307              	.LVL17:
+ 308              	.L7:
+ 107:Lib/stmlibs/logger/logger.c **** }
+ 309              		.loc 1 107 1 view .LVU89
+ 310 009e 05B0     		add	sp, sp, #20
+ 311              		.cfi_remember_state
+ 312              		.cfi_def_cfa_offset 36
+ 313              		@ sp needed
+ARM GAS  /tmp/ccrzbFwY.s 			page 16
+
+
+ 314 00a0 BDE8F043 		pop	{r4, r5, r6, r7, r8, r9, lr}
+ 315              		.cfi_restore 14
+ 316              		.cfi_restore 9
+ 317              		.cfi_restore 8
+ 318              		.cfi_restore 7
+ 319              		.cfi_restore 6
+ 320              		.cfi_restore 5
+ 321              		.cfi_restore 4
+ 322              		.cfi_def_cfa_offset 8
+ 323 00a4 02B0     		add	sp, sp, #8
+ 324              		.cfi_restore 3
+ 325              		.cfi_restore 2
+ 326              		.cfi_def_cfa_offset 0
+ 327 00a6 7047     		bx	lr
+ 328              	.LVL18:
+ 329              	.L10:
+ 330              		.cfi_restore_state
+  84:Lib/stmlibs/logger/logger.c ****             break;
+ 331              		.loc 1 84 13 is_stmt 1 view .LVU90
+  85:Lib/stmlibs/logger/logger.c ****         case LOGGER_ERROR:
+ 332              		.loc 1 85 13 view .LVU91
+  84:Lib/stmlibs/logger/logger.c ****             break;
+ 333              		.loc 1 84 15 is_stmt 0 view .LVU92
+ 334 00a8 DFF82C90 		ldr	r9, .L20+8
+  85:Lib/stmlibs/logger/logger.c ****         case LOGGER_ERROR:
+ 335              		.loc 1 85 13 view .LVU93
+ 336 00ac D0E7     		b	.L11
+ 337              	.LVL19:
+ 338              	.L8:
+  87:Lib/stmlibs/logger/logger.c ****             break;
+ 339              		.loc 1 87 13 is_stmt 1 view .LVU94
+  88:Lib/stmlibs/logger/logger.c ****         default:
+ 340              		.loc 1 88 13 view .LVU95
+  87:Lib/stmlibs/logger/logger.c ****             break;
+ 341              		.loc 1 87 15 is_stmt 0 view .LVU96
+ 342 00ae DFF82C90 		ldr	r9, .L20+12
+  88:Lib/stmlibs/logger/logger.c ****         default:
+ 343              		.loc 1 88 13 view .LVU97
+ 344 00b2 CDE7     		b	.L11
+ 345              	.LVL20:
+ 346              	.L17:
+  81:Lib/stmlibs/logger/logger.c ****             break;
+ 347              		.loc 1 81 15 view .LVU98
+ 348 00b4 DFF82890 		ldr	r9, .L20+16
+ 349 00b8 CAE7     		b	.L11
+ 350              	.LVL21:
+ 351              	.L13:
+  58:Lib/stmlibs/logger/logger.c ****     }
+ 352              		.loc 1 58 16 view .LVU99
+ 353 00ba 0120     		movs	r0, #1
+ 354              	.LVL22:
+  58:Lib/stmlibs/logger/logger.c ****     }
+ 355              		.loc 1 58 16 view .LVU100
+ 356 00bc EFE7     		b	.L7
+ 357              	.LVL23:
+ 358              	.L14:
+  62:Lib/stmlibs/logger/logger.c ****     }
+ARM GAS  /tmp/ccrzbFwY.s 			page 17
+
+
+ 359              		.loc 1 62 16 view .LVU101
+ 360 00be 0120     		movs	r0, #1
+ 361              	.LVL24:
+  62:Lib/stmlibs/logger/logger.c ****     }
+ 362              		.loc 1 62 16 view .LVU102
+ 363 00c0 EDE7     		b	.L7
+ 364              	.LVL25:
+ 365              	.L15:
+  66:Lib/stmlibs/logger/logger.c ****     }
+ 366              		.loc 1 66 16 view .LVU103
+ 367 00c2 0120     		movs	r0, #1
+ 368              	.LVL26:
+  66:Lib/stmlibs/logger/logger.c ****     }
+ 369              		.loc 1 66 16 view .LVU104
+ 370 00c4 EBE7     		b	.L7
+ 371              	.LVL27:
+ 372              	.L16:
+  76:Lib/stmlibs/logger/logger.c ****         case LOGGER_INFO:
+ 373              		.loc 1 76 5 view .LVU105
+ 374 00c6 0120     		movs	r0, #1
+ 375 00c8 E9E7     		b	.L7
+ 376              	.LVL28:
+ 377              	.L18:
+ 103:Lib/stmlibs/logger/logger.c ****     }
+ 378              		.loc 1 103 16 view .LVU106
+ 379 00ca 0120     		movs	r0, #1
+ 380 00cc E7E7     		b	.L7
+ 381              	.L21:
+ 382 00ce 00BF     		.align	2
+ 383              	.L20:
+ 384 00d0 50000000 		.word	.LC4
+ 385 00d4 00000000 		.word	.LC0
+ 386 00d8 28000000 		.word	.LC2
+ 387 00dc 3C000000 		.word	.LC3
+ 388 00e0 14000000 		.word	.LC1
+ 389              		.cfi_endproc
+ 390              	.LFE239:
+ 392              		.section	.text.LOGGER_flush,"ax",%progbits
+ 393              		.align	1
+ 394              		.global	LOGGER_flush
+ 395              		.syntax unified
+ 396              		.thumb
+ 397              		.thumb_func
+ 399              	LOGGER_flush:
+ 400              	.LVL29:
+ 401              	.LFB240:
+ 108:Lib/stmlibs/logger/logger.c **** 
+ 109:Lib/stmlibs/logger/logger.c **** STMLIBS_StatusTypeDef LOGGER_flush(LOGGER_HandleTypeDef *handle) {
+ 402              		.loc 1 109 66 is_stmt 1 view -0
+ 403              		.cfi_startproc
+ 404              		@ args = 0, pretend = 0, frame = 0
+ 405              		@ frame_needed = 0, uses_anonymous_args = 0
+ 110:Lib/stmlibs/logger/logger.c ****     if (handle == NULL) {
+ 406              		.loc 1 110 5 view .LVU108
+ 407              		.loc 1 110 8 is_stmt 0 view .LVU109
+ 408 0000 70B1     		cbz	r0, .L24
+ 109:Lib/stmlibs/logger/logger.c ****     if (handle == NULL) {
+ARM GAS  /tmp/ccrzbFwY.s 			page 18
+
+
+ 409              		.loc 1 109 66 view .LVU110
+ 410 0002 10B5     		push	{r4, lr}
+ 411              		.cfi_def_cfa_offset 8
+ 412              		.cfi_offset 4, -8
+ 413              		.cfi_offset 14, -4
+ 414 0004 0446     		mov	r4, r0
+ 111:Lib/stmlibs/logger/logger.c ****         return STMLIBS_ERROR;
+ 112:Lib/stmlibs/logger/logger.c ****     }
+ 113:Lib/stmlibs/logger/logger.c **** 
+ 114:Lib/stmlibs/logger/logger.c ****     static STMLIBS_StatusTypeDef errorcode = STMLIBS_OK;
+ 415              		.loc 1 114 5 is_stmt 1 view .LVU111
+ 115:Lib/stmlibs/logger/logger.c **** 
+ 116:Lib/stmlibs/logger/logger.c ****     if (handle->index == 0) {
+ 416              		.loc 1 116 5 view .LVU112
+ 417              		.loc 1 116 15 is_stmt 0 view .LVU113
+ 418 0006 8168     		ldr	r1, [r0, #8]
+ 419              		.loc 1 116 8 view .LVU114
+ 420 0008 61B1     		cbz	r1, .L25
+ 117:Lib/stmlibs/logger/logger.c ****         return STMLIBS_OK;
+ 118:Lib/stmlibs/logger/logger.c ****     }
+ 119:Lib/stmlibs/logger/logger.c **** 
+ 120:Lib/stmlibs/logger/logger.c ****     if ((errorcode = handle->flush_raw(handle->buffer, handle->index)) != STMLIBS_OK) {
+ 421              		.loc 1 120 5 is_stmt 1 view .LVU115
+ 422              		.loc 1 120 28 is_stmt 0 view .LVU116
+ 423 000a C368     		ldr	r3, [r0, #12]
+ 424              		.loc 1 120 22 view .LVU117
+ 425 000c 0068     		ldr	r0, [r0]
+ 426              	.LVL30:
+ 427              		.loc 1 120 22 view .LVU118
+ 428 000e 9847     		blx	r3
+ 429              	.LVL31:
+ 430              		.loc 1 120 20 discriminator 1 view .LVU119
+ 431 0010 054B     		ldr	r3, .L30
+ 432 0012 1870     		strb	r0, [r3]
+ 433              		.loc 1 120 8 discriminator 1 view .LVU120
+ 434 0014 18B9     		cbnz	r0, .L23
+ 121:Lib/stmlibs/logger/logger.c ****         return errorcode;
+ 122:Lib/stmlibs/logger/logger.c ****     }
+ 123:Lib/stmlibs/logger/logger.c ****     handle->buffer[0] = '\0';
+ 435              		.loc 1 123 5 is_stmt 1 view .LVU121
+ 436              		.loc 1 123 11 is_stmt 0 view .LVU122
+ 437 0016 2268     		ldr	r2, [r4]
+ 438              		.loc 1 123 23 view .LVU123
+ 439 0018 0023     		movs	r3, #0
+ 440 001a 1370     		strb	r3, [r2]
+ 124:Lib/stmlibs/logger/logger.c ****     handle->index     = 0;
+ 441              		.loc 1 124 5 is_stmt 1 view .LVU124
+ 442              		.loc 1 124 23 is_stmt 0 view .LVU125
+ 443 001c A360     		str	r3, [r4, #8]
+ 125:Lib/stmlibs/logger/logger.c **** 
+ 126:Lib/stmlibs/logger/logger.c ****     return errorcode;
+ 444              		.loc 1 126 5 is_stmt 1 view .LVU126
+ 445              	.L23:
+ 127:Lib/stmlibs/logger/logger.c **** }...
+ 446              		.loc 1 127 1 is_stmt 0 view .LVU127
+ 447 001e 10BD     		pop	{r4, pc}
+ 448              	.LVL32:
+ARM GAS  /tmp/ccrzbFwY.s 			page 19
+
+
+ 449              	.L24:
+ 450              		.cfi_def_cfa_offset 0
+ 451              		.cfi_restore 4
+ 452              		.cfi_restore 14
+ 111:Lib/stmlibs/logger/logger.c ****         return STMLIBS_ERROR;
+ 453              		.loc 1 111 16 view .LVU128
+ 454 0020 0120     		movs	r0, #1
+ 455              	.LVL33:
+ 456              		.loc 1 127 1 view .LVU129
+ 457 0022 7047     		bx	lr
+ 458              	.LVL34:
+ 459              	.L25:
+ 460              		.cfi_def_cfa_offset 8
+ 461              		.cfi_offset 4, -8
+ 462              		.cfi_offset 14, -4
+ 117:Lib/stmlibs/logger/logger.c ****         return STMLIBS_OK;
+ 463              		.loc 1 117 16 view .LVU130
+ 464 0024 0020     		movs	r0, #0
+ 465              	.LVL35:
+ 117:Lib/stmlibs/logger/logger.c ****         return STMLIBS_OK;
+ 466              		.loc 1 117 16 view .LVU131
+ 467 0026 FAE7     		b	.L23
+ 468              	.L31:
+ 469              		.align	2
+ 470              	.L30:
+ 471 0028 00000000 		.word	errorcode.0
+ 472              		.cfi_endproc
+ 473              	.LFE240:
+ 475              		.section	.bss.errorcode.0,"aw",%nobits
+ 478              	errorcode.0:
+ 479 0000 00       		.space	1
+ 480              		.text
+ 481              	.Letext0:
+ 482              		.file 3 "/usr/arm-none-eabi/include/machine/_default_types.h"
+ 483              		.file 4 "/usr/arm-none-eabi/include/sys/_stdint.h"
+ 484              		.file 5 "/usr/lib/gcc/arm-none-eabi/13.1.0/include/stddef.h"
+ 485              		.file 6 "Lib/stmlibs/stmlibs_status.h"
+ 486              		.file 7 "Lib/stmlibs/logger/logger.h"
+ 487              		.file 8 "/usr/lib/gcc/arm-none-eabi/13.1.0/include/stdarg.h"
+ 488              		.file 9 "/usr/arm-none-eabi/include/stdio.h"
+ 489              		.file 10 "<built-in>"
+ 490              		.file 11 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h"
+ARM GAS  /tmp/ccrzbFwY.s 			page 20
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 logger.c
+     /tmp/ccrzbFwY.s:21     .text.LOGGER_init:00000000 $t
+     /tmp/ccrzbFwY.s:27     .text.LOGGER_init:00000000 LOGGER_init
+     /tmp/ccrzbFwY.s:88     .rodata.LOGGER_log.str1.4:00000000 $d
+     /tmp/ccrzbFwY.s:104    .text.LOGGER_log:00000000 $t
+     /tmp/ccrzbFwY.s:110    .text.LOGGER_log:00000000 LOGGER_log
+     /tmp/ccrzbFwY.s:221    .text.LOGGER_log:00000048 $d
+     /tmp/ccrzbFwY.s:225    .text.LOGGER_log:0000004c $t
+     /tmp/ccrzbFwY.s:384    .text.LOGGER_log:000000d0 $d
+     /tmp/ccrzbFwY.s:393    .text.LOGGER_flush:00000000 $t
+     /tmp/ccrzbFwY.s:399    .text.LOGGER_flush:00000000 LOGGER_flush
+     /tmp/ccrzbFwY.s:471    .text.LOGGER_flush:00000028 $d
+     /tmp/ccrzbFwY.s:478    .bss.errorcode.0:00000000 errorcode.0
+     /tmp/ccrzbFwY.s:479    .bss.errorcode.0:00000000 $d
+
+UNDEFINED SYMBOLS
+HAL_GetTick
+snprintf
+vsnprintf

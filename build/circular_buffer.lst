@@ -1,0 +1,497 @@
+ARM GAS  /tmp/ccRpSVSb.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"circular_buffer.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Lib/stmlibs/circular_buffer/circular_buffer.c"
+  20              		.section	.text.CIRCULAR_BUFFER_init,"ax",%progbits
+  21              		.align	1
+  22              		.global	CIRCULAR_BUFFER_init
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	CIRCULAR_BUFFER_init:
+  28              	.LVL0:
+  29              	.LFB235:
+   1:Lib/stmlibs/circular_buffer/circular_buffer.c **** /*
+   2:Lib/stmlibs/circular_buffer/circular_buffer.c ****  * "THE BEER-WARE LICENSE" (Revision 69):
+   3:Lib/stmlibs/circular_buffer/circular_buffer.c ****  * Squadra Corse firmware team wrote this file. As long as you retain this notice
+   4:Lib/stmlibs/circular_buffer/circular_buffer.c ****  * you can do whatever you want with this stuff. If we meet some day, and you 
+   5:Lib/stmlibs/circular_buffer/circular_buffer.c ****  * think this stuff is worth it, you can buy us a beer in return.
+   6:Lib/stmlibs/circular_buffer/circular_buffer.c ****  * 
+   7:Lib/stmlibs/circular_buffer/circular_buffer.c ****  * Authors
+   8:Lib/stmlibs/circular_buffer/circular_buffer.c ****  * - Federico Carbone [federico.carbone.sc@gmail.com]
+   9:Lib/stmlibs/circular_buffer/circular_buffer.c ****  */
+  10:Lib/stmlibs/circular_buffer/circular_buffer.c **** 
+  11:Lib/stmlibs/circular_buffer/circular_buffer.c **** #include "circular_buffer.h"
+  12:Lib/stmlibs/circular_buffer/circular_buffer.c **** 
+  13:Lib/stmlibs/circular_buffer/circular_buffer.c **** #include <string.h>
+  14:Lib/stmlibs/circular_buffer/circular_buffer.c **** 
+  15:Lib/stmlibs/circular_buffer/circular_buffer.c **** STMLIBS_StatusTypeDef CIRCULAR_BUFFER_init(CIRCULAR_BUFFER_HandleTypeDef *handle,
+  16:Lib/stmlibs/circular_buffer/circular_buffer.c ****                                            void *buffer,
+  17:Lib/stmlibs/circular_buffer/circular_buffer.c ****                                            uint32_t length,
+  18:Lib/stmlibs/circular_buffer/circular_buffer.c ****                                            uint32_t el_size) {
+  30              		.loc 1 18 62 view -0
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              		@ link register save eliminated.
+  19:Lib/stmlibs/circular_buffer/circular_buffer.c ****     if (handle == NULL) {
+  35              		.loc 1 19 5 view .LVU1
+  36              		.loc 1 19 8 is_stmt 0 view .LVU2
+  37 0000 8446     		mov	ip, r0
+  38 0002 48B1     		cbz	r0, .L3
+  20:Lib/stmlibs/circular_buffer/circular_buffer.c ****         return STMLIBS_ERROR;
+ARM GAS  /tmp/ccRpSVSb.s 			page 2
+
+
+  21:Lib/stmlibs/circular_buffer/circular_buffer.c ****     }
+  22:Lib/stmlibs/circular_buffer/circular_buffer.c **** 
+  23:Lib/stmlibs/circular_buffer/circular_buffer.c ****     if (buffer == NULL) {
+  39              		.loc 1 23 5 is_stmt 1 view .LVU3
+  40              		.loc 1 23 8 is_stmt 0 view .LVU4
+  41 0004 51B1     		cbz	r1, .L4
+  24:Lib/stmlibs/circular_buffer/circular_buffer.c ****         return STMLIBS_ERROR;
+  25:Lib/stmlibs/circular_buffer/circular_buffer.c ****     }
+  26:Lib/stmlibs/circular_buffer/circular_buffer.c **** 
+  27:Lib/stmlibs/circular_buffer/circular_buffer.c ****     handle->buffer = buffer;
+  42              		.loc 1 27 5 is_stmt 1 view .LVU5
+  43              		.loc 1 27 20 is_stmt 0 view .LVU6
+  44 0006 0160     		str	r1, [r0]
+  28:Lib/stmlibs/circular_buffer/circular_buffer.c ****     handle->length = length;
+  45              		.loc 1 28 5 is_stmt 1 view .LVU7
+  46              		.loc 1 28 20 is_stmt 0 view .LVU8
+  47 0008 4260     		str	r2, [r0, #4]
+  29:Lib/stmlibs/circular_buffer/circular_buffer.c ****     handle->size   = el_size;
+  48              		.loc 1 29 5 is_stmt 1 view .LVU9
+  49              		.loc 1 29 20 is_stmt 0 view .LVU10
+  50 000a 8360     		str	r3, [r0, #8]
+  30:Lib/stmlibs/circular_buffer/circular_buffer.c ****     handle->head   = 0;
+  51              		.loc 1 30 5 is_stmt 1 view .LVU11
+  52              		.loc 1 30 20 is_stmt 0 view .LVU12
+  53 000c 0020     		movs	r0, #0
+  54              	.LVL1:
+  55              		.loc 1 30 20 view .LVU13
+  56 000e CCF80C00 		str	r0, [ip, #12]
+  31:Lib/stmlibs/circular_buffer/circular_buffer.c ****     handle->tail   = 0;
+  57              		.loc 1 31 5 is_stmt 1 view .LVU14
+  58              		.loc 1 31 20 is_stmt 0 view .LVU15
+  59 0012 CCF81000 		str	r0, [ip, #16]
+  32:Lib/stmlibs/circular_buffer/circular_buffer.c **** 
+  33:Lib/stmlibs/circular_buffer/circular_buffer.c ****     return STMLIBS_OK;
+  60              		.loc 1 33 5 is_stmt 1 view .LVU16
+  61              		.loc 1 33 12 is_stmt 0 view .LVU17
+  62 0016 7047     		bx	lr
+  63              	.LVL2:
+  64              	.L3:
+  20:Lib/stmlibs/circular_buffer/circular_buffer.c ****     }
+  65              		.loc 1 20 16 view .LVU18
+  66 0018 0120     		movs	r0, #1
+  67              	.LVL3:
+  20:Lib/stmlibs/circular_buffer/circular_buffer.c ****     }
+  68              		.loc 1 20 16 view .LVU19
+  69 001a 7047     		bx	lr
+  70              	.LVL4:
+  71              	.L4:
+  24:Lib/stmlibs/circular_buffer/circular_buffer.c ****     }
+  72              		.loc 1 24 16 view .LVU20
+  73 001c 0120     		movs	r0, #1
+  74              	.LVL5:
+  34:Lib/stmlibs/circular_buffer/circular_buffer.c **** }
+  75              		.loc 1 34 1 view .LVU21
+  76 001e 7047     		bx	lr
+  77              		.cfi_endproc
+  78              	.LFE235:
+ARM GAS  /tmp/ccRpSVSb.s 			page 3
+
+
+  80              		.section	.text.CIRCULAR_BUFFER_is_full,"ax",%progbits
+  81              		.align	1
+  82              		.global	CIRCULAR_BUFFER_is_full
+  83              		.syntax unified
+  84              		.thumb
+  85              		.thumb_func
+  87              	CIRCULAR_BUFFER_is_full:
+  88              	.LVL6:
+  89              	.LFB236:
+  35:Lib/stmlibs/circular_buffer/circular_buffer.c **** 
+  36:Lib/stmlibs/circular_buffer/circular_buffer.c **** uint8_t CIRCULAR_BUFFER_is_full(CIRCULAR_BUFFER_HandleTypeDef *handle) {
+  90              		.loc 1 36 72 is_stmt 1 view -0
+  91              		.cfi_startproc
+  92              		@ args = 0, pretend = 0, frame = 0
+  93              		@ frame_needed = 0, uses_anonymous_args = 0
+  94              		@ link register save eliminated.
+  37:Lib/stmlibs/circular_buffer/circular_buffer.c ****     if (handle == NULL) {
+  95              		.loc 1 37 5 view .LVU23
+  96              		.loc 1 37 8 is_stmt 0 view .LVU24
+  97 0000 0346     		mov	r3, r0
+  98 0002 60B1     		cbz	r0, .L7
+  38:Lib/stmlibs/circular_buffer/circular_buffer.c ****         return 1;
+  39:Lib/stmlibs/circular_buffer/circular_buffer.c ****     }
+  40:Lib/stmlibs/circular_buffer/circular_buffer.c **** 
+  41:Lib/stmlibs/circular_buffer/circular_buffer.c ****     return (handle->head + 1) % handle->length == handle->tail;
+  99              		.loc 1 41 5 is_stmt 1 view .LVU25
+ 100              		.loc 1 41 19 is_stmt 0 view .LVU26
+ 101 0004 C068     		ldr	r0, [r0, #12]
+ 102              	.LVL7:
+ 103              		.loc 1 41 26 view .LVU27
+ 104 0006 0130     		adds	r0, r0, #1
+ 105              		.loc 1 41 39 view .LVU28
+ 106 0008 5A68     		ldr	r2, [r3, #4]
+ 107              		.loc 1 41 31 view .LVU29
+ 108 000a B0FBF2F1 		udiv	r1, r0, r2
+ 109 000e 02FB1100 		mls	r0, r2, r1, r0
+ 110              		.loc 1 41 57 view .LVU30
+ 111 0012 1B69     		ldr	r3, [r3, #16]
+ 112              	.LVL8:
+ 113              		.loc 1 41 48 view .LVU31
+ 114 0014 9842     		cmp	r0, r3
+ 115 0016 14BF     		ite	ne
+ 116 0018 0020     		movne	r0, #0
+ 117 001a 0120     		moveq	r0, #1
+ 118 001c 7047     		bx	lr
+ 119              	.LVL9:
+ 120              	.L7:
+  38:Lib/stmlibs/circular_buffer/circular_buffer.c ****         return 1;
+ 121              		.loc 1 38 16 view .LVU32
+ 122 001e 0120     		movs	r0, #1
+ 123              	.LVL10:
+  42:Lib/stmlibs/circular_buffer/circular_buffer.c **** }
+ 124              		.loc 1 42 1 view .LVU33
+ 125 0020 7047     		bx	lr
+ 126              		.cfi_endproc
+ 127              	.LFE236:
+ 129              		.section	.text.CIRCULAR_BUFFER_is_empty,"ax",%progbits
+ARM GAS  /tmp/ccRpSVSb.s 			page 4
+
+
+ 130              		.align	1
+ 131              		.global	CIRCULAR_BUFFER_is_empty
+ 132              		.syntax unified
+ 133              		.thumb
+ 134              		.thumb_func
+ 136              	CIRCULAR_BUFFER_is_empty:
+ 137              	.LVL11:
+ 138              	.LFB237:
+  43:Lib/stmlibs/circular_buffer/circular_buffer.c **** 
+  44:Lib/stmlibs/circular_buffer/circular_buffer.c **** uint8_t CIRCULAR_BUFFER_is_empty(CIRCULAR_BUFFER_HandleTypeDef *handle) {
+ 139              		.loc 1 44 73 is_stmt 1 view -0
+ 140              		.cfi_startproc
+ 141              		@ args = 0, pretend = 0, frame = 0
+ 142              		@ frame_needed = 0, uses_anonymous_args = 0
+ 143              		@ link register save eliminated.
+  45:Lib/stmlibs/circular_buffer/circular_buffer.c ****     if (handle == NULL) {
+ 144              		.loc 1 45 5 view .LVU35
+ 145              		.loc 1 45 8 is_stmt 0 view .LVU36
+ 146 0000 0346     		mov	r3, r0
+ 147 0002 30B1     		cbz	r0, .L10
+  46:Lib/stmlibs/circular_buffer/circular_buffer.c ****         return 1;
+  47:Lib/stmlibs/circular_buffer/circular_buffer.c ****     }
+  48:Lib/stmlibs/circular_buffer/circular_buffer.c **** 
+  49:Lib/stmlibs/circular_buffer/circular_buffer.c ****     return handle->head == handle->tail;
+ 148              		.loc 1 49 5 is_stmt 1 view .LVU37
+ 149              		.loc 1 49 18 is_stmt 0 view .LVU38
+ 150 0004 C068     		ldr	r0, [r0, #12]
+ 151              	.LVL12:
+ 152              		.loc 1 49 34 view .LVU39
+ 153 0006 1B69     		ldr	r3, [r3, #16]
+ 154              	.LVL13:
+ 155              		.loc 1 49 25 view .LVU40
+ 156 0008 9842     		cmp	r0, r3
+ 157 000a 14BF     		ite	ne
+ 158 000c 0020     		movne	r0, #0
+ 159 000e 0120     		moveq	r0, #1
+ 160 0010 7047     		bx	lr
+ 161              	.LVL14:
+ 162              	.L10:
+  46:Lib/stmlibs/circular_buffer/circular_buffer.c ****         return 1;
+ 163              		.loc 1 46 16 view .LVU41
+ 164 0012 0120     		movs	r0, #1
+ 165              	.LVL15:
+  50:Lib/stmlibs/circular_buffer/circular_buffer.c **** }
+ 166              		.loc 1 50 1 view .LVU42
+ 167 0014 7047     		bx	lr
+ 168              		.cfi_endproc
+ 169              	.LFE237:
+ 171              		.section	.text.CIRCULAR_BUFFER_enqueue,"ax",%progbits
+ 172              		.align	1
+ 173              		.global	CIRCULAR_BUFFER_enqueue
+ 174              		.syntax unified
+ 175              		.thumb
+ 176              		.thumb_func
+ 178              	CIRCULAR_BUFFER_enqueue:
+ 179              	.LVL16:
+ 180              	.LFB238:
+ARM GAS  /tmp/ccRpSVSb.s 			page 5
+
+
+  51:Lib/stmlibs/circular_buffer/circular_buffer.c **** 
+  52:Lib/stmlibs/circular_buffer/circular_buffer.c **** STMLIBS_StatusTypeDef CIRCULAR_BUFFER_enqueue(CIRCULAR_BUFFER_HandleTypeDef *handle, void *obj) {
+ 181              		.loc 1 52 97 is_stmt 1 view -0
+ 182              		.cfi_startproc
+ 183              		@ args = 0, pretend = 0, frame = 0
+ 184              		@ frame_needed = 0, uses_anonymous_args = 0
+ 185              		.loc 1 52 97 is_stmt 0 view .LVU44
+ 186 0000 70B5     		push	{r4, r5, r6, lr}
+ 187              		.cfi_def_cfa_offset 16
+ 188              		.cfi_offset 4, -16
+ 189              		.cfi_offset 5, -12
+ 190              		.cfi_offset 6, -8
+ 191              		.cfi_offset 14, -4
+  53:Lib/stmlibs/circular_buffer/circular_buffer.c ****     if (handle == NULL) {
+ 192              		.loc 1 53 5 is_stmt 1 view .LVU45
+ 193              		.loc 1 53 8 is_stmt 0 view .LVU46
+ 194 0002 B0B1     		cbz	r0, .L13
+ 195 0004 0C46     		mov	r4, r1
+ 196 0006 0546     		mov	r5, r0
+  54:Lib/stmlibs/circular_buffer/circular_buffer.c ****         return STMLIBS_ERROR;
+  55:Lib/stmlibs/circular_buffer/circular_buffer.c ****     }
+  56:Lib/stmlibs/circular_buffer/circular_buffer.c **** 
+  57:Lib/stmlibs/circular_buffer/circular_buffer.c ****     if (obj == NULL) {
+ 197              		.loc 1 57 5 is_stmt 1 view .LVU47
+ 198              		.loc 1 57 8 is_stmt 0 view .LVU48
+ 199 0008 A9B1     		cbz	r1, .L14
+  58:Lib/stmlibs/circular_buffer/circular_buffer.c ****         return STMLIBS_ERROR;
+  59:Lib/stmlibs/circular_buffer/circular_buffer.c ****     }
+  60:Lib/stmlibs/circular_buffer/circular_buffer.c **** 
+  61:Lib/stmlibs/circular_buffer/circular_buffer.c ****     if (CIRCULAR_BUFFER_is_full(handle)) {
+ 200              		.loc 1 61 5 is_stmt 1 view .LVU49
+ 201              		.loc 1 61 9 is_stmt 0 view .LVU50
+ 202 000a FFF7FEFF 		bl	CIRCULAR_BUFFER_is_full
+ 203              	.LVL17:
+ 204              		.loc 1 61 8 discriminator 1 view .LVU51
+ 205 000e 0646     		mov	r6, r0
+ 206 0010 10B1     		cbz	r0, .L17
+  62:Lib/stmlibs/circular_buffer/circular_buffer.c ****         return STMLIBS_ERROR;
+ 207              		.loc 1 62 16 view .LVU52
+ 208 0012 0126     		movs	r6, #1
+ 209              	.LVL18:
+ 210              	.L12:
+  63:Lib/stmlibs/circular_buffer/circular_buffer.c ****     }
+  64:Lib/stmlibs/circular_buffer/circular_buffer.c **** 
+  65:Lib/stmlibs/circular_buffer/circular_buffer.c ****     memcpy(handle->buffer + handle->head, obj, handle->size);
+  66:Lib/stmlibs/circular_buffer/circular_buffer.c ****     handle->head = (handle->head + 1) & handle->length;
+  67:Lib/stmlibs/circular_buffer/circular_buffer.c **** 
+  68:Lib/stmlibs/circular_buffer/circular_buffer.c ****     return STMLIBS_OK;
+  69:Lib/stmlibs/circular_buffer/circular_buffer.c **** }
+ 211              		.loc 1 69 1 view .LVU53
+ 212 0014 3046     		mov	r0, r6
+ 213 0016 70BD     		pop	{r4, r5, r6, pc}
+ 214              	.LVL19:
+ 215              	.L17:
+  65:Lib/stmlibs/circular_buffer/circular_buffer.c ****     handle->head = (handle->head + 1) & handle->length;
+ 216              		.loc 1 65 5 is_stmt 1 view .LVU54
+  65:Lib/stmlibs/circular_buffer/circular_buffer.c ****     handle->head = (handle->head + 1) & handle->length;
+ARM GAS  /tmp/ccRpSVSb.s 			page 6
+
+
+ 217              		.loc 1 65 18 is_stmt 0 view .LVU55
+ 218 0018 2868     		ldr	r0, [r5]
+  65:Lib/stmlibs/circular_buffer/circular_buffer.c ****     handle->head = (handle->head + 1) & handle->length;
+ 219              		.loc 1 65 35 view .LVU56
+ 220 001a EB68     		ldr	r3, [r5, #12]
+  65:Lib/stmlibs/circular_buffer/circular_buffer.c ****     handle->head = (handle->head + 1) & handle->length;
+ 221              		.loc 1 65 5 view .LVU57
+ 222 001c AA68     		ldr	r2, [r5, #8]
+ 223 001e 2146     		mov	r1, r4
+ 224 0020 1844     		add	r0, r0, r3
+ 225 0022 FFF7FEFF 		bl	memcpy
+ 226              	.LVL20:
+  66:Lib/stmlibs/circular_buffer/circular_buffer.c **** 
+ 227              		.loc 1 66 5 is_stmt 1 view .LVU58
+  66:Lib/stmlibs/circular_buffer/circular_buffer.c **** 
+ 228              		.loc 1 66 27 is_stmt 0 view .LVU59
+ 229 0026 EB68     		ldr	r3, [r5, #12]
+  66:Lib/stmlibs/circular_buffer/circular_buffer.c **** 
+ 230              		.loc 1 66 34 view .LVU60
+ 231 0028 0133     		adds	r3, r3, #1
+  66:Lib/stmlibs/circular_buffer/circular_buffer.c **** 
+ 232              		.loc 1 66 47 view .LVU61
+ 233 002a 6A68     		ldr	r2, [r5, #4]
+  66:Lib/stmlibs/circular_buffer/circular_buffer.c **** 
+ 234              		.loc 1 66 39 view .LVU62
+ 235 002c 1340     		ands	r3, r3, r2
+  66:Lib/stmlibs/circular_buffer/circular_buffer.c **** 
+ 236              		.loc 1 66 18 view .LVU63
+ 237 002e EB60     		str	r3, [r5, #12]
+  68:Lib/stmlibs/circular_buffer/circular_buffer.c **** }
+ 238              		.loc 1 68 5 is_stmt 1 view .LVU64
+  68:Lib/stmlibs/circular_buffer/circular_buffer.c **** }
+ 239              		.loc 1 68 12 is_stmt 0 view .LVU65
+ 240 0030 F0E7     		b	.L12
+ 241              	.LVL21:
+ 242              	.L13:
+  54:Lib/stmlibs/circular_buffer/circular_buffer.c ****     }
+ 243              		.loc 1 54 16 view .LVU66
+ 244 0032 0126     		movs	r6, #1
+ 245 0034 EEE7     		b	.L12
+ 246              	.L14:
+  58:Lib/stmlibs/circular_buffer/circular_buffer.c ****     }
+ 247              		.loc 1 58 16 view .LVU67
+ 248 0036 0126     		movs	r6, #1
+ 249 0038 ECE7     		b	.L12
+ 250              		.cfi_endproc
+ 251              	.LFE238:
+ 253              		.section	.text.CIRCULAR_BUFFER_dequeue,"ax",%progbits
+ 254              		.align	1
+ 255              		.global	CIRCULAR_BUFFER_dequeue
+ 256              		.syntax unified
+ 257              		.thumb
+ 258              		.thumb_func
+ 260              	CIRCULAR_BUFFER_dequeue:
+ 261              	.LVL22:
+ 262              	.LFB239:
+  70:Lib/stmlibs/circular_buffer/circular_buffer.c **** 
+ARM GAS  /tmp/ccRpSVSb.s 			page 7
+
+
+  71:Lib/stmlibs/circular_buffer/circular_buffer.c **** STMLIBS_StatusTypeDef CIRCULAR_BUFFER_dequeue(CIRCULAR_BUFFER_HandleTypeDef *handle, void *obj) {
+ 263              		.loc 1 71 97 is_stmt 1 view -0
+ 264              		.cfi_startproc
+ 265              		@ args = 0, pretend = 0, frame = 0
+ 266              		@ frame_needed = 0, uses_anonymous_args = 0
+ 267              		.loc 1 71 97 is_stmt 0 view .LVU69
+ 268 0000 70B5     		push	{r4, r5, r6, lr}
+ 269              		.cfi_def_cfa_offset 16
+ 270              		.cfi_offset 4, -16
+ 271              		.cfi_offset 5, -12
+ 272              		.cfi_offset 6, -8
+ 273              		.cfi_offset 14, -4
+  72:Lib/stmlibs/circular_buffer/circular_buffer.c ****     if (handle == NULL) {
+ 274              		.loc 1 72 5 is_stmt 1 view .LVU70
+ 275              		.loc 1 72 8 is_stmt 0 view .LVU71
+ 276 0002 C8B1     		cbz	r0, .L20
+ 277 0004 0C46     		mov	r4, r1
+ 278 0006 0546     		mov	r5, r0
+  73:Lib/stmlibs/circular_buffer/circular_buffer.c ****         return STMLIBS_ERROR;
+  74:Lib/stmlibs/circular_buffer/circular_buffer.c ****     }
+  75:Lib/stmlibs/circular_buffer/circular_buffer.c **** 
+  76:Lib/stmlibs/circular_buffer/circular_buffer.c ****     if (obj == NULL) {
+ 279              		.loc 1 76 5 is_stmt 1 view .LVU72
+ 280              		.loc 1 76 8 is_stmt 0 view .LVU73
+ 281 0008 C1B1     		cbz	r1, .L21
+  77:Lib/stmlibs/circular_buffer/circular_buffer.c ****         return STMLIBS_ERROR;
+  78:Lib/stmlibs/circular_buffer/circular_buffer.c ****     }
+  79:Lib/stmlibs/circular_buffer/circular_buffer.c **** 
+  80:Lib/stmlibs/circular_buffer/circular_buffer.c ****     if (CIRCULAR_BUFFER_is_empty(handle)) {
+ 282              		.loc 1 80 5 is_stmt 1 view .LVU74
+ 283              		.loc 1 80 9 is_stmt 0 view .LVU75
+ 284 000a FFF7FEFF 		bl	CIRCULAR_BUFFER_is_empty
+ 285              	.LVL23:
+ 286              		.loc 1 80 8 discriminator 1 view .LVU76
+ 287 000e 0646     		mov	r6, r0
+ 288 0010 10B1     		cbz	r0, .L24
+  81:Lib/stmlibs/circular_buffer/circular_buffer.c ****         return STMLIBS_ERROR;
+ 289              		.loc 1 81 16 view .LVU77
+ 290 0012 0126     		movs	r6, #1
+ 291              	.LVL24:
+ 292              	.L19:
+  82:Lib/stmlibs/circular_buffer/circular_buffer.c ****     }
+  83:Lib/stmlibs/circular_buffer/circular_buffer.c **** 
+  84:Lib/stmlibs/circular_buffer/circular_buffer.c ****     memcpy(obj, handle->buffer + handle->tail, handle->size);
+  85:Lib/stmlibs/circular_buffer/circular_buffer.c ****     handle->tail = (handle->tail + 1) % handle->length;
+  86:Lib/stmlibs/circular_buffer/circular_buffer.c **** 
+  87:Lib/stmlibs/circular_buffer/circular_buffer.c ****     return STMLIBS_OK;
+  88:Lib/stmlibs/circular_buffer/circular_buffer.c **** }...
+ 293              		.loc 1 88 1 view .LVU78
+ 294 0014 3046     		mov	r0, r6
+ 295 0016 70BD     		pop	{r4, r5, r6, pc}
+ 296              	.LVL25:
+ 297              	.L24:
+  84:Lib/stmlibs/circular_buffer/circular_buffer.c ****     memcpy(obj, handle->buffer + handle->tail, handle->size);
+ 298              		.loc 1 84 5 is_stmt 1 view .LVU79
+  84:Lib/stmlibs/circular_buffer/circular_buffer.c ****     memcpy(obj, handle->buffer + handle->tail, handle->size);
+ 299              		.loc 1 84 23 is_stmt 0 view .LVU80
+ARM GAS  /tmp/ccRpSVSb.s 			page 8
+
+
+ 300 0018 2968     		ldr	r1, [r5]
+  84:Lib/stmlibs/circular_buffer/circular_buffer.c ****     memcpy(obj, handle->buffer + handle->tail, handle->size);
+ 301              		.loc 1 84 40 view .LVU81
+ 302 001a 2B69     		ldr	r3, [r5, #16]
+  84:Lib/stmlibs/circular_buffer/circular_buffer.c ****     memcpy(obj, handle->buffer + handle->tail, handle->size);
+ 303              		.loc 1 84 5 view .LVU82
+ 304 001c AA68     		ldr	r2, [r5, #8]
+ 305 001e 1944     		add	r1, r1, r3
+ 306 0020 2046     		mov	r0, r4
+ 307 0022 FFF7FEFF 		bl	memcpy
+ 308              	.LVL26:
+  85:Lib/stmlibs/circular_buffer/circular_buffer.c ****     handle->tail = (handle->tail + 1) % handle->length;
+ 309              		.loc 1 85 5 is_stmt 1 view .LVU83
+  85:Lib/stmlibs/circular_buffer/circular_buffer.c ****     handle->tail = (handle->tail + 1) % handle->length;
+ 310              		.loc 1 85 27 is_stmt 0 view .LVU84
+ 311 0026 2B69     		ldr	r3, [r5, #16]
+  85:Lib/stmlibs/circular_buffer/circular_buffer.c ****     handle->tail = (handle->tail + 1) % handle->length;
+ 312              		.loc 1 85 34 view .LVU85
+ 313 0028 0133     		adds	r3, r3, #1
+  85:Lib/stmlibs/circular_buffer/circular_buffer.c ****     handle->tail = (handle->tail + 1) % handle->length;
+ 314              		.loc 1 85 47 view .LVU86
+ 315 002a 6A68     		ldr	r2, [r5, #4]
+  85:Lib/stmlibs/circular_buffer/circular_buffer.c ****     handle->tail = (handle->tail + 1) % handle->length;
+ 316              		.loc 1 85 39 view .LVU87
+ 317 002c B3FBF2F1 		udiv	r1, r3, r2
+ 318 0030 02FB1133 		mls	r3, r2, r1, r3
+  85:Lib/stmlibs/circular_buffer/circular_buffer.c ****     handle->tail = (handle->tail + 1) % handle->length;
+ 319              		.loc 1 85 18 view .LVU88
+ 320 0034 2B61     		str	r3, [r5, #16]
+  87:Lib/stmlibs/circular_buffer/circular_buffer.c ****     return STMLIBS_OK;
+ 321              		.loc 1 87 5 is_stmt 1 view .LVU89
+  87:Lib/stmlibs/circular_buffer/circular_buffer.c ****     return STMLIBS_OK;
+ 322              		.loc 1 87 12 is_stmt 0 view .LVU90
+ 323 0036 EDE7     		b	.L19
+ 324              	.LVL27:
+ 325              	.L20:
+  73:Lib/stmlibs/circular_buffer/circular_buffer.c ****         return STMLIBS_ERROR;
+ 326              		.loc 1 73 16 view .LVU91
+ 327 0038 0126     		movs	r6, #1
+ 328 003a EBE7     		b	.L19
+ 329              	.L21:
+  77:Lib/stmlibs/circular_buffer/circular_buffer.c ****         return STMLIBS_ERROR;
+ 330              		.loc 1 77 16 view .LVU92
+ 331 003c 0126     		movs	r6, #1
+ 332 003e E9E7     		b	.L19
+ 333              		.cfi_endproc
+ 334              	.LFE239:
+ 336              		.text
+ 337              	.Letext0:
+ 338              		.file 2 "/usr/arm-none-eabi/include/machine/_default_types.h"
+ 339              		.file 3 "/usr/arm-none-eabi/include/sys/_stdint.h"
+ 340              		.file 4 "/usr/lib/gcc/arm-none-eabi/13.1.0/include/stddef.h"
+ 341              		.file 5 "Lib/stmlibs/stmlibs_status.h"
+ 342              		.file 6 "Lib/stmlibs/circular_buffer/circular_buffer.h"
+ 343              		.file 7 "/usr/arm-none-eabi/include/string.h"
+ 344              		.file 8 "<built-in>"
+ARM GAS  /tmp/ccRpSVSb.s 			page 9
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 circular_buffer.c
+     /tmp/ccRpSVSb.s:21     .text.CIRCULAR_BUFFER_init:00000000 $t
+     /tmp/ccRpSVSb.s:27     .text.CIRCULAR_BUFFER_init:00000000 CIRCULAR_BUFFER_init
+     /tmp/ccRpSVSb.s:81     .text.CIRCULAR_BUFFER_is_full:00000000 $t
+     /tmp/ccRpSVSb.s:87     .text.CIRCULAR_BUFFER_is_full:00000000 CIRCULAR_BUFFER_is_full
+     /tmp/ccRpSVSb.s:130    .text.CIRCULAR_BUFFER_is_empty:00000000 $t
+     /tmp/ccRpSVSb.s:136    .text.CIRCULAR_BUFFER_is_empty:00000000 CIRCULAR_BUFFER_is_empty
+     /tmp/ccRpSVSb.s:172    .text.CIRCULAR_BUFFER_enqueue:00000000 $t
+     /tmp/ccRpSVSb.s:178    .text.CIRCULAR_BUFFER_enqueue:00000000 CIRCULAR_BUFFER_enqueue
+     /tmp/ccRpSVSb.s:254    .text.CIRCULAR_BUFFER_dequeue:00000000 $t
+     /tmp/ccRpSVSb.s:260    .text.CIRCULAR_BUFFER_dequeue:00000000 CIRCULAR_BUFFER_dequeue
+
+UNDEFINED SYMBOLS
+memcpy

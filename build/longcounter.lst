@@ -1,0 +1,404 @@
+ARM GAS  /tmp/ccYM7DnI.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"longcounter.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Lib/stmlibs/longcounter/longcounter.c"
+  20              		.section	.text.LONGCOUNTER_init,"ax",%progbits
+  21              		.align	1
+  22              		.global	LONGCOUNTER_init
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	LONGCOUNTER_init:
+  28              	.LVL0:
+  29              	.LFB235:
+   1:Lib/stmlibs/longcounter/longcounter.c **** /*
+   2:Lib/stmlibs/longcounter/longcounter.c ****  * "THE BEER-WARE LICENSE" (Revision 69):
+   3:Lib/stmlibs/longcounter/longcounter.c ****  * Not a Squadra Corse firmware team wrote this file. As long as you retain this notice
+   4:Lib/stmlibs/longcounter/longcounter.c ****  * you can do whatever you want with this stuff. If we meet some day, and you 
+   5:Lib/stmlibs/longcounter/longcounter.c ****  * think this stuff is worth it, you can buy us a beer in return.
+   6:Lib/stmlibs/longcounter/longcounter.c ****  * 
+   7:Lib/stmlibs/longcounter/longcounter.c ****  * Authors
+   8:Lib/stmlibs/longcounter/longcounter.c ****  * - Filippo Volpe [filippovolpe98+dev@gmail.com]
+   9:Lib/stmlibs/longcounter/longcounter.c ****  * 
+  10:Lib/stmlibs/longcounter/longcounter.c ****  * Reviewers
+  11:Lib/stmlibs/longcounter/longcounter.c ****  * - Federico Carbone [federico.carbone.sc@gmail.com]
+  12:Lib/stmlibs/longcounter/longcounter.c ****  */
+  13:Lib/stmlibs/longcounter/longcounter.c **** 
+  14:Lib/stmlibs/longcounter/longcounter.c **** #include "longcounter.h"
+  15:Lib/stmlibs/longcounter/longcounter.c **** 
+  16:Lib/stmlibs/longcounter/longcounter.c **** #include "timer_utils.h"
+  17:Lib/stmlibs/longcounter/longcounter.c **** 
+  18:Lib/stmlibs/longcounter/longcounter.c **** STMLIBS_StatusTypeDef LONGCOUNTER_init(LONGCOUNTER_HandleTypeDef *handle, TIM_HandleTypeDef *htim) 
+  30              		.loc 1 18 100 view -0
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  19:Lib/stmlibs/longcounter/longcounter.c ****     if (handle == NULL || htim == NULL) {
+  34              		.loc 1 19 5 view .LVU1
+  35              		.loc 1 19 8 is_stmt 0 view .LVU2
+  36 0000 20B3     		cbz	r0, .L4
+  18:Lib/stmlibs/longcounter/longcounter.c ****     if (handle == NULL || htim == NULL) {
+  37              		.loc 1 18 100 view .LVU3
+  38 0002 10B5     		push	{r4, lr}
+ARM GAS  /tmp/ccYM7DnI.s 			page 2
+
+
+  39              		.cfi_def_cfa_offset 8
+  40              		.cfi_offset 4, -8
+  41              		.cfi_offset 14, -4
+  42 0004 0446     		mov	r4, r0
+  43              		.loc 1 19 24 discriminator 1 view .LVU4
+  44 0006 19B3     		cbz	r1, .L5
+  20:Lib/stmlibs/longcounter/longcounter.c ****         return STMLIBS_ERROR;
+  21:Lib/stmlibs/longcounter/longcounter.c ****     }
+  22:Lib/stmlibs/longcounter/longcounter.c **** 
+  23:Lib/stmlibs/longcounter/longcounter.c ****     handle->_htim    = htim;
+  45              		.loc 1 23 5 is_stmt 1 view .LVU5
+  46              		.loc 1 23 22 is_stmt 0 view .LVU6
+  47 0008 0160     		str	r1, [r0]
+  24:Lib/stmlibs/longcounter/longcounter.c ****     handle->_counter = 0;
+  48              		.loc 1 24 5 is_stmt 1 view .LVU7
+  49              		.loc 1 24 22 is_stmt 0 view .LVU8
+  50 000a 0022     		movs	r2, #0
+  51 000c 0023     		movs	r3, #0
+  52 000e C0E90223 		strd	r2, [r0, #8]
+  25:Lib/stmlibs/longcounter/longcounter.c **** 
+  26:Lib/stmlibs/longcounter/longcounter.c ****     handle->_htim->Init.CounterMode = TIM_COUNTERMODE_UP;
+  53              		.loc 1 26 5 is_stmt 1 view .LVU9
+  54              		.loc 1 26 37 is_stmt 0 view .LVU10
+  55 0012 0023     		movs	r3, #0
+  56 0014 8B60     		str	r3, [r1, #8]
+  27:Lib/stmlibs/longcounter/longcounter.c ****     handle->_htim->Init.Period      = TIM_GET_MAX_AUTORELOAD(htim);
+  57              		.loc 1 27 5 is_stmt 1 view .LVU11
+  58              		.loc 1 27 39 is_stmt 0 view .LVU12
+  59 0016 0B68     		ldr	r3, [r1]
+  60 0018 B3F1804F 		cmp	r3, #1073741824
+  61 001c 13D0     		beq	.L6
+  62              		.loc 1 27 39 discriminator 2 view .LVU13
+  63 001e 0D4A     		ldr	r2, .L13
+  64 0020 9342     		cmp	r3, r2
+  65 0022 0DD0     		beq	.L12
+  66              		.loc 1 27 39 discriminator 4 view .LVU14
+  67 0024 4FF6FF72 		movw	r2, #65535
+  68              	.L3:
+  69              		.loc 1 27 11 discriminator 6 view .LVU15
+  70 0028 2368     		ldr	r3, [r4]
+  71              		.loc 1 27 37 discriminator 6 view .LVU16
+  72 002a DA60     		str	r2, [r3, #12]
+  28:Lib/stmlibs/longcounter/longcounter.c ****     TIM_Base_SetConfig(handle->_htim->Instance, &handle->_htim->Init);
+  73              		.loc 1 28 5 is_stmt 1 view .LVU17
+  74 002c 2168     		ldr	r1, [r4]
+  75              	.LVL1:
+  76              		.loc 1 28 5 is_stmt 0 view .LVU18
+  77 002e 51F8040B 		ldr	r0, [r1], #4
+  78              	.LVL2:
+  79              		.loc 1 28 5 view .LVU19
+  80 0032 FFF7FEFF 		bl	TIM_Base_SetConfig
+  81              	.LVL3:
+  29:Lib/stmlibs/longcounter/longcounter.c ****     HAL_TIM_Base_Start_IT(handle->_htim);
+  82              		.loc 1 29 5 is_stmt 1 view .LVU20
+  83 0036 2068     		ldr	r0, [r4]
+  84 0038 FFF7FEFF 		bl	HAL_TIM_Base_Start_IT
+  85              	.LVL4:
+ARM GAS  /tmp/ccYM7DnI.s 			page 3
+
+
+  30:Lib/stmlibs/longcounter/longcounter.c **** 
+  31:Lib/stmlibs/longcounter/longcounter.c ****     return STMLIBS_OK;
+  86              		.loc 1 31 5 view .LVU21
+  87              		.loc 1 31 12 is_stmt 0 view .LVU22
+  88 003c 0020     		movs	r0, #0
+  89              	.L2:
+  32:Lib/stmlibs/longcounter/longcounter.c **** }
+  90              		.loc 1 32 1 view .LVU23
+  91 003e 10BD     		pop	{r4, pc}
+  92              	.LVL5:
+  93              	.L12:
+  27:Lib/stmlibs/longcounter/longcounter.c ****     TIM_Base_SetConfig(handle->_htim->Instance, &handle->_htim->Init);
+  94              		.loc 1 27 39 discriminator 3 view .LVU24
+  95 0040 4FF0FF32 		mov	r2, #-1
+  96 0044 F0E7     		b	.L3
+  97              	.L6:
+  98 0046 4FF0FF32 		mov	r2, #-1
+  99 004a EDE7     		b	.L3
+ 100              	.L4:
+ 101              		.cfi_def_cfa_offset 0
+ 102              		.cfi_restore 4
+ 103              		.cfi_restore 14
+  20:Lib/stmlibs/longcounter/longcounter.c ****     }
+ 104              		.loc 1 20 16 view .LVU25
+ 105 004c 0120     		movs	r0, #1
+ 106              	.LVL6:
+ 107              		.loc 1 32 1 view .LVU26
+ 108 004e 7047     		bx	lr
+ 109              	.LVL7:
+ 110              	.L5:
+ 111              		.cfi_def_cfa_offset 8
+ 112              		.cfi_offset 4, -8
+ 113              		.cfi_offset 14, -4
+  20:Lib/stmlibs/longcounter/longcounter.c ****     }
+ 114              		.loc 1 20 16 view .LVU27
+ 115 0050 0120     		movs	r0, #1
+ 116              	.LVL8:
+  20:Lib/stmlibs/longcounter/longcounter.c ****     }
+ 117              		.loc 1 20 16 view .LVU28
+ 118 0052 F4E7     		b	.L2
+ 119              	.L14:
+ 120              		.align	2
+ 121              	.L13:
+ 122 0054 000C0040 		.word	1073744896
+ 123              		.cfi_endproc
+ 124              	.LFE235:
+ 126              		.section	.text.LONGCOUNTER_get_counter,"ax",%progbits
+ 127              		.align	1
+ 128              		.global	LONGCOUNTER_get_counter
+ 129              		.syntax unified
+ 130              		.thumb
+ 131              		.thumb_func
+ 133              	LONGCOUNTER_get_counter:
+ 134              	.LVL9:
+ 135              	.LFB236:
+  33:Lib/stmlibs/longcounter/longcounter.c **** 
+  34:Lib/stmlibs/longcounter/longcounter.c **** LONGCOUNTER_Counter_Type LONGCOUNTER_get_counter(LONGCOUNTER_HandleTypeDef *handle) {
+ARM GAS  /tmp/ccYM7DnI.s 			page 4
+
+
+ 136              		.loc 1 34 85 is_stmt 1 view -0
+ 137              		.cfi_startproc
+ 138              		@ args = 0, pretend = 0, frame = 0
+ 139              		@ frame_needed = 0, uses_anonymous_args = 0
+ 140              		@ link register save eliminated.
+ 141              		.loc 1 34 85 is_stmt 0 view .LVU30
+ 142 0000 30B4     		push	{r4, r5}
+ 143              		.cfi_def_cfa_offset 8
+ 144              		.cfi_offset 4, -8
+ 145              		.cfi_offset 5, -4
+  35:Lib/stmlibs/longcounter/longcounter.c ****     // Compose the counter using the top bits from the long counter and the lower one from TIM
+  36:Lib/stmlibs/longcounter/longcounter.c ****     return ((handle->_counter) & (~TIM_GET_MAX_AUTORELOAD(handle->_htim))) |
+ 146              		.loc 1 36 5 is_stmt 1 view .LVU31
+ 147              		.loc 1 36 20 is_stmt 0 view .LVU32
+ 148 0002 D0E90245 		ldrd	r4, [r0, #8]
+ 149              		.loc 1 36 36 view .LVU33
+ 150 0006 0368     		ldr	r3, [r0]
+ 151 0008 1B68     		ldr	r3, [r3]
+ 152              		.loc 1 36 35 view .LVU34
+ 153 000a B3F1804F 		cmp	r3, #1073741824
+ 154 000e 16D0     		beq	.L18
+ 155              		.loc 1 36 36 discriminator 2 view .LVU35
+ 156 0010 0F4A     		ldr	r2, .L25
+ 157 0012 9342     		cmp	r3, r2
+ 158 0014 10D0     		beq	.L23
+ 159              		.loc 1 36 35 discriminator 4 view .LVU36
+ 160 0016 0F48     		ldr	r0, .L25+4
+ 161              	.LVL10:
+ 162              		.loc 1 36 35 discriminator 4 view .LVU37
+ 163 0018 0021     		movs	r1, #0
+ 164              	.L16:
+ 165              		.loc 1 36 32 discriminator 6 view .LVU38
+ 166 001a 2040     		ands	r0, r0, r4
+ 167 001c 2940     		ands	r1, r1, r5
+  37:Lib/stmlibs/longcounter/longcounter.c ****            (__HAL_TIM_GetCounter(handle->_htim) & TIM_GET_MAX_AUTORELOAD(handle->_htim));
+ 168              		.loc 1 37 13 view .LVU39
+ 169 001e 5A6A     		ldr	r2, [r3, #36]
+ 170              		.loc 1 37 51 view .LVU40
+ 171 0020 B3F1804F 		cmp	r3, #1073741824
+ 172 0024 11D0     		beq	.L20
+ 173              		.loc 1 37 51 discriminator 2 view .LVU41
+ 174 0026 0A4C     		ldr	r4, .L25
+ 175 0028 A342     		cmp	r3, r4
+ 176 002a 0BD0     		beq	.L24
+ 177              		.loc 1 37 51 discriminator 4 view .LVU42
+ 178 002c 4FF6FF73 		movw	r3, #65535
+ 179              	.L17:
+ 180              		.loc 1 37 49 discriminator 6 view .LVU43
+ 181 0030 1340     		ands	r3, r3, r2
+  38:Lib/stmlibs/longcounter/longcounter.c **** }
+ 182              		.loc 1 38 1 view .LVU44
+ 183 0032 1843     		orrs	r0, r0, r3
+ 184 0034 30BC     		pop	{r4, r5}
+ 185              		.cfi_remember_state
+ 186              		.cfi_restore 5
+ 187              		.cfi_restore 4
+ 188              		.cfi_def_cfa_offset 0
+ARM GAS  /tmp/ccYM7DnI.s 			page 5
+
+
+ 189 0036 7047     		bx	lr
+ 190              	.LVL11:
+ 191              	.L23:
+ 192              		.cfi_restore_state
+  36:Lib/stmlibs/longcounter/longcounter.c ****            (__HAL_TIM_GetCounter(handle->_htim) & TIM_GET_MAX_AUTORELOAD(handle->_htim));
+ 193              		.loc 1 36 35 discriminator 3 view .LVU45
+ 194 0038 0020     		movs	r0, #0
+ 195              	.LVL12:
+  36:Lib/stmlibs/longcounter/longcounter.c ****            (__HAL_TIM_GetCounter(handle->_htim) & TIM_GET_MAX_AUTORELOAD(handle->_htim));
+ 196              		.loc 1 36 35 discriminator 3 view .LVU46
+ 197 003a 0146     		mov	r1, r0
+ 198 003c EDE7     		b	.L16
+ 199              	.LVL13:
+ 200              	.L18:
+  36:Lib/stmlibs/longcounter/longcounter.c ****            (__HAL_TIM_GetCounter(handle->_htim) & TIM_GET_MAX_AUTORELOAD(handle->_htim));
+ 201              		.loc 1 36 35 discriminator 3 view .LVU47
+ 202 003e 0020     		movs	r0, #0
+ 203              	.LVL14:
+  36:Lib/stmlibs/longcounter/longcounter.c ****            (__HAL_TIM_GetCounter(handle->_htim) & TIM_GET_MAX_AUTORELOAD(handle->_htim));
+ 204              		.loc 1 36 35 discriminator 3 view .LVU48
+ 205 0040 0146     		mov	r1, r0
+ 206 0042 EAE7     		b	.L16
+ 207              	.L24:
+  37:Lib/stmlibs/longcounter/longcounter.c ****            (__HAL_TIM_GetCounter(handle->_htim) & TIM_GET_MAX_AUTORELOAD(handle->_htim));
+ 208              		.loc 1 37 51 discriminator 3 view .LVU49
+ 209 0044 4FF0FF33 		mov	r3, #-1
+ 210 0048 F2E7     		b	.L17
+ 211              	.L20:
+ 212 004a 4FF0FF33 		mov	r3, #-1
+ 213 004e EFE7     		b	.L17
+ 214              	.L26:
+ 215              		.align	2
+ 216              	.L25:
+ 217 0050 000C0040 		.word	1073744896
+ 218 0054 0000FFFF 		.word	-65536
+ 219              		.cfi_endproc
+ 220              	.LFE236:
+ 222              		.section	.text.LONGCOUNTER_TIM_OverflowCallback,"ax",%progbits
+ 223              		.align	1
+ 224              		.global	LONGCOUNTER_TIM_OverflowCallback
+ 225              		.syntax unified
+ 226              		.thumb
+ 227              		.thumb_func
+ 229              	LONGCOUNTER_TIM_OverflowCallback:
+ 230              	.LVL15:
+ 231              	.LFB237:
+  39:Lib/stmlibs/longcounter/longcounter.c **** 
+  40:Lib/stmlibs/longcounter/longcounter.c **** void LONGCOUNTER_TIM_OverflowCallback(LONGCOUNTER_HandleTypeDef *handle, TIM_HandleTypeDef *htim) {
+ 232              		.loc 1 40 99 is_stmt 1 view -0
+ 233              		.cfi_startproc
+ 234              		@ args = 0, pretend = 0, frame = 0
+ 235              		@ frame_needed = 0, uses_anonymous_args = 0
+ 236              		@ link register save eliminated.
+  41:Lib/stmlibs/longcounter/longcounter.c ****     if (htim == handle->_htim) {
+ 237              		.loc 1 41 5 view .LVU51
+ 238              		.loc 1 41 23 is_stmt 0 view .LVU52
+ 239 0000 0368     		ldr	r3, [r0]
+ARM GAS  /tmp/ccYM7DnI.s 			page 6
+
+
+ 240              		.loc 1 41 8 view .LVU53
+ 241 0002 8B42     		cmp	r3, r1
+ 242 0004 00D0     		beq	.L36
+ 243 0006 7047     		bx	lr
+ 244              	.L36:
+  40:Lib/stmlibs/longcounter/longcounter.c ****     if (htim == handle->_htim) {
+ 245              		.loc 1 40 99 view .LVU54
+ 246 0008 30B4     		push	{r4, r5}
+ 247              		.cfi_def_cfa_offset 8
+ 248              		.cfi_offset 4, -8
+ 249              		.cfi_offset 5, -4
+  42:Lib/stmlibs/longcounter/longcounter.c ****         handle->_counter += (1 << TIM_GET_LENGTH(handle->_htim));
+ 250              		.loc 1 42 9 is_stmt 1 view .LVU55
+ 251              		.loc 1 42 15 is_stmt 0 view .LVU56
+ 252 000a D0E90245 		ldrd	r4, [r0, #8]
+ 253              		.loc 1 42 35 view .LVU57
+ 254 000e 1B68     		ldr	r3, [r3]
+ 255              		.loc 1 42 32 view .LVU58
+ 256 0010 B3F1804F 		cmp	r3, #1073741824
+ 257 0014 10D0     		beq	.L30
+ 258              		.loc 1 42 35 discriminator 2 view .LVU59
+ 259 0016 0A4A     		ldr	r2, .L38
+ 260 0018 9342     		cmp	r3, r2
+ 261 001a 0AD0     		beq	.L37
+ 262              		.loc 1 42 32 discriminator 4 view .LVU60
+ 263 001c 4FF48031 		mov	r1, #65536
+ 264              	.LVL16:
+ 265              		.loc 1 42 32 discriminator 4 view .LVU61
+ 266 0020 4FF0000C 		mov	ip, #0
+ 267              	.L29:
+ 268              		.loc 1 42 26 discriminator 6 view .LVU62
+ 269 0024 6218     		adds	r2, r4, r1
+ 270 0026 4CEB0503 		adc	r3, ip, r5
+ 271 002a C0E90223 		strd	r2, [r0, #8]
+  43:Lib/stmlibs/longcounter/longcounter.c ****     }
+  44:Lib/stmlibs/longcounter/longcounter.c **** }...
+ 272              		.loc 1 44 1 view .LVU63
+ 273 002e 30BC     		pop	{r4, r5}
+ 274              		.cfi_remember_state
+ 275              		.cfi_restore 5
+ 276              		.cfi_restore 4
+ 277              		.cfi_def_cfa_offset 0
+ 278 0030 7047     		bx	lr
+ 279              	.LVL17:
+ 280              	.L37:
+ 281              		.cfi_restore_state
+  42:Lib/stmlibs/longcounter/longcounter.c ****         handle->_counter += (1 << TIM_GET_LENGTH(handle->_htim));
+ 282              		.loc 1 42 32 discriminator 3 view .LVU64
+ 283 0032 0021     		movs	r1, #0
+ 284              	.LVL18:
+  42:Lib/stmlibs/longcounter/longcounter.c ****         handle->_counter += (1 << TIM_GET_LENGTH(handle->_htim));
+ 285              		.loc 1 42 32 discriminator 3 view .LVU65
+ 286 0034 8C46     		mov	ip, r1
+ 287 0036 F5E7     		b	.L29
+ 288              	.LVL19:
+ 289              	.L30:
+  42:Lib/stmlibs/longcounter/longcounter.c ****         handle->_counter += (1 << TIM_GET_LENGTH(handle->_htim));
+ARM GAS  /tmp/ccYM7DnI.s 			page 7
+
+
+ 290              		.loc 1 42 32 discriminator 3 view .LVU66
+ 291 0038 0021     		movs	r1, #0
+ 292              	.LVL20:
+  42:Lib/stmlibs/longcounter/longcounter.c ****         handle->_counter += (1 << TIM_GET_LENGTH(handle->_htim));
+ 293              		.loc 1 42 32 discriminator 3 view .LVU67
+ 294 003a 8C46     		mov	ip, r1
+ 295 003c F2E7     		b	.L29
+ 296              	.L39:
+ 297 003e 00BF     		.align	2
+ 298              	.L38:
+ 299 0040 000C0040 		.word	1073744896
+ 300              		.cfi_endproc
+ 301              	.LFE237:
+ 303              		.text
+ 304              	.Letext0:
+ 305              		.file 2 "/usr/arm-none-eabi/include/machine/_default_types.h"
+ 306              		.file 3 "/usr/arm-none-eabi/include/sys/_stdint.h"
+ 307              		.file 4 "Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f446xx.h"
+ 308              		.file 5 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_def.h"
+ 309              		.file 6 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dma.h"
+ 310              		.file 7 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h"
+ 311              		.file 8 "Lib/stmlibs/stmlibs_status.h"
+ 312              		.file 9 "Lib/stmlibs/longcounter/longcounter.h"
+ARM GAS  /tmp/ccYM7DnI.s 			page 8
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 longcounter.c
+     /tmp/ccYM7DnI.s:21     .text.LONGCOUNTER_init:00000000 $t
+     /tmp/ccYM7DnI.s:27     .text.LONGCOUNTER_init:00000000 LONGCOUNTER_init
+     /tmp/ccYM7DnI.s:122    .text.LONGCOUNTER_init:00000054 $d
+     /tmp/ccYM7DnI.s:127    .text.LONGCOUNTER_get_counter:00000000 $t
+     /tmp/ccYM7DnI.s:133    .text.LONGCOUNTER_get_counter:00000000 LONGCOUNTER_get_counter
+     /tmp/ccYM7DnI.s:217    .text.LONGCOUNTER_get_counter:00000050 $d
+     /tmp/ccYM7DnI.s:223    .text.LONGCOUNTER_TIM_OverflowCallback:00000000 $t
+     /tmp/ccYM7DnI.s:229    .text.LONGCOUNTER_TIM_OverflowCallback:00000000 LONGCOUNTER_TIM_OverflowCallback
+     /tmp/ccYM7DnI.s:299    .text.LONGCOUNTER_TIM_OverflowCallback:00000040 $d
+
+UNDEFINED SYMBOLS
+TIM_Base_SetConfig
+HAL_TIM_Base_Start_IT

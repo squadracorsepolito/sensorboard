@@ -1,0 +1,756 @@
+ARM GAS  /tmp/ccZm0Ppz.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"fsm.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Lib/stmlibs/fsm/fsm.c"
+  20              		.section	.text.FSM_init,"ax",%progbits
+  21              		.align	1
+  22              		.global	FSM_init
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	FSM_init:
+  28              	.LVL0:
+  29              	.LFB235:
+   1:Lib/stmlibs/fsm/fsm.c **** /*
+   2:Lib/stmlibs/fsm/fsm.c ****  * "THE BEER-WARE LICENSE" (Revision 69):
+   3:Lib/stmlibs/fsm/fsm.c ****  * Squadra Corse firmware team wrote this file. As long as you retain this notice
+   4:Lib/stmlibs/fsm/fsm.c ****  * you can do whatever you want with this stuff. If we meet some day, and you 
+   5:Lib/stmlibs/fsm/fsm.c ****  * think this stuff is worth it, you can buy us a beer in return.
+   6:Lib/stmlibs/fsm/fsm.c ****  * 
+   7:Lib/stmlibs/fsm/fsm.c ****  * Authors
+   8:Lib/stmlibs/fsm/fsm.c ****  * - Federico Carbone [federico.carbone.sc@gmail.com]
+   9:Lib/stmlibs/fsm/fsm.c ****  */
+  10:Lib/stmlibs/fsm/fsm.c **** 
+  11:Lib/stmlibs/fsm/fsm.c **** #include "fsm.h"
+  12:Lib/stmlibs/fsm/fsm.c **** 
+  13:Lib/stmlibs/fsm/fsm.c **** #include <string.h>
+  14:Lib/stmlibs/fsm/fsm.c **** 
+  15:Lib/stmlibs/fsm/fsm.c **** STMLIBS_StatusTypeDef FSM_init(FSM_HandleTypeDef *handle,
+  16:Lib/stmlibs/fsm/fsm.c ****                                FSM_ConfigTypeDef *config,
+  17:Lib/stmlibs/fsm/fsm.c ****                                uint8_t event_count,
+  18:Lib/stmlibs/fsm/fsm.c ****                                FSM_callback_function run_callback,
+  19:Lib/stmlibs/fsm/fsm.c ****                                FSM_callback_function transition_callback) {
+  30              		.loc 1 19 75 view -0
+  31              		.cfi_startproc
+  32              		@ args = 4, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              		@ link register save eliminated.
+  20:Lib/stmlibs/fsm/fsm.c ****     if (handle == NULL) {
+  35              		.loc 1 20 5 view .LVU1
+  36              		.loc 1 20 8 is_stmt 0 view .LVU2
+  37 0000 8446     		mov	ip, r0
+  38 0002 88B1     		cbz	r0, .L3
+ARM GAS  /tmp/ccZm0Ppz.s 			page 2
+
+
+  21:Lib/stmlibs/fsm/fsm.c ****         return STMLIBS_ERROR;
+  22:Lib/stmlibs/fsm/fsm.c ****     }
+  23:Lib/stmlibs/fsm/fsm.c **** 
+  24:Lib/stmlibs/fsm/fsm.c ****     if (config == NULL) {
+  39              		.loc 1 24 5 is_stmt 1 view .LVU3
+  40              		.loc 1 24 8 is_stmt 0 view .LVU4
+  41 0004 91B1     		cbz	r1, .L4
+  25:Lib/stmlibs/fsm/fsm.c ****         return STMLIBS_ERROR;
+  26:Lib/stmlibs/fsm/fsm.c ****     }
+  27:Lib/stmlibs/fsm/fsm.c **** 
+  28:Lib/stmlibs/fsm/fsm.c ****     handle->current_state = 0;
+  42              		.loc 1 28 5 is_stmt 1 view .LVU5
+  43              		.loc 1 28 27 is_stmt 0 view .LVU6
+  44 0006 0020     		movs	r0, #0
+  45              	.LVL1:
+  46              		.loc 1 28 27 view .LVU7
+  47 0008 CCF80000 		str	r0, [ip]
+  29:Lib/stmlibs/fsm/fsm.c **** 
+  30:Lib/stmlibs/fsm/fsm.c ****     handle->events_length = event_count;
+  48              		.loc 1 30 5 is_stmt 1 view .LVU8
+  49              		.loc 1 30 27 is_stmt 0 view .LVU9
+  50 000c 8CF80420 		strb	r2, [ip, #4]
+  31:Lib/stmlibs/fsm/fsm.c ****     handle->events_sync   = 0;
+  51              		.loc 1 31 5 is_stmt 1 view .LVU10
+  52              		.loc 1 31 27 is_stmt 0 view .LVU11
+  53 0010 CCF80800 		str	r0, [ip, #8]
+  32:Lib/stmlibs/fsm/fsm.c ****     handle->events_async  = 0;
+  54              		.loc 1 32 5 is_stmt 1 view .LVU12
+  55              		.loc 1 32 27 is_stmt 0 view .LVU13
+  56 0014 CCF80C00 		str	r0, [ip, #12]
+  33:Lib/stmlibs/fsm/fsm.c **** 
+  34:Lib/stmlibs/fsm/fsm.c ****     handle->run_callback        = run_callback;
+  57              		.loc 1 34 5 is_stmt 1 view .LVU14
+  58              		.loc 1 34 33 is_stmt 0 view .LVU15
+  59 0018 CCF81030 		str	r3, [ip, #16]
+  35:Lib/stmlibs/fsm/fsm.c ****     handle->transition_callback = transition_callback;
+  60              		.loc 1 35 5 is_stmt 1 view .LVU16
+  61              		.loc 1 35 33 is_stmt 0 view .LVU17
+  62 001c 009B     		ldr	r3, [sp]
+  63              	.LVL2:
+  64              		.loc 1 35 33 view .LVU18
+  65 001e CCF81430 		str	r3, [ip, #20]
+  36:Lib/stmlibs/fsm/fsm.c **** 
+  37:Lib/stmlibs/fsm/fsm.c ****     handle->config = config;
+  66              		.loc 1 37 5 is_stmt 1 view .LVU19
+  67              		.loc 1 37 20 is_stmt 0 view .LVU20
+  68 0022 CCF81810 		str	r1, [ip, #24]
+  38:Lib/stmlibs/fsm/fsm.c **** 
+  39:Lib/stmlibs/fsm/fsm.c ****     return STMLIBS_OK;
+  69              		.loc 1 39 5 is_stmt 1 view .LVU21
+  70              		.loc 1 39 12 is_stmt 0 view .LVU22
+  71 0026 7047     		bx	lr
+  72              	.LVL3:
+  73              	.L3:
+  21:Lib/stmlibs/fsm/fsm.c ****     }
+  74              		.loc 1 21 16 view .LVU23
+  75 0028 0120     		movs	r0, #1
+ARM GAS  /tmp/ccZm0Ppz.s 			page 3
+
+
+  76              	.LVL4:
+  21:Lib/stmlibs/fsm/fsm.c ****     }
+  77              		.loc 1 21 16 view .LVU24
+  78 002a 7047     		bx	lr
+  79              	.LVL5:
+  80              	.L4:
+  25:Lib/stmlibs/fsm/fsm.c ****     }
+  81              		.loc 1 25 16 view .LVU25
+  82 002c 0120     		movs	r0, #1
+  83              	.LVL6:
+  40:Lib/stmlibs/fsm/fsm.c **** }
+  84              		.loc 1 40 1 view .LVU26
+  85 002e 7047     		bx	lr
+  86              		.cfi_endproc
+  87              	.LFE235:
+  89              		.section	.text.FSM_start,"ax",%progbits
+  90              		.align	1
+  91              		.global	FSM_start
+  92              		.syntax unified
+  93              		.thumb
+  94              		.thumb_func
+  96              	FSM_start:
+  97              	.LVL7:
+  98              	.LFB236:
+  41:Lib/stmlibs/fsm/fsm.c **** 
+  42:Lib/stmlibs/fsm/fsm.c **** STMLIBS_StatusTypeDef FSM_start(FSM_HandleTypeDef *handle) {
+  99              		.loc 1 42 60 is_stmt 1 view -0
+ 100              		.cfi_startproc
+ 101              		@ args = 0, pretend = 0, frame = 0
+ 102              		@ frame_needed = 0, uses_anonymous_args = 0
+  43:Lib/stmlibs/fsm/fsm.c ****     if (handle == NULL) {
+ 103              		.loc 1 43 5 view .LVU28
+ 104              		.loc 1 43 8 is_stmt 0 view .LVU29
+ 105 0000 48B1     		cbz	r0, .L7
+  42:Lib/stmlibs/fsm/fsm.c ****     if (handle == NULL) {
+ 106              		.loc 1 42 60 view .LVU30
+ 107 0002 08B5     		push	{r3, lr}
+ 108              		.cfi_def_cfa_offset 8
+ 109              		.cfi_offset 3, -8
+ 110              		.cfi_offset 14, -4
+  44:Lib/stmlibs/fsm/fsm.c ****         return STMLIBS_ERROR;
+  45:Lib/stmlibs/fsm/fsm.c ****     }
+  46:Lib/stmlibs/fsm/fsm.c **** 
+  47:Lib/stmlibs/fsm/fsm.c ****     if (handle->config->state_length > 0 && handle->config->state_table[0].entry != NULL) {
+ 111              		.loc 1 47 5 is_stmt 1 view .LVU31
+ 112              		.loc 1 47 15 is_stmt 0 view .LVU32
+ 113 0004 8369     		ldr	r3, [r0, #24]
+ 114              		.loc 1 47 23 view .LVU33
+ 115 0006 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+ 116              	.LVL8:
+ 117              		.loc 1 47 8 view .LVU34
+ 118 0008 20B1     		cbz	r0, .L6
+ 119              		.loc 1 47 59 discriminator 1 view .LVU35
+ 120 000a 5B68     		ldr	r3, [r3, #4]
+ 121              		.loc 1 47 75 discriminator 1 view .LVU36
+ 122 000c 5B68     		ldr	r3, [r3, #4]
+ 123              		.loc 1 47 42 discriminator 1 view .LVU37
+ARM GAS  /tmp/ccZm0Ppz.s 			page 4
+
+
+ 124 000e 23B1     		cbz	r3, .L8
+  48:Lib/stmlibs/fsm/fsm.c ****         handle->config->state_table[0].entry();
+ 125              		.loc 1 48 9 is_stmt 1 view .LVU38
+ 126 0010 9847     		blx	r3
+ 127              	.LVL9:
+  49:Lib/stmlibs/fsm/fsm.c ****     }
+  50:Lib/stmlibs/fsm/fsm.c **** 
+  51:Lib/stmlibs/fsm/fsm.c ****     return STMLIBS_OK;
+ 128              		.loc 1 51 12 is_stmt 0 view .LVU39
+ 129 0012 0020     		movs	r0, #0
+ 130              	.L6:
+  52:Lib/stmlibs/fsm/fsm.c **** }
+ 131              		.loc 1 52 1 view .LVU40
+ 132 0014 08BD     		pop	{r3, pc}
+ 133              	.LVL10:
+ 134              	.L7:
+ 135              		.cfi_def_cfa_offset 0
+ 136              		.cfi_restore 3
+ 137              		.cfi_restore 14
+  44:Lib/stmlibs/fsm/fsm.c ****     }
+ 138              		.loc 1 44 16 view .LVU41
+ 139 0016 0120     		movs	r0, #1
+ 140              	.LVL11:
+ 141              		.loc 1 52 1 view .LVU42
+ 142 0018 7047     		bx	lr
+ 143              	.L8:
+ 144              		.cfi_def_cfa_offset 8
+ 145              		.cfi_offset 3, -8
+ 146              		.cfi_offset 14, -4
+  51:Lib/stmlibs/fsm/fsm.c **** }
+ 147              		.loc 1 51 12 view .LVU43
+ 148 001a 0020     		movs	r0, #0
+ 149 001c FAE7     		b	.L6
+ 150              		.cfi_endproc
+ 151              	.LFE236:
+ 153              		.section	.text.FSM_get_state,"ax",%progbits
+ 154              		.align	1
+ 155              		.global	FSM_get_state
+ 156              		.syntax unified
+ 157              		.thumb
+ 158              		.thumb_func
+ 160              	FSM_get_state:
+ 161              	.LVL12:
+ 162              	.LFB237:
+  53:Lib/stmlibs/fsm/fsm.c **** 
+  54:Lib/stmlibs/fsm/fsm.c **** uint32_t FSM_get_state(FSM_HandleTypeDef *handle) {
+ 163              		.loc 1 54 51 is_stmt 1 view -0
+ 164              		.cfi_startproc
+ 165              		@ args = 0, pretend = 0, frame = 0
+ 166              		@ frame_needed = 0, uses_anonymous_args = 0
+ 167              		@ link register save eliminated.
+  55:Lib/stmlibs/fsm/fsm.c ****     return handle->current_state;
+ 168              		.loc 1 55 5 view .LVU45
+  56:Lib/stmlibs/fsm/fsm.c **** }
+ 169              		.loc 1 56 1 is_stmt 0 view .LVU46
+ 170 0000 0068     		ldr	r0, [r0]
+ 171              	.LVL13:
+ARM GAS  /tmp/ccZm0Ppz.s 			page 5
+
+
+ 172              		.loc 1 56 1 view .LVU47
+ 173 0002 7047     		bx	lr
+ 174              		.cfi_endproc
+ 175              	.LFE237:
+ 177              		.section	.text.FSM_trigger_event,"ax",%progbits
+ 178              		.align	1
+ 179              		.global	FSM_trigger_event
+ 180              		.syntax unified
+ 181              		.thumb
+ 182              		.thumb_func
+ 184              	FSM_trigger_event:
+ 185              	.LVL14:
+ 186              	.LFB238:
+  57:Lib/stmlibs/fsm/fsm.c **** 
+  58:Lib/stmlibs/fsm/fsm.c **** STMLIBS_StatusTypeDef FSM_trigger_event(FSM_HandleTypeDef *handle, uint8_t event) {
+ 187              		.loc 1 58 83 is_stmt 1 view -0
+ 188              		.cfi_startproc
+ 189              		@ args = 0, pretend = 0, frame = 0
+ 190              		@ frame_needed = 0, uses_anonymous_args = 0
+ 191              		@ link register save eliminated.
+  59:Lib/stmlibs/fsm/fsm.c ****     uint32_t mask = 1 << event;
+ 192              		.loc 1 59 5 view .LVU49
+ 193              		.loc 1 59 23 is_stmt 0 view .LVU50
+ 194 0000 0123     		movs	r3, #1
+ 195 0002 8B40     		lsls	r3, r3, r1
+ 196              	.LVL15:
+  60:Lib/stmlibs/fsm/fsm.c **** 
+  61:Lib/stmlibs/fsm/fsm.c ****     if (handle == NULL) {
+ 197              		.loc 1 61 5 is_stmt 1 view .LVU51
+ 198              		.loc 1 61 8 is_stmt 0 view .LVU52
+ 199 0004 0246     		mov	r2, r0
+ 200 0006 60B1     		cbz	r0, .L16
+  62:Lib/stmlibs/fsm/fsm.c ****         return STMLIBS_ERROR;
+  63:Lib/stmlibs/fsm/fsm.c ****     }
+  64:Lib/stmlibs/fsm/fsm.c **** 
+  65:Lib/stmlibs/fsm/fsm.c ****     if (event >= handle->events_length) {
+ 201              		.loc 1 65 5 is_stmt 1 view .LVU53
+ 202              		.loc 1 65 24 is_stmt 0 view .LVU54
+ 203 0008 0079     		ldrb	r0, [r0, #4]	@ zero_extendqisi2
+ 204              	.LVL16:
+ 205              		.loc 1 65 8 view .LVU55
+ 206 000a 8842     		cmp	r0, r1
+ 207 000c 0BD9     		bls	.L17
+  66:Lib/stmlibs/fsm/fsm.c ****         return STMLIBS_ERROR;
+  67:Lib/stmlibs/fsm/fsm.c ****     }
+  68:Lib/stmlibs/fsm/fsm.c **** 
+  69:Lib/stmlibs/fsm/fsm.c ****     if (~(handle->events_async ^ handle->events_sync) & mask) {
+ 208              		.loc 1 69 5 is_stmt 1 view .LVU56
+ 209              		.loc 1 69 17 is_stmt 0 view .LVU57
+ 210 000e D068     		ldr	r0, [r2, #12]
+ 211              		.loc 1 69 40 view .LVU58
+ 212 0010 9168     		ldr	r1, [r2, #8]
+ 213              	.LVL17:
+ 214              		.loc 1 69 32 view .LVU59
+ 215 0012 4140     		eors	r1, r1, r0
+ 216              		.loc 1 69 8 view .LVU60
+ 217 0014 33EA0101 		bics	r1, r3, r1
+ARM GAS  /tmp/ccZm0Ppz.s 			page 6
+
+
+ 218 0018 07D0     		beq	.L18
+  70:Lib/stmlibs/fsm/fsm.c ****         handle->events_async ^= mask;
+ 219              		.loc 1 70 9 is_stmt 1 view .LVU61
+ 220              		.loc 1 70 30 is_stmt 0 view .LVU62
+ 221 001a 5840     		eors	r0, r0, r3
+ 222 001c D060     		str	r0, [r2, #12]
+  71:Lib/stmlibs/fsm/fsm.c ****     }
+  72:Lib/stmlibs/fsm/fsm.c **** 
+  73:Lib/stmlibs/fsm/fsm.c ****     return STMLIBS_OK;
+ 223              		.loc 1 73 12 view .LVU63
+ 224 001e 0020     		movs	r0, #0
+ 225 0020 7047     		bx	lr
+ 226              	.LVL18:
+ 227              	.L16:
+  62:Lib/stmlibs/fsm/fsm.c ****     }
+ 228              		.loc 1 62 16 view .LVU64
+ 229 0022 0120     		movs	r0, #1
+ 230              	.LVL19:
+  62:Lib/stmlibs/fsm/fsm.c ****     }
+ 231              		.loc 1 62 16 view .LVU65
+ 232 0024 7047     		bx	lr
+ 233              	.L17:
+  66:Lib/stmlibs/fsm/fsm.c ****     }
+ 234              		.loc 1 66 16 view .LVU66
+ 235 0026 0120     		movs	r0, #1
+ 236 0028 7047     		bx	lr
+ 237              	.LVL20:
+ 238              	.L18:
+ 239              		.loc 1 73 12 view .LVU67
+ 240 002a 0020     		movs	r0, #0
+  74:Lib/stmlibs/fsm/fsm.c **** }
+ 241              		.loc 1 74 1 view .LVU68
+ 242 002c 7047     		bx	lr
+ 243              		.cfi_endproc
+ 244              	.LFE238:
+ 246              		.section	.text._FSM_transition,"ax",%progbits
+ 247              		.align	1
+ 248              		.global	_FSM_transition
+ 249              		.syntax unified
+ 250              		.thumb
+ 251              		.thumb_func
+ 253              	_FSM_transition:
+ 254              	.LVL21:
+ 255              	.LFB239:
+  75:Lib/stmlibs/fsm/fsm.c **** 
+  76:Lib/stmlibs/fsm/fsm.c **** STMLIBS_StatusTypeDef _FSM_transition(FSM_HandleTypeDef *handle, uint32_t state) {
+ 256              		.loc 1 76 82 is_stmt 1 view -0
+ 257              		.cfi_startproc
+ 258              		@ args = 0, pretend = 0, frame = 0
+ 259              		@ frame_needed = 0, uses_anonymous_args = 0
+  77:Lib/stmlibs/fsm/fsm.c ****     if (handle == NULL) {
+ 260              		.loc 1 77 5 view .LVU70
+ 261              		.loc 1 77 8 is_stmt 0 view .LVU71
+ 262 0000 D0B1     		cbz	r0, .L23
+  76:Lib/stmlibs/fsm/fsm.c ****     if (handle == NULL) {
+ 263              		.loc 1 76 82 view .LVU72
+ 264 0002 38B5     		push	{r3, r4, r5, lr}
+ARM GAS  /tmp/ccZm0Ppz.s 			page 7
+
+
+ 265              		.cfi_def_cfa_offset 16
+ 266              		.cfi_offset 3, -16
+ 267              		.cfi_offset 4, -12
+ 268              		.cfi_offset 5, -8
+ 269              		.cfi_offset 14, -4
+ 270 0004 0C46     		mov	r4, r1
+ 271 0006 0546     		mov	r5, r0
+  78:Lib/stmlibs/fsm/fsm.c ****         return STMLIBS_ERROR;
+  79:Lib/stmlibs/fsm/fsm.c ****     }
+  80:Lib/stmlibs/fsm/fsm.c **** 
+  81:Lib/stmlibs/fsm/fsm.c ****     if (state >= handle->config->state_length) {
+ 272              		.loc 1 81 5 is_stmt 1 view .LVU73
+ 273              		.loc 1 81 24 is_stmt 0 view .LVU74
+ 274 0008 8369     		ldr	r3, [r0, #24]
+ 275              		.loc 1 81 32 view .LVU75
+ 276 000a 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
+ 277              		.loc 1 81 8 view .LVU76
+ 278 000c 8A42     		cmp	r2, r1
+ 279 000e 15D9     		bls	.L24
+  82:Lib/stmlibs/fsm/fsm.c ****         return STMLIBS_ERROR;
+  83:Lib/stmlibs/fsm/fsm.c ****     }
+  84:Lib/stmlibs/fsm/fsm.c **** 
+  85:Lib/stmlibs/fsm/fsm.c ****     if (handle->config->state_table[handle->current_state].exit != NULL) {
+ 280              		.loc 1 85 5 is_stmt 1 view .LVU77
+ 281              		.loc 1 85 23 is_stmt 0 view .LVU78
+ 282 0010 5B68     		ldr	r3, [r3, #4]
+ 283              		.loc 1 85 43 view .LVU79
+ 284 0012 0268     		ldr	r2, [r0]
+ 285              		.loc 1 85 36 view .LVU80
+ 286 0014 03EB0213 		add	r3, r3, r2, lsl #4
+ 287              		.loc 1 85 59 view .LVU81
+ 288 0018 DB68     		ldr	r3, [r3, #12]
+ 289              		.loc 1 85 8 view .LVU82
+ 290 001a 03B1     		cbz	r3, .L21
+  86:Lib/stmlibs/fsm/fsm.c ****         handle->config->state_table[handle->current_state].exit();
+ 291              		.loc 1 86 9 is_stmt 1 view .LVU83
+ 292 001c 9847     		blx	r3
+ 293              	.LVL22:
+ 294              	.L21:
+  87:Lib/stmlibs/fsm/fsm.c ****     }
+  88:Lib/stmlibs/fsm/fsm.c **** 
+  89:Lib/stmlibs/fsm/fsm.c ****     handle->current_state = state;
+ 295              		.loc 1 89 5 view .LVU84
+ 296              		.loc 1 89 27 is_stmt 0 view .LVU85
+ 297 001e 2C60     		str	r4, [r5]
+  90:Lib/stmlibs/fsm/fsm.c **** 
+  91:Lib/stmlibs/fsm/fsm.c ****     if (handle->config->state_table[handle->current_state].entry != NULL) {
+ 298              		.loc 1 91 5 is_stmt 1 view .LVU86
+ 299              		.loc 1 91 15 is_stmt 0 view .LVU87
+ 300 0020 AB69     		ldr	r3, [r5, #24]
+ 301              		.loc 1 91 23 view .LVU88
+ 302 0022 5B68     		ldr	r3, [r3, #4]
+ 303              		.loc 1 91 36 view .LVU89
+ 304 0024 03EB0413 		add	r3, r3, r4, lsl #4
+ 305              		.loc 1 91 59 view .LVU90
+ 306 0028 5B68     		ldr	r3, [r3, #4]
+ 307              		.loc 1 91 8 view .LVU91
+ARM GAS  /tmp/ccZm0Ppz.s 			page 8
+
+
+ 308 002a 03B1     		cbz	r3, .L22
+  92:Lib/stmlibs/fsm/fsm.c ****         handle->config->state_table[handle->current_state].entry();
+ 309              		.loc 1 92 9 is_stmt 1 view .LVU92
+ 310 002c 9847     		blx	r3
+ 311              	.LVL23:
+ 312              	.L22:
+  93:Lib/stmlibs/fsm/fsm.c ****     }
+  94:Lib/stmlibs/fsm/fsm.c **** 
+  95:Lib/stmlibs/fsm/fsm.c ****     handle->transition_callback(state);
+ 313              		.loc 1 95 5 view .LVU93
+ 314              		.loc 1 95 11 is_stmt 0 view .LVU94
+ 315 002e 6B69     		ldr	r3, [r5, #20]
+ 316              		.loc 1 95 5 view .LVU95
+ 317 0030 2046     		mov	r0, r4
+ 318 0032 9847     		blx	r3
+ 319              	.LVL24:
+  96:Lib/stmlibs/fsm/fsm.c **** 
+  97:Lib/stmlibs/fsm/fsm.c ****     return STMLIBS_OK;
+ 320              		.loc 1 97 5 is_stmt 1 view .LVU96
+ 321              		.loc 1 97 12 is_stmt 0 view .LVU97
+ 322 0034 0020     		movs	r0, #0
+ 323              	.L20:
+  98:Lib/stmlibs/fsm/fsm.c **** }
+ 324              		.loc 1 98 1 view .LVU98
+ 325 0036 38BD     		pop	{r3, r4, r5, pc}
+ 326              	.LVL25:
+ 327              	.L23:
+ 328              		.cfi_def_cfa_offset 0
+ 329              		.cfi_restore 3
+ 330              		.cfi_restore 4
+ 331              		.cfi_restore 5
+ 332              		.cfi_restore 14
+  78:Lib/stmlibs/fsm/fsm.c ****     }
+ 333              		.loc 1 78 16 view .LVU99
+ 334 0038 0120     		movs	r0, #1
+ 335              	.LVL26:
+ 336              		.loc 1 98 1 view .LVU100
+ 337 003a 7047     		bx	lr
+ 338              	.LVL27:
+ 339              	.L24:
+ 340              		.cfi_def_cfa_offset 16
+ 341              		.cfi_offset 3, -16
+ 342              		.cfi_offset 4, -12
+ 343              		.cfi_offset 5, -8
+ 344              		.cfi_offset 14, -4
+  82:Lib/stmlibs/fsm/fsm.c ****     }
+ 345              		.loc 1 82 16 view .LVU101
+ 346 003c 0120     		movs	r0, #1
+ 347              	.LVL28:
+  82:Lib/stmlibs/fsm/fsm.c ****     }
+ 348              		.loc 1 82 16 view .LVU102
+ 349 003e FAE7     		b	.L20
+ 350              		.cfi_endproc
+ 351              	.LFE239:
+ 353              		.section	.text.FSM_routine,"ax",%progbits
+ 354              		.align	1
+ 355              		.global	FSM_routine
+ARM GAS  /tmp/ccZm0Ppz.s 			page 9
+
+
+ 356              		.syntax unified
+ 357              		.thumb
+ 358              		.thumb_func
+ 360              	FSM_routine:
+ 361              	.LVL29:
+ 362              	.LFB240:
+  99:Lib/stmlibs/fsm/fsm.c **** 
+ 100:Lib/stmlibs/fsm/fsm.c **** STMLIBS_StatusTypeDef FSM_routine(FSM_HandleTypeDef *handle) {
+ 363              		.loc 1 100 62 is_stmt 1 view -0
+ 364              		.cfi_startproc
+ 365              		@ args = 0, pretend = 0, frame = 0
+ 366              		@ frame_needed = 0, uses_anonymous_args = 0
+ 101:Lib/stmlibs/fsm/fsm.c ****     if (handle == NULL) {
+ 367              		.loc 1 101 5 view .LVU104
+ 368              		.loc 1 101 8 is_stmt 0 view .LVU105
+ 369 0000 0028     		cmp	r0, #0
+ 370 0002 3CD0     		beq	.L36
+ 100:Lib/stmlibs/fsm/fsm.c ****     if (handle == NULL) {
+ 371              		.loc 1 100 62 view .LVU106
+ 372 0004 38B5     		push	{r3, r4, r5, lr}
+ 373              		.cfi_def_cfa_offset 16
+ 374              		.cfi_offset 3, -16
+ 375              		.cfi_offset 4, -12
+ 376              		.cfi_offset 5, -8
+ 377              		.cfi_offset 14, -4
+ 378 0006 0546     		mov	r5, r0
+ 102:Lib/stmlibs/fsm/fsm.c ****         return STMLIBS_ERROR;
+ 103:Lib/stmlibs/fsm/fsm.c ****     }
+ 104:Lib/stmlibs/fsm/fsm.c **** 
+ 105:Lib/stmlibs/fsm/fsm.c ****     if (handle->config->state_table[handle->current_state].event_handler != NULL) {
+ 379              		.loc 1 105 5 is_stmt 1 view .LVU107
+ 380              		.loc 1 105 15 is_stmt 0 view .LVU108
+ 381 0008 8369     		ldr	r3, [r0, #24]
+ 382              		.loc 1 105 23 view .LVU109
+ 383 000a 5A68     		ldr	r2, [r3, #4]
+ 384              		.loc 1 105 43 view .LVU110
+ 385 000c 0368     		ldr	r3, [r0]
+ 386              		.loc 1 105 36 view .LVU111
+ 387 000e 1B01     		lsls	r3, r3, #4
+ 388              		.loc 1 105 59 view .LVU112
+ 389 0010 D358     		ldr	r3, [r2, r3]
+ 390              		.loc 1 105 8 view .LVU113
+ 391 0012 F3B1     		cbz	r3, .L32
+ 392              	.LBB2:
+ 106:Lib/stmlibs/fsm/fsm.c ****         for (uint8_t i = 0; i < handle->events_length; ++i) {
+ 393              		.loc 1 106 22 view .LVU114
+ 394 0014 0024     		movs	r4, #0
+ 395 0016 01E0     		b	.L31
+ 396              	.LVL30:
+ 397              	.L33:
+ 398              		.loc 1 106 56 is_stmt 1 discriminator 2 view .LVU115
+ 399 0018 0134     		adds	r4, r4, #1
+ 400              	.LVL31:
+ 401              		.loc 1 106 56 is_stmt 0 discriminator 2 view .LVU116
+ 402 001a E4B2     		uxtb	r4, r4
+ 403              	.LVL32:
+ 404              	.L31:
+ARM GAS  /tmp/ccZm0Ppz.s 			page 10
+
+
+ 405              		.loc 1 106 31 is_stmt 1 discriminator 1 view .LVU117
+ 406              		.loc 1 106 39 is_stmt 0 discriminator 1 view .LVU118
+ 407 001c 2B79     		ldrb	r3, [r5, #4]	@ zero_extendqisi2
+ 408              		.loc 1 106 31 discriminator 1 view .LVU119
+ 409 001e A342     		cmp	r3, r4
+ 410 0020 17D9     		bls	.L32
+ 411              	.LBB3:
+ 107:Lib/stmlibs/fsm/fsm.c ****             uint32_t mask = 1 << i;
+ 412              		.loc 1 107 13 is_stmt 1 view .LVU120
+ 413              		.loc 1 107 31 is_stmt 0 view .LVU121
+ 414 0022 0123     		movs	r3, #1
+ 415 0024 A340     		lsls	r3, r3, r4
+ 416              	.LVL33:
+ 108:Lib/stmlibs/fsm/fsm.c ****             if ((handle->events_async ^ handle->events_sync) & mask) {
+ 417              		.loc 1 108 13 is_stmt 1 view .LVU122
+ 418              		.loc 1 108 24 is_stmt 0 view .LVU123
+ 419 0026 E968     		ldr	r1, [r5, #12]
+ 420              		.loc 1 108 47 view .LVU124
+ 421 0028 AA68     		ldr	r2, [r5, #8]
+ 422              		.loc 1 108 39 view .LVU125
+ 423 002a 4A40     		eors	r2, r2, r1
+ 424              		.loc 1 108 16 view .LVU126
+ 425 002c 1A42     		tst	r2, r3
+ 426 002e F3D0     		beq	.L33
+ 427              	.LBB4:
+ 109:Lib/stmlibs/fsm/fsm.c ****                 handle->events_async ^= mask;
+ 428              		.loc 1 109 17 is_stmt 1 view .LVU127
+ 429              		.loc 1 109 38 is_stmt 0 view .LVU128
+ 430 0030 5940     		eors	r1, r1, r3
+ 431 0032 E960     		str	r1, [r5, #12]
+ 110:Lib/stmlibs/fsm/fsm.c ****                 uint32_t ret = handle->config->state_table[handle->current_state].event_handler(i);
+ 432              		.loc 1 110 17 is_stmt 1 view .LVU129
+ 433              		.loc 1 110 38 is_stmt 0 view .LVU130
+ 434 0034 AB69     		ldr	r3, [r5, #24]
+ 435              	.LVL34:
+ 436              		.loc 1 110 46 view .LVU131
+ 437 0036 5A68     		ldr	r2, [r3, #4]
+ 438              		.loc 1 110 66 view .LVU132
+ 439 0038 2B68     		ldr	r3, [r5]
+ 440              		.loc 1 110 59 view .LVU133
+ 441 003a 1B01     		lsls	r3, r3, #4
+ 442              		.loc 1 110 82 view .LVU134
+ 443 003c D358     		ldr	r3, [r2, r3]
+ 444              		.loc 1 110 32 view .LVU135
+ 445 003e 2046     		mov	r0, r4
+ 446 0040 9847     		blx	r3
+ 447              	.LVL35:
+ 111:Lib/stmlibs/fsm/fsm.c **** 
+ 112:Lib/stmlibs/fsm/fsm.c ****                 if (ret != handle->current_state) {
+ 448              		.loc 1 112 17 is_stmt 1 view .LVU136
+ 449              		.loc 1 112 34 is_stmt 0 view .LVU137
+ 450 0042 2B68     		ldr	r3, [r5]
+ 451              		.loc 1 112 20 view .LVU138
+ 452 0044 8342     		cmp	r3, r0
+ 453 0046 E7D0     		beq	.L33
+ 113:Lib/stmlibs/fsm/fsm.c ****                     return _FSM_transition(handle, ret);
+ 454              		.loc 1 113 21 is_stmt 1 view .LVU139
+ARM GAS  /tmp/ccZm0Ppz.s 			page 11
+
+
+ 455              		.loc 1 113 28 is_stmt 0 view .LVU140
+ 456 0048 0146     		mov	r1, r0
+ 457 004a 2846     		mov	r0, r5
+ 458              	.LVL36:
+ 459              		.loc 1 113 28 view .LVU141
+ 460 004c FFF7FEFF 		bl	_FSM_transition
+ 461              	.LVL37:
+ 462              		.loc 1 113 28 view .LVU142
+ 463 0050 0FE0     		b	.L30
+ 464              	.LVL38:
+ 465              	.L32:
+ 466              		.loc 1 113 28 view .LVU143
+ 467              	.LBE4:
+ 468              	.LBE3:
+ 469              	.LBE2:
+ 114:Lib/stmlibs/fsm/fsm.c ****                 }
+ 115:Lib/stmlibs/fsm/fsm.c ****             }
+ 116:Lib/stmlibs/fsm/fsm.c ****         }
+ 117:Lib/stmlibs/fsm/fsm.c ****     }
+ 118:Lib/stmlibs/fsm/fsm.c **** 
+ 119:Lib/stmlibs/fsm/fsm.c ****     if (handle->config->state_table[handle->current_state].do_work != NULL) {
+ 470              		.loc 1 119 5 is_stmt 1 view .LVU144
+ 471              		.loc 1 119 15 is_stmt 0 view .LVU145
+ 472 0052 AB69     		ldr	r3, [r5, #24]
+ 473              		.loc 1 119 23 view .LVU146
+ 474 0054 5B68     		ldr	r3, [r3, #4]
+ 475              		.loc 1 119 43 view .LVU147
+ 476 0056 2A68     		ldr	r2, [r5]
+ 477              		.loc 1 119 36 view .LVU148
+ 478 0058 03EB0213 		add	r3, r3, r2, lsl #4
+ 479              		.loc 1 119 59 view .LVU149
+ 480 005c 9B68     		ldr	r3, [r3, #8]
+ 481              		.loc 1 119 8 view .LVU150
+ 482 005e 1BB1     		cbz	r3, .L35
+ 483              	.LBB5:
+ 120:Lib/stmlibs/fsm/fsm.c ****         uint32_t ret = handle->config->state_table[handle->current_state].do_work();
+ 484              		.loc 1 120 9 is_stmt 1 view .LVU151
+ 485              		.loc 1 120 24 is_stmt 0 view .LVU152
+ 486 0060 9847     		blx	r3
+ 487              	.LVL39:
+ 121:Lib/stmlibs/fsm/fsm.c **** 
+ 122:Lib/stmlibs/fsm/fsm.c ****         if (ret != handle->current_state) {
+ 488              		.loc 1 122 9 is_stmt 1 view .LVU153
+ 489              		.loc 1 122 26 is_stmt 0 view .LVU154
+ 490 0062 2B68     		ldr	r3, [r5]
+ 491              		.loc 1 122 12 view .LVU155
+ 492 0064 8342     		cmp	r3, r0
+ 493 0066 05D1     		bne	.L43
+ 494              	.LVL40:
+ 495              	.L35:
+ 496              		.loc 1 122 12 view .LVU156
+ 497              	.LBE5:
+ 123:Lib/stmlibs/fsm/fsm.c ****             return _FSM_transition(handle, ret);
+ 124:Lib/stmlibs/fsm/fsm.c ****         }
+ 125:Lib/stmlibs/fsm/fsm.c ****     }
+ 126:Lib/stmlibs/fsm/fsm.c **** 
+ 127:Lib/stmlibs/fsm/fsm.c ****     if (handle->run_callback != NULL) {
+ARM GAS  /tmp/ccZm0Ppz.s 			page 12
+
+
+ 498              		.loc 1 127 5 is_stmt 1 view .LVU157
+ 499              		.loc 1 127 15 is_stmt 0 view .LVU158
+ 500 0068 2B69     		ldr	r3, [r5, #16]
+ 501              		.loc 1 127 8 view .LVU159
+ 502 006a 53B1     		cbz	r3, .L38
+ 128:Lib/stmlibs/fsm/fsm.c ****         handle->run_callback(handle->current_state);
+ 503              		.loc 1 128 9 is_stmt 1 view .LVU160
+ 504 006c 2868     		ldr	r0, [r5]
+ 505 006e 9847     		blx	r3
+ 506              	.LVL41:
+ 129:Lib/stmlibs/fsm/fsm.c ****     }
+ 130:Lib/stmlibs/fsm/fsm.c **** 
+ 131:Lib/stmlibs/fsm/fsm.c ****     return STMLIBS_OK;
+ 507              		.loc 1 131 12 is_stmt 0 view .LVU161
+ 508 0070 0020     		movs	r0, #0
+ 509              	.L30:
+ 132:Lib/stmlibs/fsm/fsm.c **** }...
+ 510              		.loc 1 132 1 view .LVU162
+ 511 0072 38BD     		pop	{r3, r4, r5, pc}
+ 512              	.LVL42:
+ 513              	.L43:
+ 514              	.LBB6:
+ 123:Lib/stmlibs/fsm/fsm.c ****             return _FSM_transition(handle, ret);
+ 515              		.loc 1 123 13 is_stmt 1 view .LVU163
+ 123:Lib/stmlibs/fsm/fsm.c ****             return _FSM_transition(handle, ret);
+ 516              		.loc 1 123 20 is_stmt 0 view .LVU164
+ 517 0074 0146     		mov	r1, r0
+ 518 0076 2846     		mov	r0, r5
+ 519              	.LVL43:
+ 123:Lib/stmlibs/fsm/fsm.c ****             return _FSM_transition(handle, ret);
+ 520              		.loc 1 123 20 view .LVU165
+ 521 0078 FFF7FEFF 		bl	_FSM_transition
+ 522              	.LVL44:
+ 123:Lib/stmlibs/fsm/fsm.c ****             return _FSM_transition(handle, ret);
+ 523              		.loc 1 123 20 view .LVU166
+ 524 007c F9E7     		b	.L30
+ 525              	.LVL45:
+ 526              	.L36:
+ 527              		.cfi_def_cfa_offset 0
+ 528              		.cfi_restore 3
+ 529              		.cfi_restore 4
+ 530              		.cfi_restore 5
+ 531              		.cfi_restore 14
+ 123:Lib/stmlibs/fsm/fsm.c ****             return _FSM_transition(handle, ret);
+ 532              		.loc 1 123 20 view .LVU167
+ 533              	.LBE6:
+ 102:Lib/stmlibs/fsm/fsm.c ****         return STMLIBS_ERROR;
+ 534              		.loc 1 102 16 view .LVU168
+ 535 007e 0120     		movs	r0, #1
+ 536              	.LVL46:
+ 537              		.loc 1 132 1 view .LVU169
+ 538 0080 7047     		bx	lr
+ 539              	.LVL47:
+ 540              	.L38:
+ 541              		.cfi_def_cfa_offset 16
+ 542              		.cfi_offset 3, -16
+ 543              		.cfi_offset 4, -12
+ARM GAS  /tmp/ccZm0Ppz.s 			page 13
+
+
+ 544              		.cfi_offset 5, -8
+ 545              		.cfi_offset 14, -4
+ 131:Lib/stmlibs/fsm/fsm.c ****     return STMLIBS_OK;
+ 546              		.loc 1 131 12 view .LVU170
+ 547 0082 0020     		movs	r0, #0
+ 548 0084 F5E7     		b	.L30
+ 549              		.cfi_endproc
+ 550              	.LFE240:
+ 552              		.text
+ 553              	.Letext0:
+ 554              		.file 2 "/usr/arm-none-eabi/include/machine/_default_types.h"
+ 555              		.file 3 "/usr/arm-none-eabi/include/sys/_stdint.h"
+ 556              		.file 4 "Lib/stmlibs/stmlibs_status.h"
+ 557              		.file 5 "Lib/stmlibs/fsm/fsm.h"
+ARM GAS  /tmp/ccZm0Ppz.s 			page 14
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 fsm.c
+     /tmp/ccZm0Ppz.s:21     .text.FSM_init:00000000 $t
+     /tmp/ccZm0Ppz.s:27     .text.FSM_init:00000000 FSM_init
+     /tmp/ccZm0Ppz.s:90     .text.FSM_start:00000000 $t
+     /tmp/ccZm0Ppz.s:96     .text.FSM_start:00000000 FSM_start
+     /tmp/ccZm0Ppz.s:154    .text.FSM_get_state:00000000 $t
+     /tmp/ccZm0Ppz.s:160    .text.FSM_get_state:00000000 FSM_get_state
+     /tmp/ccZm0Ppz.s:178    .text.FSM_trigger_event:00000000 $t
+     /tmp/ccZm0Ppz.s:184    .text.FSM_trigger_event:00000000 FSM_trigger_event
+     /tmp/ccZm0Ppz.s:247    .text._FSM_transition:00000000 $t
+     /tmp/ccZm0Ppz.s:253    .text._FSM_transition:00000000 _FSM_transition
+     /tmp/ccZm0Ppz.s:354    .text.FSM_routine:00000000 $t
+     /tmp/ccZm0Ppz.s:360    .text.FSM_routine:00000000 FSM_routine
+
+NO UNDEFINED SYMBOLS

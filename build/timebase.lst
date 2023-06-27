@@ -1,0 +1,872 @@
+ARM GAS  /tmp/cch2BZoz.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"timebase.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Lib/stmlibs/timebase/timebase.c"
+  20              		.global	__aeabi_f2d
+  21              		.global	__aeabi_ui2d
+  22              		.global	__aeabi_ddiv
+  23              		.global	__aeabi_dmul
+  24              		.global	__aeabi_d2uiz
+  25              		.section	.text.TIMEBASE_init,"ax",%progbits
+  26              		.align	1
+  27              		.global	TIMEBASE_init
+  28              		.syntax unified
+  29              		.thumb
+  30              		.thumb_func
+  32              	TIMEBASE_init:
+  33              	.LVL0:
+  34              	.LFB235:
+   1:Lib/stmlibs/timebase/timebase.c **** /*
+   2:Lib/stmlibs/timebase/timebase.c ****  * "THE BEER-WARE LICENSE" (Revision 69):
+   3:Lib/stmlibs/timebase/timebase.c ****  * Squadra Corse firmware team wrote this file. As long as you retain this notice
+   4:Lib/stmlibs/timebase/timebase.c ****  * you can do whatever you want with this stuff. If we meet some day, and you
+   5:Lib/stmlibs/timebase/timebase.c ****  * think this stuff is worth it, you can buy us a beer in return.
+   6:Lib/stmlibs/timebase/timebase.c ****  *
+   7:Lib/stmlibs/timebase/timebase.c ****  * Authors
+   8:Lib/stmlibs/timebase/timebase.c ****  * - Federico Carbone [federico.carbone.sc@gmail.com]
+   9:Lib/stmlibs/timebase/timebase.c ****  */
+  10:Lib/stmlibs/timebase/timebase.c **** 
+  11:Lib/stmlibs/timebase/timebase.c **** #include "timebase.h"
+  12:Lib/stmlibs/timebase/timebase.c **** 
+  13:Lib/stmlibs/timebase/timebase.c **** #include "timer_utils.h"
+  14:Lib/stmlibs/timebase/timebase.c **** 
+  15:Lib/stmlibs/timebase/timebase.c **** STMLIBS_StatusTypeDef TIMEBASE_init(TIMEBASE_HandleTypeDef *handle,
+  16:Lib/stmlibs/timebase/timebase.c ****                                     TIM_HandleTypeDef *htim,
+  17:Lib/stmlibs/timebase/timebase.c ****                                     uint32_t base_interval_us) {
+  35              		.loc 1 17 64 view -0
+  36              		.cfi_startproc
+  37              		@ args = 0, pretend = 0, frame = 0
+  38              		@ frame_needed = 0, uses_anonymous_args = 0
+  18:Lib/stmlibs/timebase/timebase.c ****     if (handle == NULL || htim == NULL) {
+  39              		.loc 1 18 5 view .LVU1
+  40              		.loc 1 18 8 is_stmt 0 view .LVU2
+ARM GAS  /tmp/cch2BZoz.s 			page 2
+
+
+  41 0000 0028     		cmp	r0, #0
+  42 0002 46D0     		beq	.L4
+  17:Lib/stmlibs/timebase/timebase.c ****     if (handle == NULL || htim == NULL) {
+  43              		.loc 1 17 64 view .LVU3
+  44 0004 2DE97043 		push	{r4, r5, r6, r8, r9, lr}
+  45              		.cfi_def_cfa_offset 24
+  46              		.cfi_offset 4, -24
+  47              		.cfi_offset 5, -20
+  48              		.cfi_offset 6, -16
+  49              		.cfi_offset 8, -12
+  50              		.cfi_offset 9, -8
+  51              		.cfi_offset 14, -4
+  52 0008 1546     		mov	r5, r2
+  53 000a 0446     		mov	r4, r0
+  54              		.loc 1 18 24 discriminator 1 view .LVU4
+  55 000c 0029     		cmp	r1, #0
+  56 000e 42D0     		beq	.L5
+  19:Lib/stmlibs/timebase/timebase.c ****         return STMLIBS_ERROR;
+  20:Lib/stmlibs/timebase/timebase.c ****     }
+  21:Lib/stmlibs/timebase/timebase.c **** 
+  22:Lib/stmlibs/timebase/timebase.c ****     handle->htim             = htim;
+  57              		.loc 1 22 5 is_stmt 1 view .LVU5
+  58              		.loc 1 22 30 is_stmt 0 view .LVU6
+  59 0010 0160     		str	r1, [r0]
+  23:Lib/stmlibs/timebase/timebase.c ****     handle->base_interval_us = base_interval_us;
+  60              		.loc 1 23 5 is_stmt 1 view .LVU7
+  61              		.loc 1 23 30 is_stmt 0 view .LVU8
+  62 0012 A260     		str	r2, [r4, #8]
+  24:Lib/stmlibs/timebase/timebase.c **** 
+  25:Lib/stmlibs/timebase/timebase.c ****     uint32_t ticks = TIM_MS_TO_TICKS(handle->htim, base_interval_us / 1000.0) - 1;
+  63              		.loc 1 25 5 is_stmt 1 view .LVU9
+  64              		.loc 1 25 22 is_stmt 0 view .LVU10
+  65 0014 0846     		mov	r0, r1
+  66              	.LVL1:
+  67              		.loc 1 25 22 view .LVU11
+  68 0016 FFF7FEFF 		bl	TIM_GetInternalClkFreq
+  69              	.LVL2:
+  70              		.loc 1 25 22 view .LVU12
+  71 001a 07EE100A 		vmov	s14, r0	@ int
+  72              		.loc 1 25 22 discriminator 1 view .LVU13
+  73 001e B8EE477A 		vcvt.f32.u32	s14, s14
+  74 0022 2368     		ldr	r3, [r4]
+  75 0024 1E68     		ldr	r6, [r3]
+  76 0026 B36A     		ldr	r3, [r6, #40]
+  77 0028 0133     		adds	r3, r3, #1
+  78 002a 07EE903A 		vmov	s15, r3	@ int
+  79 002e F8EE677A 		vcvt.f32.u32	s15, s15
+  80 0032 C7EE277A 		vdiv.f32	s15, s14, s15
+  81 0036 17EE900A 		vmov	r0, s15
+  82 003a FFF7FEFF 		bl	__aeabi_f2d
+  83              	.LVL3:
+  84 003e 8046     		mov	r8, r0
+  85 0040 8946     		mov	r9, r1
+  86 0042 2846     		mov	r0, r5
+  87 0044 FFF7FEFF 		bl	__aeabi_ui2d
+  88              	.LVL4:
+  89 0048 0022     		movs	r2, #0
+ARM GAS  /tmp/cch2BZoz.s 			page 3
+
+
+  90 004a 154B     		ldr	r3, .L11
+  91 004c FFF7FEFF 		bl	__aeabi_ddiv
+  92              	.LVL5:
+  93 0050 0246     		mov	r2, r0
+  94 0052 0B46     		mov	r3, r1
+  95 0054 4046     		mov	r0, r8
+  96 0056 4946     		mov	r1, r9
+  97 0058 FFF7FEFF 		bl	__aeabi_dmul
+  98              	.LVL6:
+  99 005c 0022     		movs	r2, #0
+ 100 005e 104B     		ldr	r3, .L11
+ 101 0060 FFF7FEFF 		bl	__aeabi_ddiv
+ 102              	.LVL7:
+ 103 0064 FFF7FEFF 		bl	__aeabi_d2uiz
+ 104              	.LVL8:
+ 105              		.loc 1 25 14 discriminator 1 view .LVU14
+ 106 0068 0138     		subs	r0, r0, #1
+ 107              	.LVL9:
+  26:Lib/stmlibs/timebase/timebase.c ****     if (ticks > TIM_GET_MAX_AUTORELOAD(handle->htim)) {
+ 108              		.loc 1 26 5 is_stmt 1 view .LVU15
+ 109              		.loc 1 26 17 is_stmt 0 view .LVU16
+ 110 006a B6F1804F 		cmp	r6, #1073741824
+ 111 006e 05D0     		beq	.L3
+ 112              		.loc 1 26 17 discriminator 2 view .LVU17
+ 113 0070 0C4B     		ldr	r3, .L11+4
+ 114 0072 9E42     		cmp	r6, r3
+ 115 0074 02D0     		beq	.L3
+ 116              		.loc 1 26 8 discriminator 6 view .LVU18
+ 117 0076 B0F5803F 		cmp	r0, #65536
+ 118 007a 0ED2     		bcs	.L6
+ 119              	.L3:
+  27:Lib/stmlibs/timebase/timebase.c ****         return STMLIBS_ERROR;
+  28:Lib/stmlibs/timebase/timebase.c ****     }
+  29:Lib/stmlibs/timebase/timebase.c **** 
+  30:Lib/stmlibs/timebase/timebase.c ****     __HAL_TIM_SetAutoreload(handle->htim, ticks);
+ 120              		.loc 1 30 5 is_stmt 1 view .LVU19
+ 121              		.loc 1 30 5 view .LVU20
+ 122 007c F062     		str	r0, [r6, #44]
+ 123              		.loc 1 30 5 view .LVU21
+ 124 007e 2368     		ldr	r3, [r4]
+ 125 0080 D860     		str	r0, [r3, #12]
+ 126              		.loc 1 30 5 view .LVU22
+  31:Lib/stmlibs/timebase/timebase.c **** 
+  32:Lib/stmlibs/timebase/timebase.c ****     handle->repetition_counter = 0;
+ 127              		.loc 1 32 5 view .LVU23
+ 128              		.loc 1 32 32 is_stmt 0 view .LVU24
+ 129 0082 0020     		movs	r0, #0
+ 130              	.LVL10:
+ 131              		.loc 1 32 32 view .LVU25
+ 132 0084 6060     		str	r0, [r4, #4]
+ 133              	.LVL11:
+  33:Lib/stmlibs/timebase/timebase.c ****     handle->intervals_length   = 0;
+ 134              		.loc 1 33 5 is_stmt 1 view .LVU26
+ 135              		.loc 1 33 32 is_stmt 0 view .LVU27
+ 136 0086 84F81009 		strb	r0, [r4, #2320]
+  34:Lib/stmlibs/timebase/timebase.c ****     handle->intervals_flag     = 0;
+ 137              		.loc 1 34 5 is_stmt 1 view .LVU28
+ARM GAS  /tmp/cch2BZoz.s 			page 4
+
+
+ 138              		.loc 1 34 32 is_stmt 0 view .LVU29
+ 139 008a C4F80C09 		str	r0, [r4, #2316]
+  35:Lib/stmlibs/timebase/timebase.c **** 
+  36:Lib/stmlibs/timebase/timebase.c ****     return STMLIBS_OK;
+ 140              		.loc 1 36 5 is_stmt 1 view .LVU30
+ 141              	.LVL12:
+ 142              	.L2:
+  37:Lib/stmlibs/timebase/timebase.c **** }
+ 143              		.loc 1 37 1 is_stmt 0 view .LVU31
+ 144 008e BDE87083 		pop	{r4, r5, r6, r8, r9, pc}
+ 145              	.LVL13:
+ 146              	.L4:
+ 147              		.cfi_def_cfa_offset 0
+ 148              		.cfi_restore 4
+ 149              		.cfi_restore 5
+ 150              		.cfi_restore 6
+ 151              		.cfi_restore 8
+ 152              		.cfi_restore 9
+ 153              		.cfi_restore 14
+  19:Lib/stmlibs/timebase/timebase.c ****     }
+ 154              		.loc 1 19 16 view .LVU32
+ 155 0092 0120     		movs	r0, #1
+ 156              	.LVL14:
+ 157              		.loc 1 37 1 view .LVU33
+ 158 0094 7047     		bx	lr
+ 159              	.LVL15:
+ 160              	.L5:
+ 161              		.cfi_def_cfa_offset 24
+ 162              		.cfi_offset 4, -24
+ 163              		.cfi_offset 5, -20
+ 164              		.cfi_offset 6, -16
+ 165              		.cfi_offset 8, -12
+ 166              		.cfi_offset 9, -8
+ 167              		.cfi_offset 14, -4
+  19:Lib/stmlibs/timebase/timebase.c ****     }
+ 168              		.loc 1 19 16 view .LVU34
+ 169 0096 0120     		movs	r0, #1
+ 170              	.LVL16:
+  19:Lib/stmlibs/timebase/timebase.c ****     }
+ 171              		.loc 1 19 16 view .LVU35
+ 172 0098 F9E7     		b	.L2
+ 173              	.LVL17:
+ 174              	.L6:
+  27:Lib/stmlibs/timebase/timebase.c ****     }
+ 175              		.loc 1 27 16 view .LVU36
+ 176 009a 0120     		movs	r0, #1
+ 177              	.LVL18:
+  27:Lib/stmlibs/timebase/timebase.c ****     }
+ 178              		.loc 1 27 16 view .LVU37
+ 179 009c F7E7     		b	.L2
+ 180              	.L12:
+ 181 009e 00BF     		.align	2
+ 182              	.L11:
+ 183 00a0 00408F40 		.word	1083129856
+ 184 00a4 000C0040 		.word	1073744896
+ 185              		.cfi_endproc
+ 186              	.LFE235:
+ARM GAS  /tmp/cch2BZoz.s 			page 5
+
+
+ 188              		.section	.text.TIMEBASE_add_interval,"ax",%progbits
+ 189              		.align	1
+ 190              		.global	TIMEBASE_add_interval
+ 191              		.syntax unified
+ 192              		.thumb
+ 193              		.thumb_func
+ 195              	TIMEBASE_add_interval:
+ 196              	.LVL19:
+ 197              	.LFB236:
+  38:Lib/stmlibs/timebase/timebase.c **** 
+  39:Lib/stmlibs/timebase/timebase.c **** STMLIBS_StatusTypeDef TIMEBASE_add_interval(TIMEBASE_HandleTypeDef *handle,
+  40:Lib/stmlibs/timebase/timebase.c ****                                             uint32_t interval_us,
+  41:Lib/stmlibs/timebase/timebase.c ****                                             uint8_t *interval_index) {
+ 198              		.loc 1 41 70 is_stmt 1 view -0
+ 199              		.cfi_startproc
+ 200              		@ args = 0, pretend = 0, frame = 0
+ 201              		@ frame_needed = 0, uses_anonymous_args = 0
+  42:Lib/stmlibs/timebase/timebase.c ****     if (handle == NULL) {
+ 202              		.loc 1 42 5 view .LVU39
+ 203              		.loc 1 42 8 is_stmt 0 view .LVU40
+ 204 0000 70B3     		cbz	r0, .L17
+  41:Lib/stmlibs/timebase/timebase.c ****     if (handle == NULL) {
+ 205              		.loc 1 41 70 view .LVU41
+ 206 0002 70B5     		push	{r4, r5, r6, lr}
+ 207              		.cfi_def_cfa_offset 16
+ 208              		.cfi_offset 4, -16
+ 209              		.cfi_offset 5, -12
+ 210              		.cfi_offset 6, -8
+ 211              		.cfi_offset 14, -4
+ 212 0004 0C46     		mov	r4, r1
+ 213 0006 1646     		mov	r6, r2
+ 214 0008 0546     		mov	r5, r0
+  43:Lib/stmlibs/timebase/timebase.c ****         return STMLIBS_ERROR;
+  44:Lib/stmlibs/timebase/timebase.c ****     }
+  45:Lib/stmlibs/timebase/timebase.c **** 
+  46:Lib/stmlibs/timebase/timebase.c ****     if (interval_us % handle->base_interval_us != 0) {
+ 215              		.loc 1 46 5 is_stmt 1 view .LVU42
+ 216              		.loc 1 46 29 is_stmt 0 view .LVU43
+ 217 000a 8268     		ldr	r2, [r0, #8]
+ 218              	.LVL20:
+ 219              		.loc 1 46 21 view .LVU44
+ 220 000c B1FBF2F3 		udiv	r3, r1, r2
+ 221 0010 02FB1313 		mls	r3, r2, r3, r1
+ 222              		.loc 1 46 8 view .LVU45
+ 223 0014 33BB     		cbnz	r3, .L18
+  47:Lib/stmlibs/timebase/timebase.c ****         return STMLIBS_ERROR;
+  48:Lib/stmlibs/timebase/timebase.c ****     }
+  49:Lib/stmlibs/timebase/timebase.c **** 
+  50:Lib/stmlibs/timebase/timebase.c ****     if (handle->intervals_length == TIMEBASE_MAX_INTERVALS) {
+ 224              		.loc 1 50 5 is_stmt 1 view .LVU46
+ 225              		.loc 1 50 15 is_stmt 0 view .LVU47
+ 226 0016 90F81039 		ldrb	r3, [r0, #2320]	@ zero_extendqisi2
+ 227              		.loc 1 50 8 view .LVU48
+ 228 001a 202B     		cmp	r3, #32
+ 229 001c 24D0     		beq	.L19
+  51:Lib/stmlibs/timebase/timebase.c ****         return STMLIBS_ERROR;
+  52:Lib/stmlibs/timebase/timebase.c ****     }
+ARM GAS  /tmp/cch2BZoz.s 			page 6
+
+
+  53:Lib/stmlibs/timebase/timebase.c **** 
+  54:Lib/stmlibs/timebase/timebase.c ****     if (handle->intervals_length == 0) {
+ 230              		.loc 1 54 5 is_stmt 1 view .LVU49
+ 231              		.loc 1 54 8 is_stmt 0 view .LVU50
+ 232 001e B3B1     		cbz	r3, .L24
+ 233              	.LVL21:
+ 234              	.L15:
+  55:Lib/stmlibs/timebase/timebase.c ****         __HAL_TIM_CLEAR_IT(handle->htim, TIM_IT_UPDATE);
+  56:Lib/stmlibs/timebase/timebase.c ****         HAL_TIM_Base_Start_IT(handle->htim);
+  57:Lib/stmlibs/timebase/timebase.c ****     }
+  58:Lib/stmlibs/timebase/timebase.c **** 
+  59:Lib/stmlibs/timebase/timebase.c ****     handle->intervals[handle->intervals_length].interval_us      = interval_us;
+ 235              		.loc 1 59 5 is_stmt 1 view .LVU51
+ 236              		.loc 1 59 29 is_stmt 0 view .LVU52
+ 237 0020 95F81029 		ldrb	r2, [r5, #2320]	@ zero_extendqisi2
+ 238              		.loc 1 59 66 view .LVU53
+ 239 0024 02EBC203 		add	r3, r2, r2, lsl #3
+ 240 0028 05EBC303 		add	r3, r5, r3, lsl #3
+ 241 002c DC60     		str	r4, [r3, #12]
+  60:Lib/stmlibs/timebase/timebase.c ****     handle->intervals[handle->intervals_length].callbacks_length = 0;
+ 242              		.loc 1 60 5 is_stmt 1 view .LVU54
+ 243              		.loc 1 60 66 is_stmt 0 view .LVU55
+ 244 002e 531C     		adds	r3, r2, #1
+ 245 0030 03EBC303 		add	r3, r3, r3, lsl #3
+ 246 0034 05EBC303 		add	r3, r5, r3, lsl #3
+ 247 0038 0021     		movs	r1, #0
+ 248 003a 1972     		strb	r1, [r3, #8]
+  61:Lib/stmlibs/timebase/timebase.c **** 
+  62:Lib/stmlibs/timebase/timebase.c ****     if (interval_index != NULL)
+ 249              		.loc 1 62 5 is_stmt 1 view .LVU56
+ 250              		.loc 1 62 8 is_stmt 0 view .LVU57
+ 251 003c 06B1     		cbz	r6, .L16
+  63:Lib/stmlibs/timebase/timebase.c ****         *interval_index = handle->intervals_length;
+ 252              		.loc 1 63 9 is_stmt 1 view .LVU58
+ 253              		.loc 1 63 25 is_stmt 0 view .LVU59
+ 254 003e 3270     		strb	r2, [r6]
+ 255              	.L16:
+  64:Lib/stmlibs/timebase/timebase.c **** 
+  65:Lib/stmlibs/timebase/timebase.c ****     ++handle->intervals_length;
+ 256              		.loc 1 65 5 is_stmt 1 view .LVU60
+ 257              		.loc 1 65 13 is_stmt 0 view .LVU61
+ 258 0040 95F81039 		ldrb	r3, [r5, #2320]	@ zero_extendqisi2
+ 259              		.loc 1 65 5 view .LVU62
+ 260 0044 0133     		adds	r3, r3, #1
+ 261 0046 85F81039 		strb	r3, [r5, #2320]
+  66:Lib/stmlibs/timebase/timebase.c **** 
+  67:Lib/stmlibs/timebase/timebase.c ****     return STMLIBS_OK;
+ 262              		.loc 1 67 5 is_stmt 1 view .LVU63
+ 263              		.loc 1 67 12 is_stmt 0 view .LVU64
+ 264 004a 0020     		movs	r0, #0
+ 265              	.L14:
+  68:Lib/stmlibs/timebase/timebase.c **** }
+ 266              		.loc 1 68 1 view .LVU65
+ 267 004c 70BD     		pop	{r4, r5, r6, pc}
+ 268              	.LVL22:
+ 269              	.L24:
+  55:Lib/stmlibs/timebase/timebase.c ****         HAL_TIM_Base_Start_IT(handle->htim);
+ARM GAS  /tmp/cch2BZoz.s 			page 7
+
+
+ 270              		.loc 1 55 9 is_stmt 1 view .LVU66
+ 271 004e 0368     		ldr	r3, [r0]
+ 272 0050 1B68     		ldr	r3, [r3]
+ 273 0052 6FF00102 		mvn	r2, #1
+ 274 0056 1A61     		str	r2, [r3, #16]
+  56:Lib/stmlibs/timebase/timebase.c ****     }
+ 275              		.loc 1 56 9 view .LVU67
+ 276 0058 0068     		ldr	r0, [r0]
+ 277              	.LVL23:
+  56:Lib/stmlibs/timebase/timebase.c ****     }
+ 278              		.loc 1 56 9 is_stmt 0 view .LVU68
+ 279 005a FFF7FEFF 		bl	HAL_TIM_Base_Start_IT
+ 280              	.LVL24:
+  56:Lib/stmlibs/timebase/timebase.c ****     }
+ 281              		.loc 1 56 9 view .LVU69
+ 282 005e DFE7     		b	.L15
+ 283              	.LVL25:
+ 284              	.L17:
+ 285              		.cfi_def_cfa_offset 0
+ 286              		.cfi_restore 4
+ 287              		.cfi_restore 5
+ 288              		.cfi_restore 6
+ 289              		.cfi_restore 14
+  43:Lib/stmlibs/timebase/timebase.c ****     }
+ 290              		.loc 1 43 16 view .LVU70
+ 291 0060 0120     		movs	r0, #1
+ 292              	.LVL26:
+ 293              		.loc 1 68 1 view .LVU71
+ 294 0062 7047     		bx	lr
+ 295              	.LVL27:
+ 296              	.L18:
+ 297              		.cfi_def_cfa_offset 16
+ 298              		.cfi_offset 4, -16
+ 299              		.cfi_offset 5, -12
+ 300              		.cfi_offset 6, -8
+ 301              		.cfi_offset 14, -4
+  47:Lib/stmlibs/timebase/timebase.c ****     }
+ 302              		.loc 1 47 16 view .LVU72
+ 303 0064 0120     		movs	r0, #1
+ 304              	.LVL28:
+  47:Lib/stmlibs/timebase/timebase.c ****     }
+ 305              		.loc 1 47 16 view .LVU73
+ 306 0066 F1E7     		b	.L14
+ 307              	.LVL29:
+ 308              	.L19:
+  51:Lib/stmlibs/timebase/timebase.c ****     }
+ 309              		.loc 1 51 16 view .LVU74
+ 310 0068 0120     		movs	r0, #1
+ 311              	.LVL30:
+  51:Lib/stmlibs/timebase/timebase.c ****     }
+ 312              		.loc 1 51 16 view .LVU75
+ 313 006a EFE7     		b	.L14
+ 314              		.cfi_endproc
+ 315              	.LFE236:
+ 317              		.section	.text.TIMEBASE_register_callback,"ax",%progbits
+ 318              		.align	1
+ 319              		.global	TIMEBASE_register_callback
+ARM GAS  /tmp/cch2BZoz.s 			page 8
+
+
+ 320              		.syntax unified
+ 321              		.thumb
+ 322              		.thumb_func
+ 324              	TIMEBASE_register_callback:
+ 325              	.LVL31:
+ 326              	.LFB237:
+  69:Lib/stmlibs/timebase/timebase.c **** 
+  70:Lib/stmlibs/timebase/timebase.c **** STMLIBS_StatusTypeDef TIMEBASE_register_callback(TIMEBASE_HandleTypeDef *handle,
+  71:Lib/stmlibs/timebase/timebase.c ****                                                  uint8_t interval_index,
+  72:Lib/stmlibs/timebase/timebase.c ****                                                  TIMEBASE_CallbackTypeDef callback) {
+ 327              		.loc 1 72 85 is_stmt 1 view -0
+ 328              		.cfi_startproc
+ 329              		@ args = 0, pretend = 0, frame = 0
+ 330              		@ frame_needed = 0, uses_anonymous_args = 0
+ 331              		@ link register save eliminated.
+  73:Lib/stmlibs/timebase/timebase.c ****     if (handle == NULL) {
+ 332              		.loc 1 73 5 view .LVU77
+ 333              		.loc 1 73 8 is_stmt 0 view .LVU78
+ 334 0000 8446     		mov	ip, r0
+ 335 0002 D0B1     		cbz	r0, .L27
+  74:Lib/stmlibs/timebase/timebase.c ****         return STMLIBS_ERROR;
+  75:Lib/stmlibs/timebase/timebase.c ****     }
+  76:Lib/stmlibs/timebase/timebase.c **** 
+  77:Lib/stmlibs/timebase/timebase.c ****     TIMEBASE_IntervalTypeDef *interval = &handle->intervals[interval_index];
+ 336              		.loc 1 77 5 is_stmt 1 view .LVU79
+ 337              	.LVL32:
+  78:Lib/stmlibs/timebase/timebase.c **** 
+  79:Lib/stmlibs/timebase/timebase.c ****     if (interval->callbacks_length == TIMEBASE_MAX_CALLBACKS) {
+ 338              		.loc 1 79 5 view .LVU80
+ 339              		.loc 1 79 17 is_stmt 0 view .LVU81
+ 340 0004 4B1C     		adds	r3, r1, #1
+ 341 0006 03EBC303 		add	r3, r3, r3, lsl #3
+ 342 000a 00EBC303 		add	r3, r0, r3, lsl #3
+ 343 000e 187A     		ldrb	r0, [r3, #8]	@ zero_extendqisi2
+ 344              	.LVL33:
+ 345              		.loc 1 79 8 view .LVU82
+ 346 0010 1028     		cmp	r0, #16
+ 347 0012 14D0     		beq	.L28
+  80:Lib/stmlibs/timebase/timebase.c ****         return STMLIBS_ERROR;
+  81:Lib/stmlibs/timebase/timebase.c ****     }
+  82:Lib/stmlibs/timebase/timebase.c **** 
+  83:Lib/stmlibs/timebase/timebase.c ****     if (callback == NULL) {
+ 348              		.loc 1 83 5 is_stmt 1 view .LVU83
+ 349              		.loc 1 83 8 is_stmt 0 view .LVU84
+ 350 0014 AAB1     		cbz	r2, .L29
+  84:Lib/stmlibs/timebase/timebase.c ****         return STMLIBS_ERROR;
+  85:Lib/stmlibs/timebase/timebase.c ****     }
+  86:Lib/stmlibs/timebase/timebase.c **** 
+  87:Lib/stmlibs/timebase/timebase.c ****     interval->callbacks[interval->callbacks_length] = callback;
+ 351              		.loc 1 87 5 is_stmt 1 view .LVU85
+ 352              		.loc 1 87 53 is_stmt 0 view .LVU86
+ 353 0016 01EBC103 		add	r3, r1, r1, lsl #3
+ 354 001a 00EB4303 		add	r3, r0, r3, lsl #1
+ 355 001e 0233     		adds	r3, r3, #2
+ 356 0020 0CEB8303 		add	r3, ip, r3, lsl #2
+ 357 0024 9A60     		str	r2, [r3, #8]
+  88:Lib/stmlibs/timebase/timebase.c **** 
+ARM GAS  /tmp/cch2BZoz.s 			page 9
+
+
+  89:Lib/stmlibs/timebase/timebase.c ****     ++interval->callbacks_length;
+ 358              		.loc 1 89 5 is_stmt 1 view .LVU87
+ 359 0026 0131     		adds	r1, r1, #1
+ 360              	.LVL34:
+ 361              		.loc 1 89 5 is_stmt 0 view .LVU88
+ 362 0028 01EBC101 		add	r1, r1, r1, lsl #3
+ 363 002c 0CEBC10C 		add	ip, ip, r1, lsl #3
+ 364              	.LVL35:
+ 365              		.loc 1 89 5 view .LVU89
+ 366 0030 0130     		adds	r0, r0, #1
+ 367 0032 8CF80800 		strb	r0, [ip, #8]
+  90:Lib/stmlibs/timebase/timebase.c **** 
+  91:Lib/stmlibs/timebase/timebase.c ****     return STMLIBS_OK;
+ 368              		.loc 1 91 5 is_stmt 1 view .LVU90
+ 369              		.loc 1 91 12 is_stmt 0 view .LVU91
+ 370 0036 0020     		movs	r0, #0
+ 371 0038 7047     		bx	lr
+ 372              	.LVL36:
+ 373              	.L27:
+  74:Lib/stmlibs/timebase/timebase.c ****     }
+ 374              		.loc 1 74 16 view .LVU92
+ 375 003a 0120     		movs	r0, #1
+ 376              	.LVL37:
+  74:Lib/stmlibs/timebase/timebase.c ****     }
+ 377              		.loc 1 74 16 view .LVU93
+ 378 003c 7047     		bx	lr
+ 379              	.LVL38:
+ 380              	.L28:
+  80:Lib/stmlibs/timebase/timebase.c ****     }
+ 381              		.loc 1 80 16 view .LVU94
+ 382 003e 0120     		movs	r0, #1
+ 383 0040 7047     		bx	lr
+ 384              	.L29:
+  84:Lib/stmlibs/timebase/timebase.c ****     }
+ 385              		.loc 1 84 16 view .LVU95
+ 386 0042 0120     		movs	r0, #1
+  92:Lib/stmlibs/timebase/timebase.c **** }
+ 387              		.loc 1 92 1 view .LVU96
+ 388 0044 7047     		bx	lr
+ 389              		.cfi_endproc
+ 390              	.LFE237:
+ 392              		.section	.text.TIMEBASE_routine,"ax",%progbits
+ 393              		.align	1
+ 394              		.global	TIMEBASE_routine
+ 395              		.syntax unified
+ 396              		.thumb
+ 397              		.thumb_func
+ 399              	TIMEBASE_routine:
+ 400              	.LVL39:
+ 401              	.LFB238:
+  93:Lib/stmlibs/timebase/timebase.c **** 
+  94:Lib/stmlibs/timebase/timebase.c **** STMLIBS_StatusTypeDef TIMEBASE_routine(TIMEBASE_HandleTypeDef *handle) {
+ 402              		.loc 1 94 72 is_stmt 1 view -0
+ 403              		.cfi_startproc
+ 404              		@ args = 0, pretend = 0, frame = 0
+ 405              		@ frame_needed = 0, uses_anonymous_args = 0
+  95:Lib/stmlibs/timebase/timebase.c ****     if (handle == NULL) {
+ARM GAS  /tmp/cch2BZoz.s 			page 10
+
+
+ 406              		.loc 1 95 5 view .LVU98
+ 407              		.loc 1 95 8 is_stmt 0 view .LVU99
+ 408 0000 90B3     		cbz	r0, .L37
+  94:Lib/stmlibs/timebase/timebase.c ****     if (handle == NULL) {
+ 409              		.loc 1 94 72 view .LVU100
+ 410 0002 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 411              		.cfi_def_cfa_offset 24
+ 412              		.cfi_offset 4, -24
+ 413              		.cfi_offset 5, -20
+ 414              		.cfi_offset 6, -16
+ 415              		.cfi_offset 7, -12
+ 416              		.cfi_offset 8, -8
+ 417              		.cfi_offset 14, -4
+ 418 0006 0646     		mov	r6, r0
+ 419              	.LBB2:
+  96:Lib/stmlibs/timebase/timebase.c ****         return STMLIBS_ERROR;
+  97:Lib/stmlibs/timebase/timebase.c ****     }
+  98:Lib/stmlibs/timebase/timebase.c **** 
+  99:Lib/stmlibs/timebase/timebase.c ****     for (uint8_t i = 0; i < handle->intervals_length; ++i) {
+ 420              		.loc 1 99 18 view .LVU101
+ 421 0008 0027     		movs	r7, #0
+ 422 000a 1AE0     		b	.L32
+ 423              	.LVL40:
+ 424              	.L35:
+ 425              	.LBB3:
+ 100:Lib/stmlibs/timebase/timebase.c ****         if (!(handle->intervals_flag & (1 << i)))
+ 101:Lib/stmlibs/timebase/timebase.c ****             continue;
+ 102:Lib/stmlibs/timebase/timebase.c **** 
+ 103:Lib/stmlibs/timebase/timebase.c ****         for (uint8_t j = 0; j < handle->intervals[i].callbacks_length; ++j) {
+ 104:Lib/stmlibs/timebase/timebase.c ****             if (handle->intervals[i].callbacks[j]() != STMLIBS_OK) {
+ 426              		.loc 1 104 13 is_stmt 1 view .LVU102
+ 427              		.loc 1 104 47 is_stmt 0 view .LVU103
+ 428 000c 05EBC503 		add	r3, r5, r5, lsl #3
+ 429 0010 04EB4303 		add	r3, r4, r3, lsl #1
+ 430 0014 0233     		adds	r3, r3, #2
+ 431 0016 06EB8303 		add	r3, r6, r3, lsl #2
+ 432 001a 9B68     		ldr	r3, [r3, #8]
+ 433              		.loc 1 104 17 view .LVU104
+ 434 001c 9847     		blx	r3
+ 435              	.LVL41:
+ 105:Lib/stmlibs/timebase/timebase.c ****                 // LOG SOMEHOW
+ 106:Lib/stmlibs/timebase/timebase.c ****             }
+ 436              		.loc 1 106 13 is_stmt 1 view .LVU105
+ 103:Lib/stmlibs/timebase/timebase.c ****             if (handle->intervals[i].callbacks[j]() != STMLIBS_OK) {
+ 437              		.loc 1 103 72 discriminator 2 view .LVU106
+ 438 001e 0134     		adds	r4, r4, #1
+ 439              	.LVL42:
+ 103:Lib/stmlibs/timebase/timebase.c ****             if (handle->intervals[i].callbacks[j]() != STMLIBS_OK) {
+ 440              		.loc 1 103 72 is_stmt 0 discriminator 2 view .LVU107
+ 441 0020 E4B2     		uxtb	r4, r4
+ 442              	.LVL43:
+ 443              	.L34:
+ 103:Lib/stmlibs/timebase/timebase.c ****             if (handle->intervals[i].callbacks[j]() != STMLIBS_OK) {
+ 444              		.loc 1 103 31 is_stmt 1 discriminator 1 view .LVU108
+ 103:Lib/stmlibs/timebase/timebase.c ****             if (handle->intervals[i].callbacks[j]() != STMLIBS_OK) {
+ 445              		.loc 1 103 53 is_stmt 0 discriminator 1 view .LVU109
+ 446 0022 6B1C     		adds	r3, r5, #1
+ARM GAS  /tmp/cch2BZoz.s 			page 11
+
+
+ 447 0024 03EBC303 		add	r3, r3, r3, lsl #3
+ 448 0028 06EBC303 		add	r3, r6, r3, lsl #3
+ 449 002c 1B7A     		ldrb	r3, [r3, #8]	@ zero_extendqisi2
+ 103:Lib/stmlibs/timebase/timebase.c ****             if (handle->intervals[i].callbacks[j]() != STMLIBS_OK) {
+ 450              		.loc 1 103 31 discriminator 1 view .LVU110
+ 451 002e A342     		cmp	r3, r4
+ 452 0030 ECD8     		bhi	.L35
+ 453              	.LBE3:
+ 107:Lib/stmlibs/timebase/timebase.c ****         }
+ 108:Lib/stmlibs/timebase/timebase.c **** 
+ 109:Lib/stmlibs/timebase/timebase.c ****         handle->intervals_flag &= ~(1 << i);
+ 454              		.loc 1 109 9 is_stmt 1 view .LVU111
+ 455              		.loc 1 109 15 is_stmt 0 view .LVU112
+ 456 0032 D6F80C39 		ldr	r3, [r6, #2316]
+ 457              		.loc 1 109 32 view .LVU113
+ 458 0036 23EA0803 		bic	r3, r3, r8
+ 459 003a C6F80C39 		str	r3, [r6, #2316]
+ 460              	.LVL44:
+ 461              	.L33:
+  99:Lib/stmlibs/timebase/timebase.c ****         if (!(handle->intervals_flag & (1 << i)))
+ 462              		.loc 1 99 55 is_stmt 1 discriminator 2 view .LVU114
+ 463 003e 0137     		adds	r7, r7, #1
+ 464              	.LVL45:
+  99:Lib/stmlibs/timebase/timebase.c ****         if (!(handle->intervals_flag & (1 << i)))
+ 465              		.loc 1 99 55 is_stmt 0 discriminator 2 view .LVU115
+ 466 0040 FFB2     		uxtb	r7, r7
+ 467              	.LVL46:
+ 468              	.L32:
+  99:Lib/stmlibs/timebase/timebase.c ****         if (!(handle->intervals_flag & (1 << i)))
+ 469              		.loc 1 99 27 is_stmt 1 discriminator 1 view .LVU116
+  99:Lib/stmlibs/timebase/timebase.c ****         if (!(handle->intervals_flag & (1 << i)))
+ 470              		.loc 1 99 35 is_stmt 0 discriminator 1 view .LVU117
+ 471 0042 96F81039 		ldrb	r3, [r6, #2320]	@ zero_extendqisi2
+  99:Lib/stmlibs/timebase/timebase.c ****         if (!(handle->intervals_flag & (1 << i)))
+ 472              		.loc 1 99 27 discriminator 1 view .LVU118
+ 473 0046 BB42     		cmp	r3, r7
+ 474 0048 0BD9     		bls	.L42
+ 100:Lib/stmlibs/timebase/timebase.c ****             continue;
+ 475              		.loc 1 100 9 is_stmt 1 view .LVU119
+ 100:Lib/stmlibs/timebase/timebase.c ****             continue;
+ 476              		.loc 1 100 21 is_stmt 0 view .LVU120
+ 477 004a D6F80C39 		ldr	r3, [r6, #2316]
+ 100:Lib/stmlibs/timebase/timebase.c ****             continue;
+ 478              		.loc 1 100 43 view .LVU121
+ 479 004e 3D46     		mov	r5, r7
+ 480 0050 4FF00108 		mov	r8, #1
+ 481 0054 08FA07F8 		lsl	r8, r8, r7
+ 100:Lib/stmlibs/timebase/timebase.c ****             continue;
+ 482              		.loc 1 100 12 view .LVU122
+ 483 0058 13EA080F 		tst	r3, r8
+ 484 005c EFD0     		beq	.L33
+ 485              	.LBB4:
+ 103:Lib/stmlibs/timebase/timebase.c ****             if (handle->intervals[i].callbacks[j]() != STMLIBS_OK) {
+ 486              		.loc 1 103 22 view .LVU123
+ 487 005e 0024     		movs	r4, #0
+ 488 0060 DFE7     		b	.L34
+ 489              	.L42:
+ARM GAS  /tmp/cch2BZoz.s 			page 12
+
+
+ 490              	.LBE4:
+ 491              	.LBE2:
+ 110:Lib/stmlibs/timebase/timebase.c ****     }
+ 111:Lib/stmlibs/timebase/timebase.c **** 
+ 112:Lib/stmlibs/timebase/timebase.c ****     return STMLIBS_OK;
+ 492              		.loc 1 112 12 view .LVU124
+ 493 0062 0020     		movs	r0, #0
+ 113:Lib/stmlibs/timebase/timebase.c **** }
+ 494              		.loc 1 113 1 view .LVU125
+ 495 0064 BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 496              	.LVL47:
+ 497              	.L37:
+ 498              		.cfi_def_cfa_offset 0
+ 499              		.cfi_restore 4
+ 500              		.cfi_restore 5
+ 501              		.cfi_restore 6
+ 502              		.cfi_restore 7
+ 503              		.cfi_restore 8
+ 504              		.cfi_restore 14
+  96:Lib/stmlibs/timebase/timebase.c ****     }
+ 505              		.loc 1 96 16 view .LVU126
+ 506 0068 0120     		movs	r0, #1
+ 507              	.LVL48:
+ 508              		.loc 1 113 1 view .LVU127
+ 509 006a 7047     		bx	lr
+ 510              		.cfi_endproc
+ 511              	.LFE238:
+ 513              		.global	__aeabi_uldivmod
+ 514              		.section	.text.TIMEBASE_TimerElapsedCallback,"ax",%progbits
+ 515              		.align	1
+ 516              		.global	TIMEBASE_TimerElapsedCallback
+ 517              		.syntax unified
+ 518              		.thumb
+ 519              		.thumb_func
+ 521              	TIMEBASE_TimerElapsedCallback:
+ 522              	.LVL49:
+ 523              	.LFB239:
+ 114:Lib/stmlibs/timebase/timebase.c **** 
+ 115:Lib/stmlibs/timebase/timebase.c **** void TIMEBASE_TimerElapsedCallback(TIMEBASE_HandleTypeDef *handle, TIM_HandleTypeDef *htim) {
+ 524              		.loc 1 115 93 is_stmt 1 view -0
+ 525              		.cfi_startproc
+ 526              		@ args = 0, pretend = 0, frame = 0
+ 527              		@ frame_needed = 0, uses_anonymous_args = 0
+ 528              		.loc 1 115 93 is_stmt 0 view .LVU129
+ 529 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 530              		.cfi_def_cfa_offset 24
+ 531              		.cfi_offset 3, -24
+ 532              		.cfi_offset 4, -20
+ 533              		.cfi_offset 5, -16
+ 534              		.cfi_offset 6, -12
+ 535              		.cfi_offset 7, -8
+ 536              		.cfi_offset 14, -4
+ 116:Lib/stmlibs/timebase/timebase.c ****     if (handle->htim == htim) {
+ 537              		.loc 1 116 5 is_stmt 1 view .LVU130
+ 538              		.loc 1 116 15 is_stmt 0 view .LVU131
+ 539 0002 0368     		ldr	r3, [r0]
+ 540              		.loc 1 116 8 view .LVU132
+ARM GAS  /tmp/cch2BZoz.s 			page 13
+
+
+ 541 0004 8B42     		cmp	r3, r1
+ 542 0006 00D0     		beq	.L49
+ 543              	.LVL50:
+ 544              	.L43:
+ 117:Lib/stmlibs/timebase/timebase.c ****         ++handle->repetition_counter;
+ 118:Lib/stmlibs/timebase/timebase.c ****         
+ 119:Lib/stmlibs/timebase/timebase.c ****         uint64_t time = (uint64_t)handle->repetition_counter * handle->base_interval_us;
+ 120:Lib/stmlibs/timebase/timebase.c ****         for (uint8_t i = 0; i < handle->intervals_length; ++i) {
+ 121:Lib/stmlibs/timebase/timebase.c ****             if ((time % handle->intervals[i].interval_us) == 0) {
+ 122:Lib/stmlibs/timebase/timebase.c ****                 handle->intervals_flag |= (1 << i);
+ 123:Lib/stmlibs/timebase/timebase.c ****             }
+ 124:Lib/stmlibs/timebase/timebase.c ****         }
+ 125:Lib/stmlibs/timebase/timebase.c ****     }
+ 126:Lib/stmlibs/timebase/timebase.c **** }
+ 545              		.loc 1 126 1 view .LVU133
+ 546 0008 F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 547              	.LVL51:
+ 548              	.L49:
+ 549              		.loc 1 126 1 view .LVU134
+ 550 000a 0546     		mov	r5, r0
+ 551              	.LBB5:
+ 117:Lib/stmlibs/timebase/timebase.c ****         ++handle->repetition_counter;
+ 552              		.loc 1 117 9 is_stmt 1 view .LVU135
+ 117:Lib/stmlibs/timebase/timebase.c ****         ++handle->repetition_counter;
+ 553              		.loc 1 117 17 is_stmt 0 view .LVU136
+ 554 000c 4668     		ldr	r6, [r0, #4]
+ 117:Lib/stmlibs/timebase/timebase.c ****         ++handle->repetition_counter;
+ 555              		.loc 1 117 9 view .LVU137
+ 556 000e 0136     		adds	r6, r6, #1
+ 557 0010 4660     		str	r6, [r0, #4]
+ 119:Lib/stmlibs/timebase/timebase.c ****         for (uint8_t i = 0; i < handle->intervals_length; ++i) {
+ 558              		.loc 1 119 9 is_stmt 1 view .LVU138
+ 119:Lib/stmlibs/timebase/timebase.c ****         for (uint8_t i = 0; i < handle->intervals_length; ++i) {
+ 559              		.loc 1 119 70 is_stmt 0 view .LVU139
+ 560 0012 8768     		ldr	r7, [r0, #8]
+ 119:Lib/stmlibs/timebase/timebase.c ****         for (uint8_t i = 0; i < handle->intervals_length; ++i) {
+ 561              		.loc 1 119 18 view .LVU140
+ 562 0014 A6FB0776 		umull	r7, r6, r6, r7
+ 563              	.LVL52:
+ 120:Lib/stmlibs/timebase/timebase.c ****             if ((time % handle->intervals[i].interval_us) == 0) {
+ 564              		.loc 1 120 9 is_stmt 1 view .LVU141
+ 565              	.LBB6:
+ 120:Lib/stmlibs/timebase/timebase.c ****             if ((time % handle->intervals[i].interval_us) == 0) {
+ 566              		.loc 1 120 14 view .LVU142
+ 120:Lib/stmlibs/timebase/timebase.c ****             if ((time % handle->intervals[i].interval_us) == 0) {
+ 567              		.loc 1 120 22 is_stmt 0 view .LVU143
+ 568 0018 0024     		movs	r4, #0
+ 120:Lib/stmlibs/timebase/timebase.c ****             if ((time % handle->intervals[i].interval_us) == 0) {
+ 569              		.loc 1 120 9 view .LVU144
+ 570 001a 01E0     		b	.L45
+ 571              	.LVL53:
+ 572              	.L46:
+ 120:Lib/stmlibs/timebase/timebase.c ****             if ((time % handle->intervals[i].interval_us) == 0) {
+ 573              		.loc 1 120 59 is_stmt 1 discriminator 2 view .LVU145
+ 574 001c 0134     		adds	r4, r4, #1
+ 575              	.LVL54:
+ 120:Lib/stmlibs/timebase/timebase.c ****             if ((time % handle->intervals[i].interval_us) == 0) {
+ARM GAS  /tmp/cch2BZoz.s 			page 14
+
+
+ 576              		.loc 1 120 59 is_stmt 0 discriminator 2 view .LVU146
+ 577 001e E4B2     		uxtb	r4, r4
+ 578              	.LVL55:
+ 579              	.L45:
+ 120:Lib/stmlibs/timebase/timebase.c ****             if ((time % handle->intervals[i].interval_us) == 0) {
+ 580              		.loc 1 120 31 is_stmt 1 discriminator 1 view .LVU147
+ 120:Lib/stmlibs/timebase/timebase.c ****             if ((time % handle->intervals[i].interval_us) == 0) {
+ 581              		.loc 1 120 39 is_stmt 0 discriminator 1 view .LVU148
+ 582 0020 95F81039 		ldrb	r3, [r5, #2320]	@ zero_extendqisi2
+ 120:Lib/stmlibs/timebase/timebase.c ****             if ((time % handle->intervals[i].interval_us) == 0) {
+ 583              		.loc 1 120 31 discriminator 1 view .LVU149
+ 584 0024 A342     		cmp	r3, r4
+ 585 0026 EFD9     		bls	.L43
+ 121:Lib/stmlibs/timebase/timebase.c ****                 handle->intervals_flag |= (1 << i);
+ 586              		.loc 1 121 13 is_stmt 1 view .LVU150
+ 121:Lib/stmlibs/timebase/timebase.c ****                 handle->intervals_flag |= (1 << i);
+ 587              		.loc 1 121 45 is_stmt 0 view .LVU151
+ 588 0028 04EBC403 		add	r3, r4, r4, lsl #3
+ 589 002c 05EBC303 		add	r3, r5, r3, lsl #3
+ 121:Lib/stmlibs/timebase/timebase.c ****                 handle->intervals_flag |= (1 << i);
+ 590              		.loc 1 121 23 view .LVU152
+ 591 0030 DA68     		ldr	r2, [r3, #12]
+ 592 0032 0023     		movs	r3, #0
+ 593 0034 3846     		mov	r0, r7
+ 594 0036 3146     		mov	r1, r6
+ 595 0038 FFF7FEFF 		bl	__aeabi_uldivmod
+ 596              	.LVL56:
+ 121:Lib/stmlibs/timebase/timebase.c ****                 handle->intervals_flag |= (1 << i);
+ 597              		.loc 1 121 16 view .LVU153
+ 598 003c 1343     		orrs	r3, r3, r2
+ 599 003e EDD1     		bne	.L46
+ 122:Lib/stmlibs/timebase/timebase.c ****             }
+ 600              		.loc 1 122 17 is_stmt 1 view .LVU154
+ 122:Lib/stmlibs/timebase/timebase.c ****             }
+ 601              		.loc 1 122 23 is_stmt 0 view .LVU155
+ 602 0040 D5F80C39 		ldr	r3, [r5, #2316]
+ 122:Lib/stmlibs/timebase/timebase.c ****             }
+ 603              		.loc 1 122 46 view .LVU156
+ 604 0044 0122     		movs	r2, #1
+ 605 0046 A240     		lsls	r2, r2, r4
+ 122:Lib/stmlibs/timebase/timebase.c ****             }
+ 606              		.loc 1 122 40 view .LVU157
+ 607 0048 1343     		orrs	r3, r3, r2
+ 608 004a C5F80C39 		str	r3, [r5, #2316]
+ 609 004e E5E7     		b	.L46
+ 610              	.LBE6:
+ 611              	.LBE5:
+ 612              		.cfi_endproc
+ 613              	.LFE239:
+ 615              		.text
+ 616              	.Letext0:
+ 617              		.file 2 "/usr/arm-none-eabi/include/machine/_default_types.h"
+ 618              		.file 3 "/usr/arm-none-eabi/include/sys/_stdint.h"
+ 619              		.file 4 "Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f446xx.h"
+ 620              		.file 5 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_def.h"
+ 621              		.file 6 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dma.h"
+ 622              		.file 7 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h"
+ARM GAS  /tmp/cch2BZoz.s 			page 15
+
+
+ 623              		.file 8 "Lib/stmlibs/stmlibs_status.h"
+ 624              		.file 9 "Lib/stmlibs/timebase/timebase.h"
+ 625              		.file 10 "Lib/stmlibs/timer_utils/timer_utils.h"
+ARM GAS  /tmp/cch2BZoz.s 			page 16
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 timebase.c
+     /tmp/cch2BZoz.s:26     .text.TIMEBASE_init:00000000 $t
+     /tmp/cch2BZoz.s:32     .text.TIMEBASE_init:00000000 TIMEBASE_init
+     /tmp/cch2BZoz.s:183    .text.TIMEBASE_init:000000a0 $d
+     /tmp/cch2BZoz.s:189    .text.TIMEBASE_add_interval:00000000 $t
+     /tmp/cch2BZoz.s:195    .text.TIMEBASE_add_interval:00000000 TIMEBASE_add_interval
+     /tmp/cch2BZoz.s:318    .text.TIMEBASE_register_callback:00000000 $t
+     /tmp/cch2BZoz.s:324    .text.TIMEBASE_register_callback:00000000 TIMEBASE_register_callback
+     /tmp/cch2BZoz.s:393    .text.TIMEBASE_routine:00000000 $t
+     /tmp/cch2BZoz.s:399    .text.TIMEBASE_routine:00000000 TIMEBASE_routine
+     /tmp/cch2BZoz.s:515    .text.TIMEBASE_TimerElapsedCallback:00000000 $t
+     /tmp/cch2BZoz.s:521    .text.TIMEBASE_TimerElapsedCallback:00000000 TIMEBASE_TimerElapsedCallback
+
+UNDEFINED SYMBOLS
+__aeabi_f2d
+__aeabi_ui2d
+__aeabi_ddiv
+__aeabi_dmul
+__aeabi_d2uiz
+TIM_GetInternalClkFreq
+HAL_TIM_Base_Start_IT
+__aeabi_uldivmod
