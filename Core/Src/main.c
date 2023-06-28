@@ -32,6 +32,7 @@
 #include "logger_wrapper.h"
 #include "can_send_timebase.h"
 #include "can_utils.h"
+#include "utils.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -110,6 +111,12 @@ int main(void)
   logger_init();
   can_init();
   can_send_timebase_init();
+
+  if(UTILS_GET_SENS_TYPE() == SENSE_TYPE_FRONT) {
+    HAL_GPIO_WritePin(LED_STAT1_GPIO_OUT_GPIO_Port, LED_STAT1_GPIO_OUT_Pin, GPIO_PIN_SET);
+  } else {
+    HAL_GPIO_WritePin(LED_ERR_GPIO_OUT_GPIO_Port, LED_ERR_GPIO_OUT_Pin, GPIO_PIN_SET);
+  }
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -121,6 +128,8 @@ int main(void)
       logger_log(LOGGER_INFO, "anal %d: %fv", i, anal_get_pin_mv(i));
     }
     logger_routine();
+
+    
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
