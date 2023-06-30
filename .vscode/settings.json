@@ -3,6 +3,7 @@
     "cortex-debug.openocdPath": "/usr/bin/openocd",
     "files.associations": {
         "anal.h": "c",
-        "memory.h": "c"
+        "memory.h": "c",
+        "sd_sensing.h": "c"
     }
 }

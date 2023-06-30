@@ -2,6 +2,7 @@
 #include "anal.h"
 #include "logger_wrapper.h"
 #include "utils.h"
+#include "gpio_sensing.h"
 
 CAN_TxHeaderTypeDef tx_header;
 
@@ -115,6 +116,13 @@ void can_send_msg(uint32_t id) {
     case SC22_EVO_CANLV_SENS_FRONT_NTC_FRAME_ID:
         break;
     case SC22_EVO_CANLV_SENS_FRONT_SHUTDOWN_STATUS_FRAME_ID:
+        msgs.sens_front_sd_status.is_shut_closed_post_bots = sc22_evo_canlv_sens_front_shutdown_status_is_shut_closed_post_bots_encode(gpio_sens_get(SD_SENS3));
+        msgs.sens_front_sd_status.is_shut_closed_post_cockpit = sc22_evo_canlv_sens_front_shutdown_status_is_shut_closed_post_cockpit_encode(gpio_sens_get(SD_SENS4));
+        msgs.sens_front_sd_status.is_shut_closed_post_inertia = sc22_evo_canlv_sens_front_shutdown_status_is_shut_closed_post_inertia_encode(gpio_sens_get(SD_SENS2));
+        msgs.sens_front_sd_status.is_shut_closed_pre_inertia = sc22_evo_canlv_sens_front_shutdown_status_is_shut_closed_pre_inertia_encode(gpio_sens_get(SD_SENS1));
+
+        tx_header.DLC = sc22_evo_canlv_sens_front_shutdown_status_pack(buffer, &msgs.sens_front_sd_status, SC22_EVO_CANLV_SENS_FRONT_SHUTDOWN_STATUS_LENGTH);
+        can_send(&hcan1, buffer, &tx_header);
         break;
 
     case SC22_EVO_CANLV_SENS_REAR_1_FRAME_ID:
@@ -144,6 +152,14 @@ void can_send_msg(uint32_t id) {
     case SC22_EVO_CANLV_SENS_REAR_NTC_FRAME_ID:
         break;
     case SC22_EVO_CANLV_SENS_REAR_SHUTDOWN_STATUS_FRAME_ID:
+        msgs.sens_rear_sd_status.is_bsp_din_error = sc22_evo_canlv_sens_rear_shutdown_status_is_bsp_din_error_encode(gpio_sens_get(BSPD_SENS));
+        msgs.sens_rear_sd_status.is_shut_closed_post_bspd = sc22_evo_canlv_sens_rear_shutdown_status_is_shut_closed_post_bspd_encode(gpio_sens_get(SD_SENS1));
+        msgs.sens_rear_sd_status.is_shut_closed_post_inv_fr = sc22_evo_canlv_sens_rear_shutdown_status_is_shut_closed_post_inv_fr_encode(gpio_sens_get(SD_SENS4));
+        msgs.sens_rear_sd_status.is_shut_closed_post_inv_mono = sc22_evo_canlv_sens_rear_shutdown_status_is_shut_closed_post_inv_mono_encode(gpio_sens_get(SD_SENS3));
+        msgs.sens_rear_sd_status.is_shut_closed_pre_funghi = sc22_evo_canlv_sens_rear_shutdown_status_is_shut_closed_pre_funghi_encode(gpio_sens_get(SD_SENS2));
+
+        tx_header.DLC = sc22_evo_canlv_sens_rear_shutdown_status_pack(buffer, &msgs.sens_rear_sd_status, SC22_EVO_CANLV_SENS_REAR_SHUTDOWN_STATUS_LENGTH);
+        can_send(&hcan1, buffer, &tx_header);
         break;
     default:
         break;

@@ -43,6 +43,7 @@ Core/Src/can_send_timebase.c \
 Core/Src/can_utils.c \
 Core/Src/dma.c \
 Core/Src/gpio.c \
+Core/Src/gpio_sensing.c \
 Core/Src/logger_wrapper.c \
 Core/Src/main.c \
 Core/Src/sc22_evo_canlv.c \
