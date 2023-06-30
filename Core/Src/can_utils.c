@@ -1,6 +1,7 @@
 #include "can_utils.h"
 #include "anal.h"
 #include "logger_wrapper.h"
+#include "utils.h"
 
 CAN_TxHeaderTypeDef tx_header;
 
@@ -13,10 +14,10 @@ void can_tx_header_init() {
 void can_init(void) {
     CAN_FilterTypeDef filter;
     filter.FilterMode       = CAN_FILTERMODE_IDMASK;
-    filter.FilterIdLow      = 0x8 << 5;                 // Take all ids from 0
-    filter.FilterIdHigh     = 0x8 << 5;  // to 2^11 - 1
-    filter.FilterMaskIdHigh = 0x8 << 5;                 // Don't care on can id bits
-    filter.FilterMaskIdLow  = 0x8 << 5;                 // Don't care on can id bits
+    filter.FilterIdLow      = (0xa + UTILS_GET_SENS_TYPE()) << 5;                 // Take all ids from 0
+    filter.FilterIdHigh     = (0xa + UTILS_GET_SENS_TYPE()) << 5;  // to 2^11 - 1
+    filter.FilterMaskIdHigh = (0xa + UTILS_GET_SENS_TYPE()) << 5;                 // Don't care on can id bits
+    filter.FilterMaskIdLow  = (0xa + UTILS_GET_SENS_TYPE()) << 5;                 // Don't care on can id bits
     /* HAL considers IdLow and IdHigh not as just the ID of the can message but
         as the combination of: 
         STDID + RTR + IDE + 4 most significant bits of EXTID
@@ -27,6 +28,23 @@ void can_init(void) {
     filter.FilterActivation     = ENABLE;
 
     HAL_CAN_ConfigFilter(&hcan1, &filter);
+
+    filter.FilterMode       = CAN_FILTERMODE_IDMASK;
+    filter.FilterIdLow      = SC22_EVO_CANLV_D_SPACE_PERIPHERALS_CTRL_FRAME_ID << 5;                 // Take all ids from 0
+    filter.FilterIdHigh     = SC22_EVO_CANLV_D_SPACE_PERIPHERALS_CTRL_FRAME_ID << 5;  // to 2^11 - 1
+    filter.FilterMaskIdHigh = SC22_EVO_CANLV_D_SPACE_PERIPHERALS_CTRL_FRAME_ID << 5;                 // Don't care on can id bits
+    filter.FilterMaskIdLow  = SC22_EVO_CANLV_D_SPACE_PERIPHERALS_CTRL_FRAME_ID << 5;                 // Don't care on can id bits
+    /* HAL considers IdLow and IdHigh not as just the ID of the can message but
+        as the combination of: 
+        STDID + RTR + IDE + 4 most significant bits of EXTID
+    */
+    filter.FilterFIFOAssignment = CAN_FILTER_FIFO0;
+    filter.FilterBank           = 1;
+    filter.FilterScale          = CAN_FILTERSCALE_16BIT;
+    filter.FilterActivation     = ENABLE;
+
+    HAL_CAN_ConfigFilter(&hcan1, &filter);
+
     HAL_CAN_ActivateNotification(&hcan1, CAN_IT_ERROR | CAN_IT_RX_FIFO0_MSG_PENDING);
     HAL_CAN_Start(&hcan1);
 }
@@ -141,8 +159,14 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
     uint8_t buffer[8] = {0};
 
     if(HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &rx_header, buffer) == HAL_OK) {
-        if(rx_header.StdId == 0x007) {
+        if(rx_header.StdId == 0xa + UTILS_GET_SENS_TYPE() && buffer[0] == 0xff && buffer[1] == 0x00) {
             NVIC_SystemReset();
+        }
+        else if (rx_header.StdId == SC22_EVO_CANLV_D_SPACE_PERIPHERALS_CTRL_FRAME_ID){
+            struct sc22_evo_canlv_d_space_peripherals_ctrl_t periph;
+            sc22_evo_canlv_d_space_peripherals_ctrl_unpack(&periph, buffer, SC22_EVO_CANLV_D_SPACE_PERIPHERALS_CTRL_LENGTH);
+
+            HAL_GPIO_WritePin(BRK_LGHT_GPIO_OUT_GPIO_Port, BRK_LGHT_GPIO_OUT_Pin, periph.brake_light_on_ctrl ? GPIO_PIN_SET : GPIO_PIN_RESET);
         }
     }
 }

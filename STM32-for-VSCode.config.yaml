@@ -95,7 +95,7 @@ suppressMakefileWarning: false
 # Custom makefile rules
 # Here custom makefile rules can be added to the STM32Make.make file
 # an example of how this can be used is commented out below.
-customMakefileRules:
+# customMakefileRules:
 # - command: sayhello
 #   rule: echo "hello"
 #   dependsOn: $(BUILD_DIR)/$(TARGET).elf # can be left out    
@@ -105,3 +105,23 @@ makeFlags:
 # - -O  # use this option when the output of make is mixed up only works for make version 4.0 and upwards
 # - --silent # use this option to silence the output of the build
     
+
+customMakefileRules:
+- command: can_build
+  rule: ""
+  dependsOn: $(BUILD_DIR)/$(TARGET)_shifted.sx
+- command: $(BUILD_DIR)/$(TARGET)_shifted.sx
+  rule: "bin2srec -a $$(grep 'FLASH (rx)      : ORIGIN =' STM32F446RETx_FLASH_shifted.ld | awk '{print $$6}' | sed 's/.$$//') -i $(BUILD_DIR)/$(TARGET)_shifted.bin -o $(BUILD_DIR)/$(TARGET)_shifted.sx"
+  dependsOn: $(BUILD_DIR)/$(TARGET)_shifted.bin # can be left out    
+- command: $(BUILD_DIR)/$(TARGET)_shifted.elf
+  rule: "$(CC) $(OBJECTS) $(MCU) $(ADDITIONALLDFLAGS) -TSTM32F446RETx_FLASH_shifted.ld $(LIBDIR) $(LIBS) -Wl,-Map=$(BUILD_DIR)/$(TARGET).map,--cref -Wl,--gc-sections -o $@"
+  dependsOn: $(OBJECTS) STM32Make.make
+- command: $(BUILD_DIR)/$(TARGET)_shifted.bin
+  rule: $(BIN) $< $@
+  dependsOn: $(BUILD_DIR)/$(TARGET)_shifted.elf | $(BUILD_DIR)
+- command: can_flash_front
+  rule: "bootcommander -t=xcp_can -d=can0 -b=1000000 -tid=ah -rid=184h $(BUILD_DIR)/$(TARGET)_shifted.sx"
+  dependsOn: $(BUILD_DIR)/$(TARGET)_shifted.sx
+- command: can_flash_rear
+  rule: "bootcommander -t=xcp_can -d=can0 -b=1000000 -tid=bh -rid=185h $(BUILD_DIR)/$(TARGET)_shifted.sx"
+  dependsOn: $(BUILD_DIR)/$(TARGET)_shifted.sx

@@ -45,6 +45,90 @@
 			"problemMatcher": [
 				"$gcc"
 			]
+		},
+		{
+			"label": "Build Srec",
+			"type": "process",
+			"command": "/usr/bin/make",
+			"args": [
+				"-f",
+				"STM32Make.make",
+				"-j8",
+				"can_build"
+			],
+			"options": {
+				"cwd": "${workspaceRoot}"
+			},
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"problemMatcher": [
+				"$gcc"
+			]
+		},
+		{
+			"label": "Flash bootloader",
+			"type": "process",
+			"command": "/usr/bin/make",
+			"args": [
+				"-f",
+				"STM32Make.make",
+				"-j8",
+				"flash"
+			],
+			"options": {
+				"cwd": "${workspaceRoot}/openblt_f446re"
+			},
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"problemMatcher": [
+				"$gcc"
+			]
+		},
+		{
+			"label": "Front - Flash Program via CAN",
+			"type": "process",
+			"command": "/usr/bin/make",
+			"args": [
+				"-f",
+				"STM32Make.make",
+				"-j8",
+				"can_flash_front"
+			],
+			"options": {
+				"cwd": "${workspaceRoot}"
+			},
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"problemMatcher": [
+				"$gcc"
+			]
+		},
+		{
+			"label": "Rear - Flash Program via CAN",
+			"type": "process",
+			"command": "/usr/bin/make",
+			"args": [
+				"-f",
+				"STM32Make.make",
+				"-j8",
+				"can_flash_rear"
+			],
+			"options": {
+				"cwd": "${workspaceRoot}"
+			},
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"problemMatcher": [
+				"$gcc"
+			]
 		}
 	]
 }
