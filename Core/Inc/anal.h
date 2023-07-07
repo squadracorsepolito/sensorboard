@@ -4,19 +4,19 @@
 #include "adc.h"
 
 typedef enum {
-    ANAL1 = 0,
+    POT2 = 0,
+    ANAL4,
+    ANAL1,
     ANAL2,
     ANAL3,
-    ANAL4,
-    ANAL5,
     ANAL6,
     ANAL7,
     ANAL8,
-    ANAL9,
-    ANAL10,
     ANAL11,
+    ANAL9,
     POT1,
-    POT2,
+    ANAL5,
+    ANAL10,
     ANAL_PIN_COUNT
 } anal_enum;
 

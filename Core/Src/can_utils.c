@@ -107,8 +107,8 @@ void can_send_msg(uint32_t id) {
     case SC22_EVO_CANLV_SENS_FRONT_3_FRAME_ID:
         msgs.sens_front_3.straingauge_push_fl_voltage_m_v = sc22_evo_canlv_sens_front_3_straingauge_push_fl_voltage_m_v_encode(anal_get_pin_mv(ANAL2));
         msgs.sens_front_3.straingauge_push_fr_voltage_m_v = sc22_evo_canlv_sens_front_3_straingauge_push_fr_voltage_m_v_encode(anal_get_pin_mv(ANAL3));
-        msgs.sens_front_3.straingauge_tie_fl_voltage_m_v =  sc22_evo_canlv_sens_front_3_straingauge_tie_fl_voltage_m_v_encode(anal_get_pin_mv(ANAL4));
-        msgs.sens_front_3.straingauge_tie_fr_voltage_m_v =  sc22_evo_canlv_sens_front_3_straingauge_tie_fr_voltage_m_v_encode(anal_get_pin_mv(ANAL1));
+        msgs.sens_front_3.straingauge_tie_fl_voltage_m_v =  sc22_evo_canlv_sens_front_3_straingauge_tie_fl_voltage_m_v_encode(anal_get_pin_mv(ANAL1));
+        msgs.sens_front_3.straingauge_tie_fr_voltage_m_v =  sc22_evo_canlv_sens_front_3_straingauge_tie_fr_voltage_m_v_encode(anal_get_pin_mv(ANAL4));
 
         tx_header.DLC = sc22_evo_canlv_sens_front_3_pack(buffer, &msgs.sens_front_3, SC22_EVO_CANLV_SENS_FRONT_3_LENGTH);
         can_send(&hcan1, buffer, &tx_header);
