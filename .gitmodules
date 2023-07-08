@@ -4,3 +4,6 @@
 [submodule "Lib/stm32-cmake"]
 	path = Lib/stm32-cmake
 	url = https://github.com/ObKo/stm32-cmake.git
+[submodule "Lib/adc1283"]
+	path = Lib/adc1283
+	url = https://github.com/squadracorsepolito/adc1283.git
