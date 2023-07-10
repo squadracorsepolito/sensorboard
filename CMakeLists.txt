@@ -39,7 +39,7 @@ find_package(HAL COMPONENTS STM32F4 REQUIRED)
 set(PROJECT_INCLUDE_DIRECTORIES 
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/Inc
     ${CMAKE_CURRENT_SOURCE_DIR}/Lib/adc1283
-    ${CMAKE_CURRENT_SOURCE_DIR}/Lib/cantools/
+    ${CMAKE_CURRENT_SOURCE_DIR}/Lib/SCan/SC22EVO/artifacts/c_source/
     ${CMAKE_CURRENT_SOURCE_DIR}/Lib/stmlibs/ 
     ${CMAKE_CURRENT_SOURCE_DIR}/Lib/stmlibs/timebase
     ${CMAKE_CURRENT_SOURCE_DIR}/Lib/stmlibs/timer_utils
@@ -50,7 +50,7 @@ set(PROJECT_INCLUDE_DIRECTORIES
 # globbing recursive search
 file(GLOB_RECURSE PROJECT_C_SOURCES FOLLOW_SYMLINKS
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/Src/*.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/Lib/cantools/*.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/Lib/SCan/SC22EVO/artifacts/c_source/*.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Lib/adc1283/*.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Lib/stmlibs/timebase/*.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Lib/stmlibs/timer_utils/*.c

@@ -8,7 +8,7 @@ GPIO_TypeDef *ports[GPIO_PINS_N] = {
     [BSPD_SENS] = BSPD_ERR_GPIO_IN_GPIO_Port,
 };
 
-uint8_t pins[GPIO_PINS_N] = {
+uint16_t pins[GPIO_PINS_N] = {
     [SD_SENS1] = SHTDWN1_GPIO_IN_Pin,
     [SD_SENS2] = SHTDWN2_GPIO_IN_Pin,
     [SD_SENS3] = SHTDWN3_GPIO_IN_Pin,

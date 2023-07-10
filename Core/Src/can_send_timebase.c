@@ -6,61 +6,61 @@ TIMEBASE_HandleTypeDef can_send_timebase_handle;
 
 STMLIBS_StatusTypeDef front_1_cb(void)
 {
-    can_send_msg(SC22_EVO_CANLV_SENS_FRONT_1_FRAME_ID);
+    can_send_msg(MCB_SENS_FRONT_1_FRAME_ID);
     return STMLIBS_OK;
 }
 
 STMLIBS_StatusTypeDef front_2_cb(void)
 {
-    can_send_msg(SC22_EVO_CANLV_SENS_FRONT_2_FRAME_ID);
+    can_send_msg(MCB_SENS_FRONT_2_FRAME_ID);
     return STMLIBS_OK;
 }
 
 STMLIBS_StatusTypeDef front_3_cb(void)
 {
-    can_send_msg(SC22_EVO_CANLV_SENS_FRONT_3_FRAME_ID);
+    can_send_msg(MCB_SENS_FRONT_3_FRAME_ID);
     return STMLIBS_OK;
 }
 
 STMLIBS_StatusTypeDef front_ntc_cb(void)
 {
-    can_send_msg(SC22_EVO_CANLV_SENS_FRONT_NTC_FRAME_ID);
+    can_send_msg(MCB_SENS_FRONT_NTC_FRAME_ID);
     return STMLIBS_OK;
 }
 
 STMLIBS_StatusTypeDef front_sd_status_cb(void)
 {
-    can_send_msg(SC22_EVO_CANLV_SENS_FRONT_SHUTDOWN_STATUS_FRAME_ID);
+    can_send_msg(MCB_SENS_FRONT_SHUTDOWN_STATUS_FRAME_ID);
     return STMLIBS_OK;
 }
 
 STMLIBS_StatusTypeDef rear_1_cb(void)
 {
-    can_send_msg(SC22_EVO_CANLV_SENS_REAR_1_FRAME_ID);
+    can_send_msg(MCB_SENS_REAR_1_FRAME_ID);
     return STMLIBS_OK;
 }
 
 STMLIBS_StatusTypeDef rear_2_cb(void)
 {
-    can_send_msg(SC22_EVO_CANLV_SENS_REAR_2_FRAME_ID);
+    can_send_msg(MCB_SENS_REAR_2_FRAME_ID);
     return STMLIBS_OK;
 }
 
 STMLIBS_StatusTypeDef rear_3_cb(void)
 {
-    can_send_msg(SC22_EVO_CANLV_SENS_REAR_3_FRAME_ID);
+    can_send_msg(MCB_SENS_REAR_3_FRAME_ID);
     return STMLIBS_OK;
 }
 
 STMLIBS_StatusTypeDef rear_ntc_cb(void)
 {
-    can_send_msg(SC22_EVO_CANLV_SENS_REAR_NTC_FRAME_ID);
+    can_send_msg(MCB_SENS_REAR_NTC_FRAME_ID);
     return STMLIBS_OK;
 }
 
 STMLIBS_StatusTypeDef rear_sd_status_cb(void)
 {
-    can_send_msg(SC22_EVO_CANLV_SENS_REAR_SHUTDOWN_STATUS_FRAME_ID);
+    can_send_msg(MCB_SENS_REAR_SHUTDOWN_STATUS_FRAME_ID);
     return STMLIBS_OK;
 }
 

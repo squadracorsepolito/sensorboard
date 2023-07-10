@@ -31,6 +31,7 @@
 #include "anal.h"
 #include "logger_wrapper.h"
 #include "can_send_timebase.h"
+#include "data_reading_timebase.h"
 #include "can_utils.h"
 #include "utils.h"
 /* USER CODE END Includes */
@@ -111,6 +112,7 @@ int main(void)
   logger_init();
   can_init();
   can_send_timebase_init();
+  DRTB_init();
 
   if(UTILS_GET_SENS_TYPE() == SENSE_TYPE_FRONT) {
     HAL_GPIO_WritePin(LED_STAT1_GPIO_OUT_GPIO_Port, LED_STAT1_GPIO_OUT_Pin, GPIO_PIN_SET);
@@ -123,6 +125,8 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+    DRTB_routine();
+
     can_send_timebase_routine();
     for(int i=0; i<11; ++i) {
       logger_log(LOGGER_INFO, "anal %d: %fv", i, anal_get_pin_mv(i));
