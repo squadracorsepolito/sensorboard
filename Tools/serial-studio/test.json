@@ -1,0 +1,126 @@
+{
+    "frameEnd": ";",
+    "frameStart": " ",
+    "groups": [
+        {
+            "datasets": [
+                {
+                    "alarm": 4,
+                    "fft": false,
+                    "fftSamples": 1024,
+                    "graph": false,
+                    "led": false,
+                    "log": false,
+                    "max": 4,
+                    "min": 0,
+                    "title": "CHNL0",
+                    "units": "Volts",
+                    "value": "%1",
+                    "widget": ""
+                },
+                {
+                    "alarm": 4,
+                    "fft": false,
+                    "fftSamples": 1024,
+                    "graph": false,
+                    "led": false,
+                    "log": false,
+                    "max": 4,
+                    "min": 0,
+                    "title": "CHNL1",
+                    "units": "V",
+                    "value": "%2",
+                    "widget": ""
+                },
+                {
+                    "alarm": 4,
+                    "fft": false,
+                    "fftSamples": 1024,
+                    "graph": false,
+                    "led": false,
+                    "log": false,
+                    "max": 4,
+                    "min": 0,
+                    "title": "CHNL2",
+                    "units": "V",
+                    "value": "%3",
+                    "widget": ""
+                },
+                {
+                    "alarm": 4,
+                    "fft": false,
+                    "fftSamples": 1024,
+                    "graph": false,
+                    "led": false,
+                    "log": false,
+                    "max": 4,
+                    "min": 0,
+                    "title": "CHNL3",
+                    "units": "V",
+                    "value": "%4",
+                    "widget": ""
+                },
+                {
+                    "alarm": 4,
+                    "fft": false,
+                    "fftSamples": 1024,
+                    "graph": false,
+                    "led": false,
+                    "log": false,
+                    "max": 4,
+                    "min": 0,
+                    "title": "CHNL4",
+                    "units": "V",
+                    "value": "%5",
+                    "widget": ""
+                },
+                {
+                    "alarm": 4,
+                    "fft": false,
+                    "fftSamples": 1024,
+                    "graph": false,
+                    "led": false,
+                    "log": false,
+                    "max": 4,
+                    "min": 0,
+                    "title": "CHNL5",
+                    "units": "V",
+                    "value": "%6",
+                    "widget": ""
+                },
+                {
+                    "alarm": 0,
+                    "fft": false,
+                    "fftSamples": 1024,
+                    "graph": false,
+                    "led": false,
+                    "log": false,
+                    "max": 0,
+                    "min": 0,
+                    "title": "CHNL6",
+                    "units": "",
+                    "value": "%7",
+                    "widget": ""
+                },
+                {
+                    "alarm": 0,
+                    "fft": false,
+                    "fftSamples": 1024,
+                    "graph": false,
+                    "led": false,
+                    "log": false,
+                    "max": 0,
+                    "min": 0,
+                    "title": "CHNL7",
+                    "units": "",
+                    "value": "%8",
+                    "widget": ""
+                }
+            ],
+            "title": "ADC1283",
+            "widget": "multiplot"
+        }
+    ],
+    "separator": ",",
+    "title": "test"
+}

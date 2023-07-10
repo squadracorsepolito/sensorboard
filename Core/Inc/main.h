@@ -149,6 +149,12 @@ void Error_Handler(void);
 #define SHTDWN2_GPIO_IN_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
 
+// UART
+#define VCP_UART_Handle huart1 /*!< Virtual COMM Port UART handle */
+#define VCP_TX_LOG_BUF_MAX_TIMEOUT_MS (30U)  //~27ms are necessary to send 400 chars via UART@115kbit/s
+
+// SPI
+#define ADC1283_SPI_Handle hspi2
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus
