@@ -15,6 +15,10 @@
 
 #include "adc1283.h"
 #include "spi.h"
+#include "logger_wrapper.h"
+#include "usart.h"
+#include <stdio.h>
+#include <string.h>
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -47,6 +51,7 @@ void NTC_sampling_callback() {
     const static uint8_t num_channels = sizeof(channels) / sizeof(channels[0]);
     ADC1283_conv_channels(&hadc1283, num_channels, channels, NTC_vdrop_volt);
     for(int i=0; i<NTC_enum_number;i++){
+        //NTC_res_ohm[i]=0.002*NTC_RES_FROM_NTC_VDROP(NTC_vdrop_volt[i],NTC_PULL_UP_RES_OHM,NTC_VDIV_VDD_V)+(1-0.002)*NTC_res_ohm[i];
         NTC_res_ohm[i]=NTC_RES_FROM_NTC_VDROP(NTC_vdrop_volt[i],NTC_PULL_UP_RES_OHM,NTC_VDIV_VDD_V);
     }
 }

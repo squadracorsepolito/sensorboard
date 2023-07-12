@@ -73,7 +73,8 @@ add_compile_options(-Og)
 add_compile_options(-std=gnu17)
 
 # Debug compile options
-
+# Use full assert if we are in debug mode
+add_compile_options($<$<CONFIG:DEBUG>:-DUSE_FULL_ASSERT>)
 # Produce debugging information in DWARF (version2) format
 add_compile_options($<$<CONFIG:DEBUG>:-g> $<$<CONFIG:DEBUG>:-gdwarf-2>)
 
@@ -117,6 +118,7 @@ target_link_libraries(${PROJECT_NAME}
     HAL::STM32::F4::TIMEx
     HAL::STM32::F4::UART
     HAL::STM32::F4::SPI
+    HAL::STM32::F4::IWDG
     STM32::Nano
     STM32::Nano::FloatPrint # Add printf/sprintf/... floating point functionality
     STM32::NoSys # already adds the -lnosys option

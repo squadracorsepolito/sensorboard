@@ -79,7 +79,7 @@ void MX_GPIO_Init(void)
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /*Configure GPIO pins : PCPin PCPin */
-  GPIO_InitStruct.Pin = ANAL5_ADC_IN4_Pin|ANAL10_ADC_IN9_Pin;
+  GPIO_InitStruct.Pin = POT1_ADC_IN14_Pin|POT2_ADC_IN15_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);

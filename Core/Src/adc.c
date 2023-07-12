@@ -261,18 +261,18 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef* adcHandle)
     PB0     ------> ADC1_IN8
     PB1     ------> ADC1_IN9
     */
-    GPIO_InitStruct.Pin = POT1_ADC_IN14_Pin|ANAL5_ADC_IN4_Pin|ANAL10_ADC_IN9_Pin;
+    GPIO_InitStruct.Pin = ANAL11_ADC_IN10_Pin|POT1_ADC_IN14_Pin|POT2_ADC_IN15_Pin;
     GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-    GPIO_InitStruct.Pin = POT2_ADC_IN15_Pin|ANAL4_ADC_IN3_Pin|ANAL1_ADC_IN0_Pin|ANAL2_ADC_IN1_Pin
-                          |ANAL3_ADC_IN2_Pin|ANAL6_ADC_IN5_Pin|ANAL7_ADC_IN6_Pin|ANAL8_ADC_IN7_Pin;
+    GPIO_InitStruct.Pin = ANAL1_ADC_IN0_Pin|ANAL2_ADC_IN1_Pin|ANAL3_ADC_IN2_Pin|ANAL4_ADC_IN3_Pin
+                          |ANAL5_ADC_IN4_Pin|ANAL6_ADC_IN5_Pin|ANAL7_ADC_IN6_Pin|ANAL8_ADC_IN7_Pin;
     GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-    GPIO_InitStruct.Pin = ANAL11_ADC_IN10_Pin|ANAL9_ADC_IN8_Pin;
+    GPIO_InitStruct.Pin = ANAL9_ADC_IN8_Pin|ANAL10_ADC_IN9_Pin;
     GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
@@ -356,12 +356,12 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef* adcHandle)
     PB0     ------> ADC1_IN8
     PB1     ------> ADC1_IN9
     */
-    HAL_GPIO_DeInit(GPIOC, POT1_ADC_IN14_Pin|ANAL5_ADC_IN4_Pin|ANAL10_ADC_IN9_Pin);
+    HAL_GPIO_DeInit(GPIOC, ANAL11_ADC_IN10_Pin|POT1_ADC_IN14_Pin|POT2_ADC_IN15_Pin);
 
-    HAL_GPIO_DeInit(GPIOA, POT2_ADC_IN15_Pin|ANAL4_ADC_IN3_Pin|ANAL1_ADC_IN0_Pin|ANAL2_ADC_IN1_Pin
-                          |ANAL3_ADC_IN2_Pin|ANAL6_ADC_IN5_Pin|ANAL7_ADC_IN6_Pin|ANAL8_ADC_IN7_Pin);
+    HAL_GPIO_DeInit(GPIOA, ANAL1_ADC_IN0_Pin|ANAL2_ADC_IN1_Pin|ANAL3_ADC_IN2_Pin|ANAL4_ADC_IN3_Pin
+                          |ANAL5_ADC_IN4_Pin|ANAL6_ADC_IN5_Pin|ANAL7_ADC_IN6_Pin|ANAL8_ADC_IN7_Pin);
 
-    HAL_GPIO_DeInit(GPIOB, ANAL11_ADC_IN10_Pin|ANAL9_ADC_IN8_Pin);
+    HAL_GPIO_DeInit(GPIOB, ANAL9_ADC_IN8_Pin|ANAL10_ADC_IN9_Pin);
 
     /* ADC1 DMA DeInit */
     HAL_DMA_DeInit(adcHandle->DMA_Handle);
