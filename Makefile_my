@@ -12,7 +12,7 @@
 # Copyright squadracorsepolito.it
 # -----------------------------------------------------------------------------
 
-.PHONY: all build cmake flash clean erase can_flash_rear can_flash_front
+.PHONY: all build build_shifted build_srec cmake flash clean erase flash_can_rear flash_can_front
 
 BUILD_DIR := build
 
@@ -29,6 +29,7 @@ CAN_RX_HEX_ID_REAR = 185
 # Build type: Debug|Release
 # By default = Debug
 BUILD_TYPE ?= Debug
+IS_SHIFTED ?= OFF
 
 
 # Handy renames 
@@ -51,11 +52,12 @@ ${BUILD_DIR}/Makefile:
 		-B${BUILD_DIR} \
 		-DPROJECT_NAME=${PROJECT_NAME} \
 		-DCMAKE_BUILD_TYPE=${BUILD_TYPE} \
+		-DBOOTLOADER_SPACE_EN=${IS_SHIFTED} \
 		-DCMAKE_EXPORT_COMPILE_COMMANDS=true 
 
 cmake: ${BUILD_DIR}/Makefile
-	# Always touch the CMakeList so that it gets re-evaluated on the next build
-	# Use this hack for GLOBS
+    # Always touch the CMakeList so that it gets re-evaluated on the next build
+    # Use this hack for GLOBS
 	touch ./CMakeLists.txt
 
 build: cmake
@@ -64,6 +66,8 @@ build: cmake
     # --no-print-directory: don't show the above directory change in the log
 	$(MAKE) -j -C ${BUILD_DIR} --no-print-directory
 
+build_shifted: $(eval IS_SHIFTED=ON)
+build_shifted: build
 
 #######################################
 # clean
@@ -97,21 +101,29 @@ flash: $(BUILD_DIR)/$(TARGET).elf
 #	"/run/current-system/sw/bin/openocd" -f ./openocd.cfg -c "init; reset halt; stm32f4x mass_erase 0; exit"
 
 
+#######################################
+# build srec binary file
+#######################################
+$(BUILD_DIR)/$(TARGET)_shifted.hex: build_shifted
+$(BUILD_DIR)/$(TARGET)_shifted.elf: build_shifted
+$(BUILD_DIR)/$(TARGET)_shifted.bin: build_shifted
+
 $(BUILD_DIR)/$(TARGET)_shifted.sx : $(BUILD_DIR)/$(TARGET)_shifted.bin
 	bin2srec -a $$(grep 'FLASH (rx)      : ORIGIN =' STM32F446RETx_FLASH_shifted.ld | awk '{print $$6}' | sed 's/.$$//') \
 		-i $(BUILD_DIR)/$(TARGET)_shifted.bin -o $(BUILD_DIR)/$(TARGET)_shifted.sx
 
+build_srec: $(BUILD_DIR)/$(TARGET)_shifted.sx 
 
 #######################################
 # can flash rear
 #######################################
-can_flash_rear: $(BUILD_DIR)/$(TARGET)_shifted.sx
-	bootcommander -t=xcp_can -d=can0 -b=1000000 -tid=$(CAN_TX_HEX_ID_REAR)h -rid=$(CAN_RX_HEX_ID_REAR)h $(BUILD_DIR)/$(TARGET)_shifted.sx
+flash_can_rear: build_srec
+	BootCommander -t=xcp_can -d=can0 -b=1000000 -tid=$(CAN_TX_HEX_ID_REAR)h -rid=$(CAN_RX_HEX_ID_REAR)h $(BUILD_DIR)/$(TARGET)_shifted.sx
 
 #######################################
 # can flash front
 #######################################
-can_flash_front: $(BUILD_DIR)/$(TARGET)_shifted.sx
-	bootcommander -t=xcp_can -d=can0 -b=1000000 -tid=$(CAN_TX_HEX_ID_FRONT)h -rid=$(CAN_RX_HEX_ID_REAR)h $(BUILD_DIR)/$(TARGET)_shifted.sx
+flash_can_front: build_srec
+	BootCommander -t=xcp_can -d=can0 -b=1000000 -tid=$(CAN_TX_HEX_ID_FRONT)h -rid=$(CAN_RX_HEX_ID_FRONT)h $(BUILD_DIR)/$(TARGET)_shifted.sx
 
 

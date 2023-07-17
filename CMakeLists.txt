@@ -15,6 +15,9 @@
 # Necessary tag
 cmake_minimum_required(VERSION 3.16)
 
+# Compile option variables
+set(BOOTLOADER_SPACE_EN ON CACHE BOOL "Enable additional space before the binary for fitting the bootloader")
+
 # Path where CMSIS/HAL will be searched
 cmake_path(SET STM32_CUBE_F4_PATH "./")
 
@@ -79,26 +82,37 @@ add_compile_options($<$<CONFIG:DEBUG>:-DUSE_FULL_ASSERT>)
 add_compile_options($<$<CONFIG:DEBUG>:-g> $<$<CONFIG:DEBUG>:-gdwarf-2>)
 
 # Generate the EXECUTABLE TARGET with the same name as the project
-add_executable(${PROJECT_NAME})
 
-target_compile_definitions(${PROJECT_NAME} PRIVATE
+if(${BOOTLOADER_SPACE_EN}) 
+    set(EXECUTABLE_NAME "${PROJECT_NAME}_shifted")
+else()
+    set(EXECUTABLE_NAME ${PROJECT_NAME})
+endif()
+message("Adding Executable: ${EXECUTABLE_NAME}")
+add_executable(${EXECUTABLE_NAME})
+
+target_compile_definitions(${EXECUTABLE_NAME} PRIVATE
     STM32F446xx # must add this option because the target CMSIS::STM32::F446xx is not used since it brings with it the startup script
     USE_HAL_DRIVER)
 
 # Add C and ASM target sources 
-target_sources(${PROJECT_NAME} PRIVATE
+target_sources(${EXECUTABLE_NAME} PRIVATE
     ${PROJECT_ASM_SOURCES}
     ${PROJECT_C_SOURCES})
 
 # Add include directories for the target compilation
-target_include_directories(${PROJECT_NAME} PRIVATE
+target_include_directories(${EXECUTABLE_NAME} PRIVATE
     ${PROJECT_INCLUDE_DIRECTORIES}
 )
 
 # Add custom linker script (works only if you don't add target CMSIS::STM32::<full_device>)
-stm32_add_linker_script(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/STM32F446RETx_FLASH.ld)
+if(${BOOTLOADER_SPACE_EN})
+    stm32_add_linker_script(${EXECUTABLE_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/STM32F446RETx_FLASH_shifted.ld)
+else()
+    stm32_add_linker_script(${EXECUTABLE_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/STM32F446RETx_FLASH.ld)
+endif()
 
-target_link_libraries(${PROJECT_NAME}
+target_link_libraries(${EXECUTABLE_NAME}
     #CMSIS::STM32::F446RE
     #CMSIS::STM32::F446xx # this target adds common includes, compiler flags and startup file (TODO: change to STM32::F4, startup file should be added manually)
     CMSIS::STM32::F4
@@ -127,9 +141,7 @@ target_link_libraries(${PROJECT_NAME}
     #-lnosys # automatycally added by linking to NoSys
 )
 
-stm32_generate_binary_file(${PROJECT_NAME})
-stm32_generate_hex_file(${PROJECT_NAME})
+stm32_generate_binary_file(${EXECUTABLE_NAME})
+stm32_generate_hex_file(${EXECUTABLE_NAME})
 
-stm32_print_size_of_target(${PROJECT_NAME})
-
-#add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD COMMAND ls -al "$<TARGET_FILE:${PROJECT_NAME}>" VERBATIM)
+stm32_print_size_of_target(${EXECUTABLE_NAME})

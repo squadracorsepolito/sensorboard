@@ -134,7 +134,12 @@ int main(void)
         if (HAL_GetTick() >= cnt500ms ) {
             cnt500ms = HAL_GetTick() + 500U;
             NTC_sampling_callback();
+
+            // toggle status led
             HAL_GPIO_TogglePin(LED_STAT2_GPIO_OUT_GPIO_Port,LED_STAT2_GPIO_OUT_Pin);
+            
+            logger_log(LOGGER_INFO, "%u %u %u %u %u %u", NTC_adc_raw[0],NTC_adc_raw[1],NTC_adc_raw[2],NTC_adc_raw[3],NTC_adc_raw[4],NTC_adc_raw[5]);
+            logger_log(LOGGER_INFO, "anal8 %f",anal_get_pin_mv(ANAL8));
             logger_log(LOGGER_INFO, "[%fV  %fOhm] [%fV  %fOhm] [%fV  %fOhm] [%fV  %fOhm] [%fV  %fOhm] [%fV  %fOhm]", 
                        NTC_get_vdrop(0), NTC_get_res(0),
                        NTC_get_vdrop(1), NTC_get_res(1),
