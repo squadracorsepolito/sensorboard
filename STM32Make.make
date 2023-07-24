@@ -45,6 +45,7 @@ Core/Src/data_reading_timebase.c \
 Core/Src/dma.c \
 Core/Src/gpio.c \
 Core/Src/gpio_sensing.c \
+Core/Src/iwdg.c \
 Core/Src/logger_wrapper.c \
 Core/Src/main.c \
 Core/Src/ntc.c \
@@ -67,6 +68,7 @@ Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_flash.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_flash_ex.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_flash_ramfunc.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.c \
+Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_iwdg.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pwr.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pwr_ex.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.c \

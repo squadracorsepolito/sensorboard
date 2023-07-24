@@ -21,6 +21,7 @@
 #include "adc.h"
 #include "can.h"
 #include "dma.h"
+#include "iwdg.h"
 #include "spi.h"
 #include "tim.h"
 #include "usart.h"
@@ -29,10 +30,11 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "anal.h"
-#include "logger_wrapper.h"
 #include "can_send_timebase.h"
-#include "data_reading_timebase.h"
 #include "can_utils.h"
+#include "data_reading_timebase.h"
+#include "logger_wrapper.h"
+#include "ntc.h"
 #include "utils.h"
 /* USER CODE END Includes */
 
@@ -107,37 +109,57 @@ int main(void)
   MX_TIM2_Init();
   MX_TIM6_Init();
   MX_TIM7_Init();
+  MX_IWDG_Init();
   /* USER CODE BEGIN 2 */
-  HAL_TIM_Base_Start(&htim2);
-  anal_init();
-  logger_init();
-  can_init();
-  can_send_timebase_init();
-  DRTB_init();
+    HAL_TIM_Base_Start(&htim2);
+    anal_init();
+    logger_init();
+    can_init();
+    can_send_timebase_init();
+    //DRTB_init();
 
-  if(UTILS_GET_SENS_TYPE() == SENSE_TYPE_FRONT) {
-    HAL_GPIO_WritePin(LED_STAT1_GPIO_OUT_GPIO_Port, LED_STAT1_GPIO_OUT_Pin, GPIO_PIN_SET);
-  } else {
-    HAL_GPIO_WritePin(LED_ERR_GPIO_OUT_GPIO_Port, LED_ERR_GPIO_OUT_Pin, GPIO_PIN_SET);
-  }
+    if (UTILS_GET_SENS_TYPE() == SENSE_TYPE_FRONT) {
+        HAL_GPIO_WritePin(LED_STAT1_GPIO_OUT_GPIO_Port, LED_STAT1_GPIO_OUT_Pin, GPIO_PIN_SET);
+    } else {
+        HAL_GPIO_WritePin(LED_ERR_GPIO_OUT_GPIO_Port, LED_ERR_GPIO_OUT_Pin, GPIO_PIN_SET);
+    }
+    uint32_t cnt500ms = HAL_GetTick() + 500U;
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  while (1)
-  {
-    DRTB_routine();
+    while (1) {
+        //DRTB_routine();
 
-    can_send_timebase_routine();
-    for(int i=0; i<11; ++i) {
-      logger_log(LOGGER_INFO, "anal %d: %fv", i, anal_get_pin_mv(i));
-    }
-    logger_routine();
-    
+        if (HAL_GetTick() >= cnt500ms ) {
+            cnt500ms = HAL_GetTick() + 500U;
+            NTC_sampling_callback();
+
+            // toggle status led
+            HAL_GPIO_TogglePin(LED_STAT2_GPIO_OUT_GPIO_Port,LED_STAT2_GPIO_OUT_Pin);
+            
+            logger_log(LOGGER_INFO, "%u %u %u %u %u %u", NTC_adc_raw[0],NTC_adc_raw[1],NTC_adc_raw[2],NTC_adc_raw[3],NTC_adc_raw[4],NTC_adc_raw[5]);
+            logger_log(LOGGER_INFO, "anal8 %f",anal_get_pin_mv(ANAL8));
+            logger_log(LOGGER_INFO, "[%fV  %fOhm] [%fV  %fOhm] [%fV  %fOhm] [%fV  %fOhm] [%fV  %fOhm] [%fV  %fOhm]", 
+                       NTC_get_vdrop(0), NTC_get_res(0),
+                       NTC_get_vdrop(1), NTC_get_res(1),
+                       NTC_get_vdrop(2), NTC_get_res(2),
+                       NTC_get_vdrop(3), NTC_get_res(3),
+                       NTC_get_vdrop(4), NTC_get_res(4),
+                       NTC_get_vdrop(5), NTC_get_res(5));
+        }
+
+        can_send_timebase_routine();
+        //for(int i=0; i<11; ++i) {
+        //  logger_log(LOGGER_INFO, "anal %d: %fv", i, anal_get_pin_mv(i));
+        //}
+        logger_routine();
+
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-  }
+        HAL_IWDG_Refresh(&hiwdg); // refresh watchdog ~500ms timeout
+    }// end while(1)
   /* USER CODE END 3 */
 }
 
@@ -158,8 +180,9 @@ void SystemClock_Config(void)
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_LSI|RCC_OSCILLATORTYPE_HSE;
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
+  RCC_OscInitStruct.LSIState = RCC_LSI_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
   RCC_OscInitStruct.PLL.PLLM = 4;
@@ -205,11 +228,10 @@ void SystemClock_Config(void)
 void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
-  /* User can add his own implementation to report the HAL error return state */
-  __disable_irq();
-  while (1)
-  {
-  }
+    /* User can add his own implementation to report the HAL error return state */
+    __disable_irq();
+    while (1) {
+    }
   /* USER CODE END Error_Handler_Debug */
 }
 
@@ -224,8 +246,9 @@ void Error_Handler(void)
 void assert_failed(uint8_t *file, uint32_t line)
 {
   /* USER CODE BEGIN 6 */
-  /* User can add his own implementation to report the file name and line number,
-     ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
+    /* User can add his own implementation to report the file name and line number,
+     es: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
+    logger_log(LOGGER_ERROR,"Error in file: %s on line %d",file,line);
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */

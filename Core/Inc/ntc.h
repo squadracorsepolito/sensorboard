@@ -26,6 +26,8 @@ enum NTC_enum { NTC1, NTC2, NTC3, NTC4, NTC5, NTC6, NTC_enum_number };
 #define NTC_VDIV_VDD_V      (3.3f)
 
 /* Exported variables --------------------------------------------------------*/
+extern uint16_t NTC_adc_raw [NTC_enum_number];
+
 /* Exported macros -----------------------------------------------------------*/
 #define NTC_RES_FROM_NTC_VDROP(_NTC_VDROP_V_, _PULL_UP_RES_OHM_, _VDIV_V_) \
     ((float)(_NTC_VDROP_V_ / (float)(_VDIV_V_ - _NTC_VDROP_V_) * _PULL_UP_RES_OHM_))

@@ -16,6 +16,8 @@
 #include "timebase.h"
 #include "tim.h"
 
+#define DRTB_TIM_HANDLE htim7
+extern volatile uint32_t drtb_counter;
 void DRTB_init(void);
 void DRTB_routine(void);
 void DRTB_timerElapsed_irq(TIM_HandleTypeDef *htim);
