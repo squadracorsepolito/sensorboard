@@ -36,7 +36,7 @@ void DRTB_init(void) {
     // Initialize timbase to 1000us(1ms) base update period
     TIMEBASE_init(&DRTB_handle, &htim7, 1000);
     // Add an event every 100 timebase update events (100ms)
-    TIMEBASE_add_interval(&DRTB_handle, 100, &interval);
+    TIMEBASE_add_interval(&DRTB_handle, 10000, &interval);
     // Register a callback to that event
     TIMEBASE_register_callback(&DRTB_handle, interval, _DRTB_1000us_callback);
 }

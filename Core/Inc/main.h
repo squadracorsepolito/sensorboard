@@ -57,10 +57,10 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define SHTDWN3_GPIO_IN_Pin GPIO_PIN_13
-#define SHTDWN3_GPIO_IN_GPIO_Port GPIOC
-#define SHTDWN4_GPIO_IN_Pin GPIO_PIN_14
-#define SHTDWN4_GPIO_IN_GPIO_Port GPIOC
+#define SHTDWN2_GPIO_IN_Pin GPIO_PIN_13
+#define SHTDWN2_GPIO_IN_GPIO_Port GPIOC
+#define SHTDWN1_GPIO_IN_Pin GPIO_PIN_14
+#define SHTDWN1_GPIO_IN_GPIO_Port GPIOC
 #define ADC1283IPT_nCS_GPIO_OUT_Pin GPIO_PIN_15
 #define ADC1283IPT_nCS_GPIO_OUT_GPIO_Port GPIOC
 #define POT1_ADC_IN14_Pin GPIO_PIN_0
@@ -143,10 +143,10 @@ void Error_Handler(void);
 #define BSPD_ERR_GPIO_IN_GPIO_Port GPIOB
 #define BRK_LGHT_GPIO_OUT_Pin GPIO_PIN_7
 #define BRK_LGHT_GPIO_OUT_GPIO_Port GPIOB
-#define SHTDWN1_GPIO_IN_Pin GPIO_PIN_8
-#define SHTDWN1_GPIO_IN_GPIO_Port GPIOB
-#define SHTDWN2_GPIO_IN_Pin GPIO_PIN_9
-#define SHTDWN2_GPIO_IN_GPIO_Port GPIOB
+#define SHTDWN4_GPIO_IN_Pin GPIO_PIN_8
+#define SHTDWN4_GPIO_IN_GPIO_Port GPIOB
+#define SHTDWN3_GPIO_IN_Pin GPIO_PIN_9
+#define SHTDWN3_GPIO_IN_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
 
 // UART

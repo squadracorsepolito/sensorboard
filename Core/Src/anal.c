@@ -2,7 +2,10 @@
 
 #include <memory.h>
 
-#define ANAL_SMOOTH_ALPHA 0.1f
+#define ANAL_SMOOTH_ALPHA   0.1f
+#define ANAL_DIVIDER_RS     4.99e3f
+#define ANAL_DIVIDER_RP     2.7e3f
+
 uint16_t anal_data[ANAL_PIN_COUNT];
 
 uint16_t anal_dma_data[ANAL_PIN_COUNT];
@@ -32,5 +35,5 @@ uint16_t anal_get_pin_raw(uint8_t index) {
 }
 
 float anal_get_pin_mv(uint8_t index) {
-    return (float)anal_data[index] * 3300 / 4095;
+    return (float)anal_data[index] * 3300 / 4095 * (ANAL_DIVIDER_RS + ANAL_DIVIDER_RP) / ANAL_DIVIDER_RS;
 }

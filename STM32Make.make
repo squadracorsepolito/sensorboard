@@ -41,11 +41,13 @@ Core/Src/anal.c \
 Core/Src/can.c \
 Core/Src/can_send_timebase.c \
 Core/Src/can_utils.c \
+Core/Src/data_reading_timebase.c \
 Core/Src/dma.c \
 Core/Src/gpio.c \
 Core/Src/gpio_sensing.c \
 Core/Src/logger_wrapper.c \
 Core/Src/main.c \
+Core/Src/ntc.c \
 Core/Src/sc22_evo_canlv.c \
 Core/Src/spi.c \
 Core/Src/stm32f4xx_hal_msp.c \
@@ -74,6 +76,8 @@ Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim_ex.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_adc.c \
+Lib/SCan/SC22EVO/artifacts/c_source/mcb.c \
+Lib/adc1283/adc1283.c \
 Lib/stmlibs/circular_buffer/circular_buffer.c \
 Lib/stmlibs/error_utils/error_utils.c \
 Lib/stmlibs/fsm/fsm.c \
@@ -158,6 +162,11 @@ C_INCLUDES =  \
 -IDrivers/CMSIS/Include \
 -IDrivers/STM32F4xx_HAL_Driver/Inc \
 -IDrivers/STM32F4xx_HAL_Driver/Inc/Legacy \
+-ILib/SCan/SC22EVO/artifacts/c_source \
+-ILib/adc1283 \
+-ILib/stm32-cmake/tests/bsp \
+-ILib/stm32-cmake/tests/fetch \
+-ILib/stm32-cmake/tests/hal \
 -ILib/stmlibs \
 -ILib/stmlibs/circular_buffer \
 -ILib/stmlibs/critical_section \

@@ -85,7 +85,9 @@ includeDirectories:
 sourceFiles:  
   - Src/**
   - Core/Src/**
-  - Lib/**
+  - Lib/adc1283/**
+  - Lib/SCan/**
+  - Lib/stmlibs/**
 
 
 # When no makefile is present it will show a warning pop-up.

@@ -106,6 +106,7 @@ int main(void)
   MX_TIM12_Init();
   MX_TIM2_Init();
   MX_TIM6_Init();
+  MX_TIM7_Init();
   /* USER CODE BEGIN 2 */
   HAL_TIM_Base_Start(&htim2);
   anal_init();
@@ -132,7 +133,6 @@ int main(void)
       logger_log(LOGGER_INFO, "anal %d: %fv", i, anal_get_pin_mv(i));
     }
     logger_routine();
-
     
     /* USER CODE END WHILE */
 

@@ -31,7 +31,7 @@ void can_init(void) {
 
     HAL_CAN_ConfigFilter(&hcan1, &filter);
 
-    filter.FilterMode       = CAN_FILTERMODE_IDMASK;
+    filter.FilterMode       = CAN_FILTERMODE_IDLIST;
     filter.FilterIdLow      = MCB_D_SPACE_PERIPHERALS_CTRL_FRAME_ID << 5;                 // Take all ids from 0
     filter.FilterIdHigh     = MCB_D_SPACE_PERIPHERALS_CTRL_FRAME_ID << 5;  // to 2^11 - 1
     filter.FilterMaskIdHigh = MCB_D_SPACE_PERIPHERALS_CTRL_FRAME_ID << 5;                 // Don't care on can id bits
@@ -201,7 +201,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
             struct mcb_d_space_peripherals_ctrl_t periph;
             mcb_d_space_peripherals_ctrl_unpack(&periph, buffer, MCB_D_SPACE_PERIPHERALS_CTRL_LENGTH);
 
-            HAL_GPIO_WritePin(BRK_LGHT_GPIO_OUT_GPIO_Port, BRK_LGHT_GPIO_OUT_Pin, periph.brake_light_on_ctrl ? GPIO_PIN_SET : GPIO_PIN_RESET);
+            HAL_GPIO_WritePin(BRK_LGHT_GPIO_OUT_GPIO_Port, BRK_LGHT_GPIO_OUT_Pin, periph.brake_light_on_ctrl ? GPIO_PIN_RESET : GPIO_PIN_SET);
         }
     }
 }
