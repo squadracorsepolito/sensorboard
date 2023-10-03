@@ -95,7 +95,6 @@ void can_send_msg(uint32_t id) {
         msgs.sens_front_1.throttle_1_voltage_m_v = mcb_sens_front_1_throttle_1_voltage_m_v_encode(anal_get_pin_mv(ANAL9));
 
         tx_header.DLC = mcb_sens_front_1_pack(buffer, &msgs.sens_front_1, MCB_SENS_FRONT_1_LENGTH);
-        can_send(&hcan1, buffer, &tx_header);
         break;
     case MCB_SENS_FRONT_2_FRAME_ID:
         msgs.sens_front_2.brake_pressure_voltage_m_v = mcb_sens_front_2_brake_pressure_voltage_m_v_encode(anal_get_pin_mv(ANAL7));
@@ -103,7 +102,6 @@ void can_send_msg(uint32_t id) {
         msgs.sens_front_2.pot_fr_voltage_m_v = mcb_sens_front_2_pot_fr_voltage_m_v_encode(anal_get_pin_mv(POT2));
 
         tx_header.DLC = mcb_sens_front_2_pack(buffer, &msgs.sens_front_2, MCB_SENS_FRONT_2_LENGTH);
-        can_send(&hcan1, buffer, &tx_header);
         break;
     case MCB_SENS_FRONT_3_FRAME_ID:
         msgs.sens_front_3.straingauge_push_fl_voltage_m_v = mcb_sens_front_3_straingauge_push_fl_voltage_m_v_encode(anal_get_pin_mv(ANAL2));
@@ -112,7 +110,6 @@ void can_send_msg(uint32_t id) {
         msgs.sens_front_3.straingauge_tie_fr_voltage_m_v =  mcb_sens_front_3_straingauge_tie_fr_voltage_m_v_encode(anal_get_pin_mv(ANAL4));
 
         tx_header.DLC = mcb_sens_front_3_pack(buffer, &msgs.sens_front_3, MCB_SENS_FRONT_3_LENGTH);
-        can_send(&hcan1, buffer, &tx_header);
         break;
     case MCB_SENS_FRONT_NTC_FRAME_ID:
         msgs.sens_front_ntc.ntc_1_resistance      = mcb_sens_front_ntc_ntc_1_resistance_encode(NTC_get_res(NTC1));
@@ -123,7 +120,6 @@ void can_send_msg(uint32_t id) {
         msgs.sens_front_ntc.ntc_spare2_resistance = mcb_sens_front_ntc_ntc_spare2_resistance_encode(NTC_get_res(NTC6));
 
         tx_header.DLC = mcb_sens_front_ntc_pack(buffer, &msgs.sens_front_ntc, MCB_SENS_FRONT_NTC_LENGTH);
-        can_send(&hcan1, buffer, &tx_header);
         break;
     case MCB_SENS_FRONT_SHUTDOWN_STATUS_FRAME_ID:
         msgs.sens_front_sd_status.is_shut_closed_post_bots = mcb_sens_front_shutdown_status_is_shut_closed_post_bots_encode(gpio_sens_get(SD_SENS3));
@@ -132,7 +128,6 @@ void can_send_msg(uint32_t id) {
         msgs.sens_front_sd_status.is_shut_closed_pre_inertia = mcb_sens_front_shutdown_status_is_shut_closed_pre_inertia_encode(gpio_sens_get(SD_SENS1));
 
         tx_header.DLC = mcb_sens_front_shutdown_status_pack(buffer, &msgs.sens_front_sd_status, MCB_SENS_FRONT_SHUTDOWN_STATUS_LENGTH);
-        can_send(&hcan1, buffer, &tx_header);
         break;
 
     case MCB_SENS_REAR_1_FRAME_ID:
@@ -141,14 +136,12 @@ void can_send_msg(uint32_t id) {
         msgs.sens_rear_1.pot_rr_voltage_rr = mcb_sens_rear_1_pot_rr_voltage_rr_encode(anal_get_pin_mv(POT1));
 
         tx_header.DLC = mcb_sens_rear_1_pack(buffer, &msgs.sens_rear_1, MCB_SENS_REAR_1_LENGTH);
-        can_send(&hcan1, buffer, &tx_header);
         break;
     case MCB_SENS_REAR_2_FRAME_ID:
         msgs.sens_rear_2.cooling_pressure_dx_voltage_m_v = mcb_sens_rear_2_cooling_pressure_dx_voltage_m_v_encode(anal_get_pin_mv(ANAL11));
         msgs.sens_rear_2.cooling_pressure_sx_voltage_m_v = mcb_sens_rear_2_cooling_pressure_sx_voltage_m_v_encode(anal_get_pin_mv(ANAL7));
 
         tx_header.DLC = mcb_sens_rear_2_pack(buffer, &msgs.sens_rear_2, MCB_SENS_REAR_2_LENGTH);
-        can_send(&hcan1, buffer, &tx_header);
         break;
     case MCB_SENS_REAR_3_FRAME_ID:
         msgs.sens_rear_3.straingauge_push_rl_voltage_m_v = mcb_sens_rear_3_straingauge_push_rl_voltage_m_v_encode(anal_get_pin_mv(ANAL1));
@@ -157,7 +150,6 @@ void can_send_msg(uint32_t id) {
         msgs.sens_rear_3.straingauge_tie_rr_voltage_m_v = mcb_sens_rear_3_straingauge_tie_rr_voltage_m_v_encode(anal_get_pin_mv(ANAL2));
 
         tx_header.DLC = mcb_sens_rear_2_pack(buffer, &msgs.sens_rear_2, MCB_SENS_REAR_2_LENGTH);
-        can_send(&hcan1, buffer, &tx_header);
         break;
     case MCB_SENS_REAR_NTC_FRAME_ID:
         msgs.sens_rear_ntc.ntc_1_resistance = mcb_sens_rear_ntc_ntc_1_resistance_encode(NTC_get_res(NTC1));
@@ -168,7 +160,6 @@ void can_send_msg(uint32_t id) {
         msgs.sens_rear_ntc.ntc_6_resistance = mcb_sens_rear_ntc_ntc_6_resistance_encode(NTC_get_res(NTC6));
 
         tx_header.DLC = mcb_sens_rear_ntc_pack(buffer, &msgs.sens_rear_ntc, MCB_SENS_REAR_NTC_LENGTH);
-        can_send(&hcan1, buffer, &tx_header);
         break;
     case MCB_SENS_REAR_SHUTDOWN_STATUS_FRAME_ID:
         msgs.sens_rear_sd_status.is_bsp_din_error = mcb_sens_rear_shutdown_status_is_bsp_din_error_encode(gpio_sens_get(BSPD_SENS));
@@ -178,11 +169,12 @@ void can_send_msg(uint32_t id) {
         msgs.sens_rear_sd_status.is_shut_closed_pre_funghi = mcb_sens_rear_shutdown_status_is_shut_closed_pre_funghi_encode(gpio_sens_get(SD_SENS2));
 
         tx_header.DLC = mcb_sens_rear_shutdown_status_pack(buffer, &msgs.sens_rear_sd_status, MCB_SENS_REAR_SHUTDOWN_STATUS_LENGTH);
-        can_send(&hcan1, buffer, &tx_header);
         break;
     default:
-        break;
+        return;
     }
+    
+    can_send(&hcan1, buffer, &tx_header);
 }
 
 void HAL_CAN_ErrorCallback(CAN_HandleTypeDef *hcan) {
@@ -201,7 +193,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
             struct mcb_d_space_peripherals_ctrl_t periph;
             mcb_d_space_peripherals_ctrl_unpack(&periph, buffer, MCB_D_SPACE_PERIPHERALS_CTRL_LENGTH);
 
-            HAL_GPIO_WritePin(BRK_LGHT_GPIO_OUT_GPIO_Port, BRK_LGHT_GPIO_OUT_Pin, periph.brake_light_on_ctrl ? GPIO_PIN_RESET : GPIO_PIN_SET);
+            HAL_GPIO_WritePin(BRK_LGHT_GPIO_OUT_GPIO_Port, BRK_LGHT_GPIO_OUT_Pin, periph.brake_light_on_ctrl ? GPIO_PIN_SET : GPIO_PIN_RESET);
         }
     }
 }

@@ -68,9 +68,9 @@ void can_send_timebase_init(void)
 {
     uint8_t interval;
 
-    TIMEBASE_init(&can_send_timebase_handle, &CAN_SEND_TIMEBASE_TIM_HANDLE, 20000);
+    TIMEBASE_init(&can_send_timebase_handle, &CAN_SEND_TIMEBASE_TIM_HANDLE, 10000);
 
-    TIMEBASE_add_interval(&can_send_timebase_handle, 20000, &interval);
+    TIMEBASE_add_interval(&can_send_timebase_handle, 10000, &interval);
     if (UTILS_GET_SENS_TYPE() == SENSE_TYPE_REAR)
     {
         TIMEBASE_register_callback(&can_send_timebase_handle, interval, rear_1_cb);
