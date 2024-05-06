@@ -22,7 +22,7 @@ SENS_REAR__CANID_XCP_TARGET_TO_HOST__HEX=185
 ######################################
 # target
 ######################################
-TARGET = sensor_board
+TARGET = sensorboard
 
 
 ######################################
