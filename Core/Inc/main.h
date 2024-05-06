@@ -147,6 +147,7 @@ void Error_Handler(void);
 #define SHTDWN4_GPIO_IN_GPIO_Port GPIOB
 #define SHTDWN3_GPIO_IN_Pin GPIO_PIN_9
 #define SHTDWN3_GPIO_IN_GPIO_Port GPIOB
+
 /* USER CODE BEGIN Private defines */
 
 // UART
