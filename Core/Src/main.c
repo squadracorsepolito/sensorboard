@@ -30,12 +30,12 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "anal.h"
+#include "bsp.h"
 #include "can_send_timebase.h"
 #include "can_utils.h"
 #include "data_reading_timebase.h"
 #include "logger_wrapper.h"
-#include "ntc.h"
-#include "utils.h"
+//#include "utils.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -113,54 +113,61 @@ int main(void)
   MX_IWDG_Init();
   /* USER CODE BEGIN 2 */
     HAL_TIM_Base_Start(&htim2);
-    anal_init();
     logger_init();
     can_init();
     can_send_timebase_init();
     //DRTB_init();
 
-    if (UTILS_GET_SENS_TYPE() == SENSE_TYPE_FRONT) {
-        HAL_GPIO_WritePin(LED_STAT1_GPIO_OUT_GPIO_Port, LED_STAT1_GPIO_OUT_Pin, GPIO_PIN_SET);
+    // Show at the start the type of sensorboard in function
+    if (SENS_GET_TYPE() == SENS_TYPE_FRONT) {
+        HAL_GPIO_WritePin(SENS_FRONT_LED_GPIO_PORT, SENS_FRONT_LED_GPIO_PIN, GPIO_PIN_SET);
     } else {
-        HAL_GPIO_WritePin(LED_ERR_GPIO_OUT_GPIO_Port, LED_ERR_GPIO_OUT_Pin, GPIO_PIN_SET);
+        HAL_GPIO_WritePin(SENS_REAR_LED_GPIO_PORT, SENS_REAR_LED_GPIO_PIN, GPIO_PIN_SET);
     }
-    uint32_t cnt500ms = HAL_GetTick() + 500U;
+    uint32_t cnt1ms    = HAL_GetTick() + 1U;
+    uint32_t cnt10ms   = HAL_GetTick() + 10U;
+    uint32_t cnt100ms  = HAL_GetTick() + 100U;
+    uint32_t cnt1000ms = HAL_GetTick() + 1000U;
+
+    uint32_t ntc_sampling_cnt = HAL_GetTick();
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
     while (1) {
         //DRTB_routine();
-
-        if (HAL_GetTick() >= cnt500ms ) {
-            cnt500ms = HAL_GetTick() + 500U;
-            NTC_sampling_callback();
-
-            // toggle status led
-            HAL_GPIO_TogglePin(LED_STAT2_GPIO_OUT_GPIO_Port,LED_STAT2_GPIO_OUT_Pin);
-            
-            logger_log(LOGGER_INFO, "%u %u %u %u %u %u", NTC_adc_raw[0],NTC_adc_raw[1],NTC_adc_raw[2],NTC_adc_raw[3],NTC_adc_raw[4],NTC_adc_raw[5]);
-            logger_log(LOGGER_INFO, "anal8 %f",anal_get_pin_mv(ANAL8));
-            logger_log(LOGGER_INFO, "[%fV  %fOhm] [%fV  %fOhm] [%fV  %fOhm] [%fV  %fOhm] [%fV  %fOhm] [%fV  %fOhm]", 
-                       NTC_get_vdrop(0), NTC_get_res(0),
-                       NTC_get_vdrop(1), NTC_get_res(1),
-                       NTC_get_vdrop(2), NTC_get_res(2),
-                       NTC_get_vdrop(3), NTC_get_res(3),
-                       NTC_get_vdrop(4), NTC_get_res(4),
-                       NTC_get_vdrop(5), NTC_get_res(5));
+        if (HAL_GetTick() >= cnt1ms) {
+            cnt1ms += 1U;
+        }
+        if (HAL_GetTick() >= cnt10ms) {
+            cnt10ms += 10U;
+        }
+        if (HAL_GetTick() >= cnt100ms) {
+            cnt100ms += 100U;
+        }
+        if (HAL_GetTick() >= cnt1000ms) {
+            // Show I'm Alive by blinking sens type led
+            if (SENS_GET_TYPE() == SENS_TYPE_FRONT) {
+                HAL_GPIO_TogglePin(SENS_FRONT_LED_GPIO_PORT, SENS_FRONT_LED_GPIO_PIN);
+            } else {
+                HAL_GPIO_TogglePin(SENS_REAR_LED_GPIO_PORT, SENS_REAR_LED_GPIO_PIN);
+            }
+        }
+        // Run NTC Probes sampling
+        if (HAL_GetTick() >= ntc_sampling_cnt + NTC_SAMP_PERIOD_ms) {
+            ntc_sampling_cnt += HAL_GetTick();
+            NTC_Probes_sampling_routine();
         }
 
         can_send_timebase_routine();
-        //for(int i=0; i<11; ++i) {
-        //  logger_log(LOGGER_INFO, "anal %d: %fv", i, anal_get_pin_mv(i));
-        //}
         logger_routine();
 
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-        HAL_IWDG_Refresh(&hiwdg); // refresh watchdog ~500ms timeout
-    }// end while(1)
+        HAL_IWDG_Refresh(&hiwdg);  // refresh watchdog ~500ms timeout
+    } // end while(1)                             
   /* USER CODE END 3 */
 }
 
@@ -249,7 +256,7 @@ void assert_failed(uint8_t *file, uint32_t line)
   /* USER CODE BEGIN 6 */
     /* User can add his own implementation to report the file name and line number,
      es: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
-    logger_log(LOGGER_ERROR,"Error in file: %s on line %d",file,line);
+    logger_log(LOGGER_ERROR, "Error in file: %s on line %d", file, line);
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */

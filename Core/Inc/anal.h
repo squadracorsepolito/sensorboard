@@ -3,22 +3,22 @@
 
 #include "adc.h"
 
-typedef enum {
-    POT2 = 0,
-    ANAL4,
-    ANAL1,
-    ANAL2,
-    ANAL3,
-    ANAL6,
-    ANAL7,
-    ANAL8,
-    ANAL11,
-    ANAL9,
-    POT1,
-    ANAL5,
-    ANAL10,
-    ANAL_PIN_COUNT
-} anal_enum;
+//typedef enum {
+//    POT2 = 0,
+//    ANAL4,
+//    ANAL1,
+//    ANAL2,
+//    ANAL3,
+//    ANAL6,
+//    ANAL7,
+//    ANAL8,
+//    ANAL11,
+//    ANAL9,
+//    POT1,
+//    ANAL5,
+//    ANAL10,
+//    ANAL_PIN_COUNT
+//} anal_enum;
 
 void anal_init(void);
 void anal_adc_callback(ADC_HandleTypeDef *hadc);

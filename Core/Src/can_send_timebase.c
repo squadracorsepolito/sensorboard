@@ -1,6 +1,7 @@
 #include "can_send_timebase.h"
 #include "can_utils.h"
-#include "utils.h"
+//#include "utils.h"
+#include "bsp.h"
 
 TIMEBASE_HandleTypeDef can_send_timebase_handle;
 
@@ -71,11 +72,11 @@ void can_send_timebase_init(void)
     TIMEBASE_init(&can_send_timebase_handle, &CAN_SEND_TIMEBASE_TIM_HANDLE, 10000);
 
     TIMEBASE_add_interval(&can_send_timebase_handle, 10000, &interval);
-    if (UTILS_GET_SENS_TYPE() == SENSE_TYPE_REAR)
+    if (SENS_GET_TYPE() == SENS_TYPE_REAR)
     {
         TIMEBASE_register_callback(&can_send_timebase_handle, interval, rear_1_cb);
         TIMEBASE_register_callback(&can_send_timebase_handle, interval, rear_2_cb);
-        TIMEBASE_register_callback(&can_send_timebase_handle, interval, rear_3_cb);
+        //TIMEBASE_register_callback(&can_send_timebase_handle, interval, rear_3_cb);
         TIMEBASE_register_callback(&can_send_timebase_handle, interval, rear_ntc_cb);
         TIMEBASE_register_callback(&can_send_timebase_handle, interval, rear_sd_status_cb);
     }
@@ -83,7 +84,7 @@ void can_send_timebase_init(void)
     {
         TIMEBASE_register_callback(&can_send_timebase_handle, interval, front_1_cb);
         TIMEBASE_register_callback(&can_send_timebase_handle, interval, front_2_cb);
-        TIMEBASE_register_callback(&can_send_timebase_handle, interval, front_3_cb);
+        //TIMEBASE_register_callback(&can_send_timebase_handle, interval, front_3_cb);
         TIMEBASE_register_callback(&can_send_timebase_handle, interval, front_ntc_cb);
         TIMEBASE_register_callback(&can_send_timebase_handle, interval, front_sd_status_cb);
     }

@@ -21,7 +21,10 @@
 #include "adc.h"
 
 /* USER CODE BEGIN 0 */
-#include "anal.h"
+#include "memory.h"
+
+uint16_t __adc1_dma_data[ADC_ADC1_Channel_NUM];
+uint16_t __adc1_filtered_data[ADC_ADC1_Channel_NUM];
 /* USER CODE END 0 */
 
 ADC_HandleTypeDef hadc1;
@@ -53,7 +56,7 @@ void MX_ADC1_Init(void)
   hadc1.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_RISINGFALLING;
   hadc1.Init.ExternalTrigConv = ADC_EXTERNALTRIGCONV_T2_TRGO;
   hadc1.Init.DataAlign = ADC_DATAALIGN_RIGHT;
-  hadc1.Init.NbrOfConversion = 13;
+  hadc1.Init.NbrOfConversion = 10;
   hadc1.Init.DMAContinuousRequests = ENABLE;
   hadc1.Init.EOCSelection = ADC_EOC_SINGLE_CONV;
   if (HAL_ADC_Init(&hadc1) != HAL_OK)
@@ -82,7 +85,7 @@ void MX_ADC1_Init(void)
 
   /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
   */
-  sConfig.Channel = ADC_CHANNEL_2;
+  sConfig.Channel = ADC_CHANNEL_5;
   sConfig.Rank = 3;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
   {
@@ -91,7 +94,7 @@ void MX_ADC1_Init(void)
 
   /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
   */
-  sConfig.Channel = ADC_CHANNEL_3;
+  sConfig.Channel = ADC_CHANNEL_6;
   sConfig.Rank = 4;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
   {
@@ -100,7 +103,7 @@ void MX_ADC1_Init(void)
 
   /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
   */
-  sConfig.Channel = ADC_CHANNEL_4;
+  sConfig.Channel = ADC_CHANNEL_7;
   sConfig.Rank = 5;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
   {
@@ -109,7 +112,7 @@ void MX_ADC1_Init(void)
 
   /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
   */
-  sConfig.Channel = ADC_CHANNEL_5;
+  sConfig.Channel = ADC_CHANNEL_8;
   sConfig.Rank = 6;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
   {
@@ -118,7 +121,7 @@ void MX_ADC1_Init(void)
 
   /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
   */
-  sConfig.Channel = ADC_CHANNEL_6;
+  sConfig.Channel = ADC_CHANNEL_9;
   sConfig.Rank = 7;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
   {
@@ -127,7 +130,7 @@ void MX_ADC1_Init(void)
 
   /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
   */
-  sConfig.Channel = ADC_CHANNEL_7;
+  sConfig.Channel = ADC_CHANNEL_10;
   sConfig.Rank = 8;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
   {
@@ -136,7 +139,7 @@ void MX_ADC1_Init(void)
 
   /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
   */
-  sConfig.Channel = ADC_CHANNEL_8;
+  sConfig.Channel = ADC_CHANNEL_14;
   sConfig.Rank = 9;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
   {
@@ -145,40 +148,19 @@ void MX_ADC1_Init(void)
 
   /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
   */
-  sConfig.Channel = ADC_CHANNEL_9;
+  sConfig.Channel = ADC_CHANNEL_15;
   sConfig.Rank = 10;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
   {
     Error_Handler();
   }
-
-  /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
-  */
-  sConfig.Channel = ADC_CHANNEL_10;
-  sConfig.Rank = 11;
-  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
-  {
-    Error_Handler();
-  }
-
-  /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
-  */
-  sConfig.Channel = ADC_CHANNEL_14;
-  sConfig.Rank = 12;
-  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
-  {
-    Error_Handler();
-  }
-
-  /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
-  */
-  sConfig.Channel = ADC_CHANNEL_15;
-  sConfig.Rank = 13;
-  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
-  {
-    Error_Handler();
-  }
   /* USER CODE BEGIN ADC1_Init 2 */
+
+  // Initialize dma buffers and 
+  memset(__adc1_dma_data, 0, sizeof(__adc1_dma_data));
+  memset(__adc1_filtered_data, 0, sizeof(__adc1_filtered_data));
+
+  HAL_ADC_Start_DMA(&hadc1, (uint32_t *)__adc1_dma_data, (uint8_t)ADC_ADC1_Channel_NUM);
 
   /* USER CODE END ADC1_Init 2 */
 
@@ -250,9 +232,6 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef* adcHandle)
     PC0     ------> ADC1_IN10
     PA0-WKUP     ------> ADC1_IN0
     PA1     ------> ADC1_IN1
-    PA2     ------> ADC1_IN2
-    PA3     ------> ADC1_IN3
-    PA4     ------> ADC1_IN4
     PA5     ------> ADC1_IN5
     PA6     ------> ADC1_IN6
     PA7     ------> ADC1_IN7
@@ -261,18 +240,18 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef* adcHandle)
     PB0     ------> ADC1_IN8
     PB1     ------> ADC1_IN9
     */
-    GPIO_InitStruct.Pin = POT1_ADC_IN14_Pin|ANAL5_ADC_IN4_Pin|ANAL10_ADC_IN9_Pin;
+    GPIO_InitStruct.Pin = POT1_ADC_IN14_Pin|AIN1_ADC_IN4_Pin|AIN6_ADC_IN9_Pin;
     GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-    GPIO_InitStruct.Pin = POT2_ADC_IN15_Pin|ANAL4_ADC_IN3_Pin|ANAL1_ADC_IN0_Pin|ANAL2_ADC_IN1_Pin
-                          |ANAL3_ADC_IN2_Pin|ANAL6_ADC_IN5_Pin|ANAL7_ADC_IN6_Pin|ANAL8_ADC_IN7_Pin;
+    GPIO_InitStruct.Pin = POT2_ADC_IN15_Pin|DSCHRG_FDBK_AIN_ADC_IN_Pin|AIN2_ADC_IN5_Pin|AIN3_ADC_IN6_Pin
+                          |AIN4_ADC_IN7_Pin;
     GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-    GPIO_InitStruct.Pin = ANAL11_ADC_IN10_Pin|ANAL9_ADC_IN8_Pin;
+    GPIO_InitStruct.Pin = AIN7_ADC_IN10_Pin|AIN5_ADC_IN8_Pin;
     GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
@@ -345,9 +324,6 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef* adcHandle)
     PC0     ------> ADC1_IN10
     PA0-WKUP     ------> ADC1_IN0
     PA1     ------> ADC1_IN1
-    PA2     ------> ADC1_IN2
-    PA3     ------> ADC1_IN3
-    PA4     ------> ADC1_IN4
     PA5     ------> ADC1_IN5
     PA6     ------> ADC1_IN6
     PA7     ------> ADC1_IN7
@@ -356,12 +332,12 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef* adcHandle)
     PB0     ------> ADC1_IN8
     PB1     ------> ADC1_IN9
     */
-    HAL_GPIO_DeInit(GPIOC, POT1_ADC_IN14_Pin|ANAL5_ADC_IN4_Pin|ANAL10_ADC_IN9_Pin);
+    HAL_GPIO_DeInit(GPIOC, POT1_ADC_IN14_Pin|AIN1_ADC_IN4_Pin|AIN6_ADC_IN9_Pin);
 
-    HAL_GPIO_DeInit(GPIOA, POT2_ADC_IN15_Pin|ANAL4_ADC_IN3_Pin|ANAL1_ADC_IN0_Pin|ANAL2_ADC_IN1_Pin
-                          |ANAL3_ADC_IN2_Pin|ANAL6_ADC_IN5_Pin|ANAL7_ADC_IN6_Pin|ANAL8_ADC_IN7_Pin);
+    HAL_GPIO_DeInit(GPIOA, POT2_ADC_IN15_Pin|DSCHRG_FDBK_AIN_ADC_IN_Pin|AIN2_ADC_IN5_Pin|AIN3_ADC_IN6_Pin
+                          |AIN4_ADC_IN7_Pin);
 
-    HAL_GPIO_DeInit(GPIOB, ANAL11_ADC_IN10_Pin|ANAL9_ADC_IN8_Pin);
+    HAL_GPIO_DeInit(GPIOB, AIN7_ADC_IN10_Pin|AIN5_ADC_IN8_Pin);
 
     /* ADC1 DMA DeInit */
     HAL_DMA_DeInit(adcHandle->DMA_Handle);
@@ -409,7 +385,19 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef* adcHandle)
 }
 
 /* USER CODE BEGIN 1 */
-void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc) {
-  anal_adc_callback(hadc);
+
+float ADC_ADC1_getChannel_V(enum ADC_ADC1_Channel chnl){
+  if(chnl == ADC_ADC1_Channel_NUM ) return (-1.0f);
+  return ADC_CONV_RAW_TO_V(__adc1_filtered_data[chnl], ADC_GET_RESOLUTION_BITS(&hadc1),ADC_ADC1_VREF_V);
 }
+
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc) {
+    if (hadc == &hadc1) {
+        // ADC1 Filter stage for sampled adc values
+        for (uint8_t i = 0; i < ADC_ADC1_Channel_NUM; ++i) {
+            __adc1_filtered_data[i] = ADC_ADC1_IIR_ALPHA * __adc1_dma_data[i] + (1 - ADC_ADC1_IIR_ALPHA) * __adc1_filtered_data[i];
+        }
+    }
+}
+
 /* USER CODE END 1 */

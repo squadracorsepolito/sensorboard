@@ -54,8 +54,7 @@ void MX_GPIO_Init(void)
   __HAL_RCC_GPIOD_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOC, ADC1283IPT_nCS_GPIO_OUT_Pin|LED_STAT3_GPIO_OUT_Pin|LED_WARN_GPIO_OUT_Pin|LED_STAT3_GPIO_OUTC8_Pin
-                          |LED_STAT2_GPIO_OUT_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOC, ADC1283IPT_nCS_GPIO_OUT_Pin|LED_WARN_GPIO_OUT_Pin|LED_STAT3_GPIO_OUT_Pin|LED_STAT2_GPIO_OUT_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, M95256_nW_GPIO_OUT_Pin|M95256_nS_GPIO_OUT_Pin|BRK_LGHT_GPIO_OUT_Pin, GPIO_PIN_RESET);
@@ -69,17 +68,15 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : PCPin PCPin PCPin PCPin
-                           PCPin */
-  GPIO_InitStruct.Pin = ADC1283IPT_nCS_GPIO_OUT_Pin|LED_STAT3_GPIO_OUT_Pin|LED_WARN_GPIO_OUT_Pin|LED_STAT3_GPIO_OUTC8_Pin
-                          |LED_STAT2_GPIO_OUT_Pin;
+  /*Configure GPIO pins : PCPin PCPin PCPin PCPin */
+  GPIO_InitStruct.Pin = ADC1283IPT_nCS_GPIO_OUT_Pin|LED_WARN_GPIO_OUT_Pin|LED_STAT3_GPIO_OUT_Pin|LED_STAT2_GPIO_OUT_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /*Configure GPIO pins : PCPin PCPin */
-  GPIO_InitStruct.Pin = ANAL5_ADC_IN4_Pin|ANAL10_ADC_IN9_Pin;
+  GPIO_InitStruct.Pin = AIN1_ADC_IN4_Pin|AIN6_ADC_IN9_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
@@ -103,12 +100,6 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(SENSE_TYPE_GPIO_Port, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : PtPin */
-  GPIO_InitStruct.Pin = EMPTY_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
-  HAL_GPIO_Init(EMPTY_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : PtPin */
   GPIO_InitStruct.Pin = ADS112U04_nDRDY_GPIO_IN_Pin;
