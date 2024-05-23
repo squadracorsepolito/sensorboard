@@ -246,8 +246,8 @@ static enum ADC_ADC1_Channel SF_PPS_dev_to_adc1_chnl_map[] = {[PPS_BrakeLine_Fro
  *@brief Sensorboard Rear Piezoresistive Pressure Sensor device to adc1 channel mapping 
  */
 static enum ADC_ADC1_Channel SR_PPS_dev_to_adc1_chnl_map[] = {[PPS_CoolingLine_RearLeft]  = ADC_ADC1_AIN3,
-                                                              [PPS_CoolingLine_RearRight] = ADC_ADC1_AIN6,
-                                                              [PPS_BrakeLine_Rear]        = ADC_ADC1_AIN7};
+                                                              [PPS_BrakeLine_Rear]        = ADC_ADC1_AIN6,
+                                                              [PPS_CoolingLine_RearRight] = ADC_ADC1_AIN7};
 // -- APPS (Accelerator Position Sensor) Channels
 /**
  *@brief Sensorboard Front Accelerator Position Sensor Channels to adc1 channel mapping
