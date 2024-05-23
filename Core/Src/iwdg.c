@@ -37,12 +37,12 @@ void MX_IWDG_Init(void)
   /* USER CODE BEGIN IWDG_Init 1 */
 
   // IWDG takes clock from LSE (32Khz)
-  // Elapse period ms = IWDG_PRESCALER_4/LSE*Reload = 512ms
+  // Elapse period ms = (IWDG_PRESCALER_4/LSE)*Reload = 10ms 
 
   /* USER CODE END IWDG_Init 1 */
   hiwdg.Instance = IWDG;
   hiwdg.Init.Prescaler = IWDG_PRESCALER_4;
-  hiwdg.Init.Reload = 4096-1;
+  hiwdg.Init.Reload = 80-1;
   if (HAL_IWDG_Init(&hiwdg) != HAL_OK)
   {
     Error_Handler();

@@ -57,10 +57,10 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define SHTDWN2_GPIO_IN_Pin GPIO_PIN_13
-#define SHTDWN2_GPIO_IN_GPIO_Port GPIOC
-#define SHTDWN1_GPIO_IN_Pin GPIO_PIN_14
-#define SHTDWN1_GPIO_IN_GPIO_Port GPIOC
+#define SDC_IN2_GPIO_IN_Pin GPIO_PIN_13
+#define SDC_IN2_GPIO_IN_GPIO_Port GPIOC
+#define SDC_IN1_GPIO_IN_Pin GPIO_PIN_14
+#define SDC_IN1_GPIO_IN_GPIO_Port GPIOC
 #define ADC1283IPT_nCS_GPIO_OUT_Pin GPIO_PIN_15
 #define ADC1283IPT_nCS_GPIO_OUT_GPIO_Port GPIOC
 #define POT1_ADC_IN14_Pin GPIO_PIN_0
@@ -117,8 +117,8 @@ void Error_Handler(void);
 #define SN65HVD23x_R_CAN1_RX_GPIO_Port GPIOA
 #define SN65HVD23x_D_CAN1_TX_Pin GPIO_PIN_12
 #define SN65HVD23x_D_CAN1_TX_GPIO_Port GPIOA
-#define SENSE_TYPE_Pin GPIO_PIN_15
-#define SENSE_TYPE_GPIO_Port GPIOA
+#define SENS_TYPE_Pin GPIO_PIN_15
+#define SENS_TYPE_GPIO_Port GPIOA
 #define M95256_C_SPI3_SCK_Pin GPIO_PIN_10
 #define M95256_C_SPI3_SCK_GPIO_Port GPIOC
 #define M95256_Q_SPI3_MISO_Pin GPIO_PIN_11
@@ -133,10 +133,10 @@ void Error_Handler(void);
 #define BSPD_ERR_GPIO_IN_GPIO_Port GPIOB
 #define BRK_LGHT_GPIO_OUT_Pin GPIO_PIN_7
 #define BRK_LGHT_GPIO_OUT_GPIO_Port GPIOB
-#define SHTDWN4_GPIO_IN_Pin GPIO_PIN_8
-#define SHTDWN4_GPIO_IN_GPIO_Port GPIOB
-#define SHTDWN3_GPIO_IN_Pin GPIO_PIN_9
-#define SHTDWN3_GPIO_IN_GPIO_Port GPIOB
+#define SDC_IN4_GPIO_IN_Pin GPIO_PIN_8
+#define SDC_IN4_GPIO_IN_GPIO_Port GPIOB
+#define SDC_IN3_GPIO_IN_Pin GPIO_PIN_9
+#define SDC_IN3_GPIO_IN_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 

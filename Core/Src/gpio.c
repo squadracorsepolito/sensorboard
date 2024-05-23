@@ -63,7 +63,7 @@ void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(LED_STAT1_GPIO_OUT_GPIO_Port, LED_STAT1_GPIO_OUT_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pins : PCPin PCPin */
-  GPIO_InitStruct.Pin = SHTDWN2_GPIO_IN_Pin|SHTDWN1_GPIO_IN_Pin;
+  GPIO_InitStruct.Pin = SDC_IN2_GPIO_IN_Pin|SDC_IN1_GPIO_IN_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
@@ -96,10 +96,10 @@ void MX_GPIO_Init(void)
   HAL_GPIO_Init(LED_STAT1_GPIO_OUT_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : PtPin */
-  GPIO_InitStruct.Pin = SENSE_TYPE_Pin;
+  GPIO_InitStruct.Pin = SENS_TYPE_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
-  HAL_GPIO_Init(SENSE_TYPE_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(SENS_TYPE_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : PtPin */
   GPIO_InitStruct.Pin = ADS112U04_nDRDY_GPIO_IN_Pin;
@@ -108,7 +108,7 @@ void MX_GPIO_Init(void)
   HAL_GPIO_Init(ADS112U04_nDRDY_GPIO_IN_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : PBPin PBPin PBPin */
-  GPIO_InitStruct.Pin = BSPD_ERR_GPIO_IN_Pin|SHTDWN4_GPIO_IN_Pin|SHTDWN3_GPIO_IN_Pin;
+  GPIO_InitStruct.Pin = BSPD_ERR_GPIO_IN_Pin|SDC_IN4_GPIO_IN_Pin|SDC_IN3_GPIO_IN_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);

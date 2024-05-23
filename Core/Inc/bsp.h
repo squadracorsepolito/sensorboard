@@ -98,9 +98,37 @@ enum PPS_Device {
 // -- APPS (Accelerator Pedal Position Sensor) Channels
 enum APPS_Chnl { APPS_Chnl1, APPS_Chnl2 };
 
+// -- GPIO (General Purpuse Input Output)
+struct GPIO_Tuple {
+    GPIO_TypeDef *GPIO_Port;
+    uint16_t GPIO_Pin;
+};
+
+// -- SDC (ShutDown Circuit) sensing/feedbacks
+enum SDC_Probe { SDC_Probe1, SDC_Probe2, SDC_Probe3, SDC_Probe4, SDC_Probe_NUM };
+
+enum SDC_Feedback {
+    SF_SDC_FEEDBACKS_START,
+    SDC_Post_FrontRightMotorInterlock,
+    SDC_Post_BOTS,
+    SDC_Post_CockpitPushButton,
+    SDC_Post_InteriaSwitch,
+    SF_SDC_FEEDBACKS_END,
+    SR_SDC_FEEDBACKS_START,
+    SDC_Post_BSPD,
+    SDC_Post_InverterDCBUSInterlock,
+    SDC_Pre_MainHoopLeftPushButton,
+    SDC_Post_InverterFrontRightMotorInterlock,
+    SR_SDC_FEEDBACKS_END
+};
+
+
+// -- RME (Rotary Magnetic Encoder) Device
+enum RME_Dev {RME_SteeringAngle};
+
 /* ---------- Exported constants --------------------------------------------*/
 
-// -- AIN analog inputs 
+// -- AIN analog inputs
 #define AIN_VDIV_R1_OHM (2.7E3f)
 #define AIN_VDIV_R2_OHM (4.99E3f)
 
@@ -138,9 +166,17 @@ enum APPS_Chnl { APPS_Chnl1, APPS_Chnl2 };
 #define APPS_VDIV_R1_OHM AIN_VDIV_R1_OHM
 #define APPS_VDIV_R2_OHM AIN_VDIV_R2_OHM
 
+// -- RME (Rotary Magnetic Encoder) Device
+#define RME_VDIV_R1_OHM AIN_VDIV_R1_OHM
+#define RME_VDIV_R2_OHM AIN_VDIV_R2_OHM
+
 // -- SENS Sensorboard common
 #define SENS_TYPE_FRONT GPIO_PIN_RESET
 #define SENS_TYPE_REAR  GPIO_PIN_SET
+
+// -- BSPD (Brake System Plausibility Device) Device
+#define BSPD_DEV_STATE_OK GPIO_PIN_RESET
+#define BSPD_DEV_STATE_ERR GPIO_PIN_SET
 
 #define SENS_FRONT_LED_GPIO_PORT LED_STAT1_GPIO_OUT_GPIO_Port
 #define SENS_FRONT_LED_GPIO_PIN  LED_STAT1_GPIO_OUT_Pin
@@ -204,7 +240,7 @@ static enum ADC_ADC1_Channel SR_DSCHRG_dev_to_adc1_chnl_map[] = {[DSCHRG_StatusF
 /**
  *@brief Sensorboard Front Piezoresistive Pressure Sensor device to adc1 channel mapping 
  */
-static enum ADC_ADC1_Channel SF_PPS_dev_to_adc1_chnl_map[] = {[PPS_BrakeLine_Front] = ADC_ADC1_AIN2};
+static enum ADC_ADC1_Channel SF_PPS_dev_to_adc1_chnl_map[] = {[PPS_BrakeLine_Front] = ADC_ADC1_AIN3};
 
 /**
  *@brief Sensorboard Rear Piezoresistive Pressure Sensor device to adc1 channel mapping 
@@ -217,10 +253,45 @@ static enum ADC_ADC1_Channel SR_PPS_dev_to_adc1_chnl_map[] = {[PPS_CoolingLine_R
  *@brief Sensorboard Front Accelerator Position Sensor Channels to adc1 channel mapping
  */
 static enum ADC_ADC1_Channel SF_APPS_chnl_to_adc1_chnl_map[] =
-    {[APPS_Chnl1] = ADC_ADC1_AIN4, [APPS_Chnl2] = ADC_ADC1_AIN5};
+    {[APPS_Chnl1] = ADC_ADC1_AIN2, [APPS_Chnl2] = ADC_ADC1_AIN5};
+
+// -- RME (Rotary Magnetic Encoder) Device
+/**
+ *@brief Sensorboard Front Rotary Magnetic Encoder Devices to adc1 channel mapping
+ */
+static enum ADC_ADC1_Channel SF_RME_dev_to_adc1_chnl_map[] = {[RME_SteeringAngle] = ADC_ADC1_AIN1};
+
+// -- BRAKE Brake light control
+static struct GPIO_Tuple BRAKE_Dev_Handle = {.GPIO_Port = BRK_LGHT_GPIO_OUT_GPIO_Port, .GPIO_Pin = BRK_LGHT_GPIO_OUT_Pin};
+
+// -- BSPD (Brake System Plausibility Device) Device
+static struct GPIO_Tuple BSPD_Dev_Handle = {.GPIO_Port = BSPD_ERR_GPIO_IN_GPIO_Port, .GPIO_Pin = BSPD_ERR_GPIO_IN_Pin};
+
+// -- SENS Sensorboard common
+static struct GPIO_Tuple SENS_Type_Handle = {.GPIO_Port = SENS_TYPE_GPIO_Port, .GPIO_Pin = SENS_TYPE_Pin};
+
+// -- SDC (ShutDown Circuit) sensing/feedbacks
+
+static struct GPIO_Tuple SDC_probe_to_gpio_map[SDC_Probe_NUM] = {
+    [SDC_Probe1] = {.GPIO_Port = SDC_IN1_GPIO_IN_GPIO_Port, .GPIO_Pin = SDC_IN1_GPIO_IN_Pin},
+    [SDC_Probe2] = {.GPIO_Port = SDC_IN2_GPIO_IN_GPIO_Port, .GPIO_Pin = SDC_IN2_GPIO_IN_Pin},
+    [SDC_Probe3] = {.GPIO_Port = SDC_IN3_GPIO_IN_GPIO_Port, .GPIO_Pin = SDC_IN3_GPIO_IN_Pin},
+    [SDC_Probe4] = {.GPIO_Port = SDC_IN4_GPIO_IN_GPIO_Port, .GPIO_Pin = SDC_IN4_GPIO_IN_Pin}};
+
+static enum SDC_Probe SF_SDC_feedback_to_sdc_probe_map[] = {[SDC_Post_FrontRightMotorInterlock] = SDC_Probe1,
+                                                            [SDC_Post_BOTS]                     = SDC_Probe2,
+                                                            [SDC_Post_CockpitPushButton]        = SDC_Probe3,
+                                                            [SDC_Post_InteriaSwitch]            = SDC_Probe4
+
+};
+static enum SDC_Probe SR_SDC_feedback_to_sdc_probe_map[] = {[SDC_Post_BSPD]                             = SDC_Probe1,
+                                                            [SDC_Post_InverterDCBUSInterlock]           = SDC_Probe2,
+                                                            [SDC_Pre_MainHoopLeftPushButton]            = SDC_Probe3,
+                                                            [SDC_Post_InverterFrontRightMotorInterlock] = SDC_Probe4
+
+};
 
 /* ---------- Exported macros -----------------------------------------------*/
-
 
 // -- NTC (Negative Temperature Coefficient) Thermistor - Mounted Devices
 /**
@@ -234,8 +305,6 @@ static enum ADC_ADC1_Channel SF_APPS_chnl_to_adc1_chnl_map[] =
 #define NTC_RES_FROM_NTC_VDROP(_NTC_VDROP_V_, _PULL_UP_RES_OHM_, _PULL_UP_VDD_V_) \
     ((float)(_NTC_VDROP_V_ / (float)(_PULL_UP_VDD_V_ - _NTC_VDROP_V_) * _PULL_UP_RES_OHM_))
 
-// -- LPPS (Linear Potentiometer Position Sensor)
-
 // -- DSCRHG (Discharge) Status Feedback
 
 /**
@@ -247,15 +316,29 @@ static enum ADC_ADC1_Channel SF_APPS_chnl_to_adc1_chnl_map[] =
      : _ADC_VAL_V_ >= _OFF_STATE_LOW_LIMIT_V_ && _ADC_VAL_V_ <= _OFF_STATE_UP_LIMIT_V_ ? DSCHRG_Off              \
                                                                                        : DSCHRG_STVDD)
 
-// -- PPS (Piezoresistive Pressure Sensor)
-
 // -- SENS Sensorboard Common
 
 /**
  * @brief Get the sensor operation type either as FRONT sens or REAR sens
  * @return Either SENS_TYPE_FRONT or SENS_TYPE_REAR
  */
-#define SENS_GET_TYPE() HAL_GPIO_ReadPin(SENSE_TYPE_GPIO_Port, SENSE_TYPE_Pin)
+#define SENS_GET_TYPE() HAL_GPIO_ReadPin(SENS_Type_Handle.GPIO_Port, SENS_Type_Handle.GPIO_Pin)
+
+// -- BRAKE Brake light control
+#define BRAKE_LIGHT_ON()     HAL_GPIO_WritePin(BRAKE_Dev_Handle.GPIO_Port, BRAKE_Dev_Handle.GPIO_Pin, GPIO_PIN_SET)
+#define BRAKE_LIGHT_OFF()    HAL_GPIO_WritePin(BRAKE_Dev_Handle.GPIO_Port, BRAKE_Dev_Handle.GPIO_Pin, GPIO_PIN_RESET)
+#define BRAKE_LIGHT_TOGGLE() HAL_GPIO_TogglePin(BRAKE_Dev_Handle.GPIO_Port, BRAKE_Dev_Handle.GPIO_Pin)
+
+// -- BSPD (Brake System Plausibility Device) Error
+/**
+ * @brief Get the state of the BSPD Device
+ * @return Either: 
+ *         - BSPD_DEV_STATE_OK if no error on the device
+ *         - BSPD_DEV_STATE_ERR if an error occured
+ */
+#define BSPD_DEV_GET_STATUS() HAL_GPIO_ReadPin(BSPD_Dev_Handle.GPIO_Port, BSPD_Dev_Handle.GPIO_Pin)
+#define BSPD_DEV_IS_IN_ERR() HAL_GPIO_ReadPin(BSPD_Dev_Handle.GPIO_Port, BSPD_Dev_Handle.GPIO_Pin) == BSPD_DEV_STATE_ERR ? (1U): (0U)
+#define BSPD_DEV_IS_OK() HAL_GPIO_ReadPin(BSPD_Dev_Handle.GPIO_Port, BSPD_Dev_Handle.GPIO_Pin)== BSPD_DEV_STATE_OK ? (1U): (0U)
 
 /* ---------- Exported functions --------------------------------------------*/
 
@@ -333,6 +416,15 @@ float PPS_get_voltage(enum PPS_Device pps_device);
  * @return Voltage level of the APPS channel (float), -1.0f if error
  */
 float APPS_get_voltage(enum APPS_Chnl apps_chnl);
+
+// -- SDC (ShutDown Circuit) sensing/feedbacks
+
+uint8_t SDC_Probe_get_status(enum SDC_Probe sdc_probe);
+
+uint8_t SDC_Feedback_get_status(enum SDC_Feedback sdc_feedback);
+
+// -- RME (Rotary Magnetic Encoder) Device
+float RME_get_voltage(enum RME_Dev rme_device);
 
 /* ---------- Private types -------------------------------------------------*/
 

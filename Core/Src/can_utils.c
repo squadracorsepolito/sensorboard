@@ -91,7 +91,7 @@ void can_send_msg(uint32_t id) {
     {
     case MCB_SENS_FRONT_1_FRAME_ID:
         msgs.sens_front_1.brake_straingauge_voltage_m_v = mcb_sens_front_1_brake_straingauge_voltage_m_v_encode(0.0);
-        msgs.sens_front_1.steering_voltage_m_v = mcb_sens_front_1_steering_voltage_m_v_encode(0.0);
+        msgs.sens_front_1.steering_voltage_m_v = mcb_sens_front_1_steering_voltage_m_v_encode(RME_get_voltage(RME_SteeringAngle)*1000.0);
         msgs.sens_front_1.throttle_0_voltage_m_v = mcb_sens_front_1_throttle_0_voltage_m_v_encode(APPS_get_voltage(APPS_Chnl1)*1000.0);
         msgs.sens_front_1.throttle_1_voltage_m_v = mcb_sens_front_1_throttle_1_voltage_m_v_encode(APPS_get_voltage(APPS_Chnl2)*1000.0);
 
@@ -123,10 +123,10 @@ void can_send_msg(uint32_t id) {
         tx_header.DLC = mcb_sens_front_ntc_pack(buffer, &msgs.sens_front_ntc, MCB_SENS_FRONT_NTC_LENGTH);
         break;
     case MCB_SENS_FRONT_SHUTDOWN_STATUS_FRAME_ID:
-        msgs.sens_front_sd_status.is_shut_closed_post_bots = mcb_sens_front_shutdown_status_is_shut_closed_post_bots_encode(gpio_sens_get(SD_SENS3));
-        msgs.sens_front_sd_status.is_shut_closed_post_cockpit = mcb_sens_front_shutdown_status_is_shut_closed_post_cockpit_encode(gpio_sens_get(SD_SENS4));
-        msgs.sens_front_sd_status.is_shut_closed_post_inertia = mcb_sens_front_shutdown_status_is_shut_closed_post_inertia_encode(gpio_sens_get(SD_SENS2));
-        msgs.sens_front_sd_status.is_shut_closed_pre_inertia = mcb_sens_front_shutdown_status_is_shut_closed_pre_inertia_encode(gpio_sens_get(SD_SENS1));
+        msgs.sens_front_sd_status.is_shut_closed_post_bots = mcb_sens_front_shutdown_status_is_shut_closed_post_bots_encode(SDC_Feedback_get_status(SDC_Post_BOTS));
+        msgs.sens_front_sd_status.is_shut_closed_post_cockpit = mcb_sens_front_shutdown_status_is_shut_closed_post_cockpit_encode(SDC_Feedback_get_status(SDC_Post_CockpitPushButton));
+        msgs.sens_front_sd_status.is_shut_closed_post_inertia = mcb_sens_front_shutdown_status_is_shut_closed_post_inertia_encode(SDC_Feedback_get_status(SDC_Post_InteriaSwitch));
+        msgs.sens_front_sd_status.is_shut_closed_pre_inertia = mcb_sens_front_shutdown_status_is_shut_closed_pre_inertia_encode(SDC_Feedback_get_status(SDC_Post_FrontRightMotorInterlock));
 
         tx_header.DLC = mcb_sens_front_shutdown_status_pack(buffer, &msgs.sens_front_sd_status, MCB_SENS_FRONT_SHUTDOWN_STATUS_LENGTH);
         break;
@@ -163,11 +163,11 @@ void can_send_msg(uint32_t id) {
         tx_header.DLC = mcb_sens_rear_ntc_pack(buffer, &msgs.sens_rear_ntc, MCB_SENS_REAR_NTC_LENGTH);
         break;
     case MCB_SENS_REAR_SHUTDOWN_STATUS_FRAME_ID:
-        msgs.sens_rear_sd_status.is_bsp_din_error = mcb_sens_rear_shutdown_status_is_bsp_din_error_encode(gpio_sens_get(BSPD_SENS));
-        msgs.sens_rear_sd_status.is_shut_closed_post_bspd = mcb_sens_rear_shutdown_status_is_shut_closed_post_bspd_encode(gpio_sens_get(SD_SENS1));
-        msgs.sens_rear_sd_status.is_shut_closed_post_inv_fr = mcb_sens_rear_shutdown_status_is_shut_closed_post_inv_fr_encode(gpio_sens_get(SD_SENS4));
-        msgs.sens_rear_sd_status.is_shut_closed_post_inv_mono = mcb_sens_rear_shutdown_status_is_shut_closed_post_inv_mono_encode(gpio_sens_get(SD_SENS3));
-        msgs.sens_rear_sd_status.is_shut_closed_pre_funghi = mcb_sens_rear_shutdown_status_is_shut_closed_pre_funghi_encode(gpio_sens_get(SD_SENS2));
+        msgs.sens_rear_sd_status.is_bsp_din_error = mcb_sens_rear_shutdown_status_is_bsp_din_error_encode(BSPD_DEV_IS_IN_ERR());
+        msgs.sens_rear_sd_status.is_shut_closed_post_bspd = mcb_sens_rear_shutdown_status_is_shut_closed_post_bspd_encode(SDC_Feedback_get_status(SDC_Post_BSPD));
+        msgs.sens_rear_sd_status.is_shut_closed_post_inv_fr = mcb_sens_rear_shutdown_status_is_shut_closed_post_inv_fr_encode(SDC_Feedback_get_status(SDC_Post_InverterFrontRightMotorInterlock));
+        msgs.sens_rear_sd_status.is_shut_closed_post_inv_mono = mcb_sens_rear_shutdown_status_is_shut_closed_post_inv_mono_encode(SDC_Feedback_get_status(SDC_Post_InverterDCBUSInterlock));
+        msgs.sens_rear_sd_status.is_shut_closed_pre_funghi = mcb_sens_rear_shutdown_status_is_shut_closed_pre_funghi_encode(SDC_Feedback_get_status(SDC_Pre_MainHoopLeftPushButton));
 
         tx_header.DLC = mcb_sens_rear_shutdown_status_pack(buffer, &msgs.sens_rear_sd_status, MCB_SENS_REAR_SHUTDOWN_STATUS_LENGTH);
         break;
@@ -187,6 +187,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
     uint8_t buffer[8] = {0};
 
     if(HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &rx_header, buffer) == HAL_OK) {
+        // Reset when preparing for flash via CAN bus
         if(rx_header.StdId == 0xa + SENS_GET_TYPE() && buffer[0] == 0xff && buffer[1] == 0x00) {
             NVIC_SystemReset();
         }
@@ -194,7 +195,12 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
             struct mcb_d_space_peripherals_ctrl_t periph;
             mcb_d_space_peripherals_ctrl_unpack(&periph, buffer, MCB_D_SPACE_PERIPHERALS_CTRL_LENGTH);
 
-            HAL_GPIO_WritePin(BRK_LGHT_GPIO_OUT_GPIO_Port, BRK_LGHT_GPIO_OUT_Pin, periph.brake_light_on_ctrl ? GPIO_PIN_SET : GPIO_PIN_RESET);
+             if(periph.brake_light_on_ctrl){
+                BRAKE_LIGHT_ON();
+            }else{
+                BRAKE_LIGHT_OFF();
+            }
+
         }
     }
 }

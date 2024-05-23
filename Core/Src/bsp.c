@@ -193,6 +193,7 @@ enum DSCHRG_Status DSCHRG_get_status() {
 }
 
 // -- PPS (Piezoresistive Pressure Sensor)
+
 float PPS_get_voltage(enum PPS_Device pps_device){
     // Guard agains invalid values
     if (pps_device == SF_PPS_DEVICES_START || pps_device == SR_PPS_DEVICES_START ||
@@ -221,4 +222,38 @@ float APPS_get_voltage(enum APPS_Chnl apps_chnl){
     
 }
 
+// -- SDC (ShutDown Circuit) sensing/feedbacks
+
+uint8_t SDC_Probe_get_status(enum SDC_Probe sdc_probe){
+    if(sdc_probe == SDC_Probe_NUM) return (uint8_t)(-1U);
+    const struct GPIO_Tuple *gpio_tuple; 
+    gpio_tuple = &SDC_probe_to_gpio_map[sdc_probe];
+    return HAL_GPIO_ReadPin(gpio_tuple->GPIO_Port,gpio_tuple->GPIO_Pin);
+}
+
+uint8_t SDC_Feedback_get_status(enum SDC_Feedback sdc_feedback){
+    // Guard agains invalid values
+    if (sdc_feedback == SF_SDC_FEEDBACKS_START || sdc_feedback == SR_SDC_FEEDBACKS_START ||
+        sdc_feedback == SF_SDC_FEEDBACKS_END || sdc_feedback == SR_SDC_FEEDBACKS_END) {
+        return (uint8_t)(-1U);
+    }
+    enum SDC_Probe sdc_probe;
+    if (sdc_feedback > SF_SDC_FEEDBACKS_START && sdc_feedback < SF_SDC_FEEDBACKS_END) {
+        sdc_probe = SF_SDC_feedback_to_sdc_probe_map[sdc_feedback];
+    } else if (sdc_feedback > SR_SDC_FEEDBACKS_START && sdc_feedback < SR_SDC_FEEDBACKS_END) {
+        sdc_probe = SR_SDC_feedback_to_sdc_probe_map[sdc_feedback];
+    } else {
+        // Error, should never be here
+        return (uint8_t)(-1U);
+    }
+    return SDC_Probe_get_status(sdc_probe);
+}
+
+// -- RME (Rotary Magnetic Encoder) Device
+float RME_get_voltage(enum RME_Dev rme_device){
+    enum ADC_ADC1_Channel adc1_chnl = SF_RME_dev_to_adc1_chnl_map[rme_device];
+    float adc_volt = ADC_ADC1_getChannel_V(adc1_chnl);
+    return adc_volt != (-1.0f) ? __DYN_RANGE_LVL_SHIFT(adc_volt, RME_VDIV_R1_OHM, RME_VDIV_R2_OHM) : (-1.0f);
+    
+}
 /*---------- Private Functions ---------------------------------------------*/

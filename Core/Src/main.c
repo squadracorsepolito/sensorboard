@@ -166,7 +166,7 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-        HAL_IWDG_Refresh(&hiwdg);  // refresh watchdog ~500ms timeout
+        HAL_IWDG_Refresh(&hiwdg);  // refresh watchdog ~10ms timeout
     } // end while(1)                             
   /* USER CODE END 3 */
 }
