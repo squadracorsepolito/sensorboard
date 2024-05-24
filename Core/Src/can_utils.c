@@ -126,7 +126,8 @@ void can_send_msg(uint32_t id) {
         msgs.sens_front_sd_status.is_shut_closed_post_bots = mcb_sens_front_shutdown_status_is_shut_closed_post_bots_encode(SDC_Feedback_get_status(SDC_Post_BOTS));
         msgs.sens_front_sd_status.is_shut_closed_post_cockpit = mcb_sens_front_shutdown_status_is_shut_closed_post_cockpit_encode(SDC_Feedback_get_status(SDC_Post_CockpitPushButton));
         msgs.sens_front_sd_status.is_shut_closed_post_inertia = mcb_sens_front_shutdown_status_is_shut_closed_post_inertia_encode(SDC_Feedback_get_status(SDC_Post_InteriaSwitch));
-        msgs.sens_front_sd_status.is_shut_closed_pre_inertia = mcb_sens_front_shutdown_status_is_shut_closed_pre_inertia_encode(SDC_Feedback_get_status(SDC_Post_FrontRightMotorInterlock));
+        //msgs.sens_front_sd_status.is_shut_closed_pre_inertia = mcb_sens_front_shutdown_status_is_shut_closed_pre_inertia_encode(SDC_Feedback_get_status(SDC_Post_FrontRightMotorInterlock));
+        msgs.sens_front_sd_status.is_shut_closed_pre_inertia = mcb_sens_front_shutdown_status_is_shut_closed_pre_inertia_encode(0U);
 
         tx_header.DLC = mcb_sens_front_shutdown_status_pack(buffer, &msgs.sens_front_sd_status, MCB_SENS_FRONT_SHUTDOWN_STATUS_LENGTH);
         break;

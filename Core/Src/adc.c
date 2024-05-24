@@ -21,6 +21,7 @@
 #include "adc.h"
 
 /* USER CODE BEGIN 0 */
+#include "tim.h"
 #include "memory.h"
 
 uint16_t __adc1_dma_data[ADC_ADC1_Channel_NUM];
@@ -58,7 +59,7 @@ void MX_ADC1_Init(void)
   hadc1.Init.DataAlign = ADC_DATAALIGN_RIGHT;
   hadc1.Init.NbrOfConversion = 10;
   hadc1.Init.DMAContinuousRequests = ENABLE;
-  hadc1.Init.EOCSelection = ADC_EOC_SINGLE_CONV;
+  hadc1.Init.EOCSelection = ADC_EOC_SEQ_CONV;
   if (HAL_ADC_Init(&hadc1) != HAL_OK)
   {
     Error_Handler();
@@ -160,6 +161,7 @@ void MX_ADC1_Init(void)
   memset(__adc1_dma_data, 0, sizeof(__adc1_dma_data));
   memset(__adc1_filtered_data, 0, sizeof(__adc1_filtered_data));
 
+  HAL_TIM_Base_Start(&htim2);
   HAL_ADC_Start_DMA(&hadc1, (uint32_t *)__adc1_dma_data, (uint8_t)ADC_ADC1_Channel_NUM);
 
   /* USER CODE END ADC1_Init 2 */
@@ -388,7 +390,9 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef* adcHandle)
 
 float ADC_ADC1_getChannel_V(enum ADC_ADC1_Channel chnl){
   if(chnl == ADC_ADC1_Channel_NUM ) return (-1.0f);
-  return ADC_CONV_RAW_TO_V(__adc1_filtered_data[chnl], ADC_GET_RESOLUTION_BITS(&hadc1),ADC_ADC1_VREF_V);
+  uint32_t  test = ADC_GET_RESOLUTION_BITS(&hadc1);
+  float test2=ADC_CONV_RAW_TO_V(__adc1_filtered_data[chnl], test ,ADC_ADC1_VREF_V);
+  return test2;
 }
 
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc) {

@@ -109,7 +109,7 @@ enum SDC_Probe { SDC_Probe1, SDC_Probe2, SDC_Probe3, SDC_Probe4, SDC_Probe_NUM }
 
 enum SDC_Feedback {
     SF_SDC_FEEDBACKS_START,
-    SDC_Post_FrontRightMotorInterlock,
+    //SDC_Post_FrontRightMotorInterlock,
     SDC_Post_BOTS,
     SDC_Post_CockpitPushButton,
     SDC_Post_InteriaSwitch,
@@ -122,9 +122,8 @@ enum SDC_Feedback {
     SR_SDC_FEEDBACKS_END
 };
 
-
 // -- RME (Rotary Magnetic Encoder) Device
-enum RME_Dev {RME_SteeringAngle};
+enum RME_Dev { RME_SteeringAngle };
 
 /* ---------- Exported constants --------------------------------------------*/
 
@@ -175,7 +174,7 @@ enum RME_Dev {RME_SteeringAngle};
 #define SENS_TYPE_REAR  GPIO_PIN_SET
 
 // -- BSPD (Brake System Plausibility Device) Device
-#define BSPD_DEV_STATE_OK GPIO_PIN_RESET
+#define BSPD_DEV_STATE_OK  GPIO_PIN_RESET
 #define BSPD_DEV_STATE_ERR GPIO_PIN_SET
 
 #define SENS_FRONT_LED_GPIO_PORT LED_STAT1_GPIO_OUT_GPIO_Port
@@ -262,7 +261,8 @@ static enum ADC_ADC1_Channel SF_APPS_chnl_to_adc1_chnl_map[] =
 static enum ADC_ADC1_Channel SF_RME_dev_to_adc1_chnl_map[] = {[RME_SteeringAngle] = ADC_ADC1_AIN1};
 
 // -- BRAKE Brake light control
-static struct GPIO_Tuple BRAKE_Dev_Handle = {.GPIO_Port = BRK_LGHT_GPIO_OUT_GPIO_Port, .GPIO_Pin = BRK_LGHT_GPIO_OUT_Pin};
+static struct GPIO_Tuple BRAKE_Dev_Handle = {.GPIO_Port = BRK_LGHT_GPIO_OUT_GPIO_Port,
+                                             .GPIO_Pin  = BRK_LGHT_GPIO_OUT_Pin};
 
 // -- BSPD (Brake System Plausibility Device) Device
 static struct GPIO_Tuple BSPD_Dev_Handle = {.GPIO_Port = BSPD_ERR_GPIO_IN_GPIO_Port, .GPIO_Pin = BSPD_ERR_GPIO_IN_Pin};
@@ -278,10 +278,8 @@ static struct GPIO_Tuple SDC_probe_to_gpio_map[SDC_Probe_NUM] = {
     [SDC_Probe3] = {.GPIO_Port = SDC_IN3_GPIO_IN_GPIO_Port, .GPIO_Pin = SDC_IN3_GPIO_IN_Pin},
     [SDC_Probe4] = {.GPIO_Port = SDC_IN4_GPIO_IN_GPIO_Port, .GPIO_Pin = SDC_IN4_GPIO_IN_Pin}};
 
-static enum SDC_Probe SF_SDC_feedback_to_sdc_probe_map[] = {[SDC_Post_FrontRightMotorInterlock] = SDC_Probe1,
-                                                            [SDC_Post_BOTS]                     = SDC_Probe2,
-                                                            [SDC_Post_CockpitPushButton]        = SDC_Probe3,
-                                                            [SDC_Post_InteriaSwitch]            = SDC_Probe4
+static enum SDC_Probe SF_SDC_feedback_to_sdc_probe_map[] =
+    {[SDC_Post_BOTS] = SDC_Probe2, [SDC_Post_CockpitPushButton] = SDC_Probe3, [SDC_Post_InteriaSwitch] = SDC_Probe4
 
 };
 static enum SDC_Probe SR_SDC_feedback_to_sdc_probe_map[] = {[SDC_Post_BSPD]                             = SDC_Probe1,
@@ -328,6 +326,8 @@ static enum SDC_Probe SR_SDC_feedback_to_sdc_probe_map[] = {[SDC_Post_BSPD]     
 #define BRAKE_LIGHT_ON()     HAL_GPIO_WritePin(BRAKE_Dev_Handle.GPIO_Port, BRAKE_Dev_Handle.GPIO_Pin, GPIO_PIN_SET)
 #define BRAKE_LIGHT_OFF()    HAL_GPIO_WritePin(BRAKE_Dev_Handle.GPIO_Port, BRAKE_Dev_Handle.GPIO_Pin, GPIO_PIN_RESET)
 #define BRAKE_LIGHT_TOGGLE() HAL_GPIO_TogglePin(BRAKE_Dev_Handle.GPIO_Port, BRAKE_Dev_Handle.GPIO_Pin)
+#define BRAKE_LIGHT_IS_ON() \
+    (HAL_GPIO_ReadPin(BRAKE_Dev_Handle.GPIO_Port, BRAKE_Dev_Handle.GPIO_Pin) == GPIO_PIN_SET ? (1U) : (0U))
 
 // -- BSPD (Brake System Plausibility Device) Error
 /**
@@ -337,8 +337,10 @@ static enum SDC_Probe SR_SDC_feedback_to_sdc_probe_map[] = {[SDC_Post_BSPD]     
  *         - BSPD_DEV_STATE_ERR if an error occured
  */
 #define BSPD_DEV_GET_STATUS() HAL_GPIO_ReadPin(BSPD_Dev_Handle.GPIO_Port, BSPD_Dev_Handle.GPIO_Pin)
-#define BSPD_DEV_IS_IN_ERR() HAL_GPIO_ReadPin(BSPD_Dev_Handle.GPIO_Port, BSPD_Dev_Handle.GPIO_Pin) == BSPD_DEV_STATE_ERR ? (1U): (0U)
-#define BSPD_DEV_IS_OK() HAL_GPIO_ReadPin(BSPD_Dev_Handle.GPIO_Port, BSPD_Dev_Handle.GPIO_Pin)== BSPD_DEV_STATE_OK ? (1U): (0U)
+#define BSPD_DEV_IS_IN_ERR() \
+    HAL_GPIO_ReadPin(BSPD_Dev_Handle.GPIO_Port, BSPD_Dev_Handle.GPIO_Pin) == BSPD_DEV_STATE_ERR ? (1U) : (0U)
+#define BSPD_DEV_IS_OK() \
+    HAL_GPIO_ReadPin(BSPD_Dev_Handle.GPIO_Port, BSPD_Dev_Handle.GPIO_Pin) == BSPD_DEV_STATE_OK ? (1U) : (0U)
 
 /* ---------- Exported functions --------------------------------------------*/
 

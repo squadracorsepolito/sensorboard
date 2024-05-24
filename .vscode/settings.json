@@ -4,6 +4,7 @@
     "files.associations": {
         "anal.h": "c",
         "memory.h": "c",
-        "sd_sensing.h": "c"
+        "sd_sensing.h": "c",
+        "adc.h": "c"
     }
 }
