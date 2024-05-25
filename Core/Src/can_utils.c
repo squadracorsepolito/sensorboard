@@ -50,6 +50,9 @@ void can_init(void) {
 
     HAL_CAN_ActivateNotification(&hcan1, CAN_IT_ERROR | CAN_IT_RX_FIFO0_MSG_PENDING);
     HAL_CAN_Start(&hcan1);
+
+    // Send Helo Message at start 
+    //SENS_TYPE() == SENS_TYPE_FRONT ? can_send_msg(MCB_SB_FRONT_HELO) : can_send_msg(MCB_SB_REAR_HELO);
 }
 
 HAL_StatusTypeDef can_wait(CAN_HandleTypeDef *hcan, uint8_t timeout) {
@@ -172,6 +175,20 @@ void can_send_msg(uint32_t id) {
 
         tx_header.DLC = mcb_sens_rear_shutdown_status_pack(buffer, &msgs.sens_rear_sd_status, MCB_SENS_REAR_SHUTDOWN_STATUS_LENGTH);
         break;
+    //case MCB_SB_FRONT_HELO:
+    //    msgs.sb_front_helo.major= mcb_sb_front_helo_major_encode(VERSION_MAJOR);
+    //    msgs.sb_front_helo.minor= mcb_sb_front_helo_minor_encode(VERSION_MINOR);
+    //    msgs.sb_front_helo.patch= mcb_sb_front_helo_patch_encode(VERSION_PATCH);
+
+    //    tx_header.DLC = mcb_sb_front_helo_pack(buffer, &msgs.sb_front_helo, MCB_SB_front_HELO_LENGTH);
+    //    break;
+    //case MCB_SB_REAR_HELO:
+    //    msgs.sb_rear_helo.major= mcb_sb_rear_helo_major_encode(VERSION_MAJOR);
+    //    msgs.sb_rear_helo.minor= mcb_sb_rear_helo_minor_encode(VERSION_MINOR);
+    //    msgs.sb_rear_helo.patch= mcb_sb_rear_helo_patch_encode(VERSION_PATCH);
+
+    //    tx_header.DLC = mcb_sb_rear_helo_pack(buffer, &msgs.sb_rear_helo, MCB_SB_REAR_HELO_LENGTH);
+    //    break;
     default:
         return;
     }

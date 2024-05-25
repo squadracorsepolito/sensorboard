@@ -30,6 +30,9 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+// clang-format off
+#include "conf.h"
+// clang-format on
 #include "anal.h"
 #include "bsp.h"
 #include "can_send_timebase.h"
@@ -48,12 +51,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define DEBUG_SERIAL
-#define DEBUG_AIN
-#define DEBUG_NTC
-#define DEBUG_SDC
-#define DEBUG_BSPD
-#define DEBUG_BRAKE_LIGHT
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
