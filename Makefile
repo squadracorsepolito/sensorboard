@@ -277,7 +277,7 @@ can_build: $(BUILD_DIR)/$(TARGET)_shifted.sx
 # The openocd bin path can be either defined in make command via BIN2SREC_PATH variable (> make BIN2SREC_PATH=xxx)
 # either it can be added to the PATH environment variable.
 ifdef BIN2SREC_PATH
-BIN2SREC = "$(OPENOCD_PATH)/bin2srec"
+BIN2SREC = "$(BIN2SREC_PATH)/bin2srec"
 else
 BIN2SREC = "bin2srec"
 endif
