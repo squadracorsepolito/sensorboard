@@ -4,9 +4,8 @@ This repo contains the firmware and bootloader for the SensorBoard Device v3.0
 ## Dependencies
 - `arm-none-eabi-gdb`, `arm-none-eabi-gcc`, `arm-none-eabi-newlib`,`arm-none-eabi-binutils`: ARM toolchain necessary to compile and debug the firmware
 - `make`: or similar
-- `awk`, `sed`
 - `openocd`: to flash the firmware on the target via a debug probe (STLINK)
-- `bootcommander`, `libopenblt`, `bin2srec`: to flash the firmware via can-bus
+- `bootcommander`, `libopenblt`: to flash the firmware via can-bus
 
 ## Build
 If all the software dependencies are available through `$PATH`
@@ -64,10 +63,10 @@ make can_flash_front
 # To flash the firmware to a sensorboard rear device
 make can_flash_rear 
 ```
-If the dependencies of `bootcommander` and `bin2srec` are not in `$PATH` specify them like this:
+If `bootcommander` dependency is not in `$PATH` specify it like this:
 ```bash
 # To flash the firmware to a sensorboard front device
-make can_flash_front BOOTCOMMANDER_PATH=/<path_to_bootcomamnder_dir> BIN2SREC_PATH=/<path_to_bin2srec_dir>
+make can_flash_front BOOTCOMMANDER_PATH=/<path_to_bootcomamnder_dir>
 # To flash the firmware to a sensorboard rear device
-make can_flash_rear BOOTCOMMANDER_PATH=/<path_to_bootcomamnder_dir> BIN2SREC_PATH=/<path_to_bin2srec_dir>
+make can_flash_rear BOOTCOMMANDER_PATH=/<path_to_bootcomamnder_dir>
 ```

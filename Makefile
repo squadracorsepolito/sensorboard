@@ -124,6 +124,7 @@ SZ = $(PREFIX)size
 endif
 HEX = $(CP) -O ihex
 BIN = $(CP) -O binary -S
+SREC = $(CP) -O srec -S
  
 #######################################
 # CFLAGS
@@ -274,24 +275,10 @@ clean:
 can_build: $(BUILD_DIR)/$(TARGET)_shifted.sx
 	
 
-# The openocd bin path can be either defined in make command via BIN2SREC_PATH variable (> make BIN2SREC_PATH=xxx)
-# either it can be added to the PATH environment variable.
-ifdef BIN2SREC_PATH
-BIN2SREC = "$(BIN2SREC_PATH)/bin2srec"
-else
-BIN2SREC = "bin2srec"
-endif
-#######################################
-# $(BUILD_DIR)/$(TARGET)_shifted.sx
-#######################################
-$(BUILD_DIR)/$(TARGET)_shifted.sx: $(BUILD_DIR)/$(TARGET)_shifted.bin
-	$(BIN2SREC) -a $$(grep 'FLASH (rx)      : ORIGIN =' STM32F446RETx_FLASH_shifted.ld | awk '{print $$6}' | sed 's/.$$//') -i $(BUILD_DIR)/$(TARGET)_shifted.bin -o $(BUILD_DIR)/$(TARGET)_shifted.sx
-      
-
 #######################################
 # $(BUILD_DIR)/$(TARGET)_shifted.elf
 #######################################
-$(BUILD_DIR)/$(TARGET)_shifted.elf: $(OBJECTS) STM32Make.make
+$(BUILD_DIR)/$(TARGET)_shifted.elf: $(OBJECTS) | $(BUILD_DIR)
 	$(CC) $(OBJECTS) $(MCU) $(ADDITIONALLDFLAGS) -TSTM32F446RETx_FLASH_shifted.ld $(LIBDIR) $(LIBS) -Wl,-Map=$(BUILD_DIR)/$(TARGET).map,--cref -Wl,--gc-sections -o $@
 
 
@@ -300,6 +287,12 @@ $(BUILD_DIR)/$(TARGET)_shifted.elf: $(OBJECTS) STM32Make.make
 #######################################
 $(BUILD_DIR)/$(TARGET)_shifted.bin: $(BUILD_DIR)/$(TARGET)_shifted.elf | $(BUILD_DIR)
 	$(BIN) $< $@
+
+#######################################
+# $(BUILD_DIR)/$(TARGET)_shifted.sx (SREC format used for flashing via can)
+#######################################
+$(BUILD_DIR)/$(TARGET)_shifted.sx: $(BUILD_DIR)/$(TARGET)_shifted.elf | $(BUILD_DIR)
+	$(SREC) $< $@	
 
 # The openocd bin path can be either defined in make command via BOOTCOMMANDER_PATH variable (> make BOOTCOMMANDER_PATH=xxx)
 # either it can be added to the PATH environment variable.

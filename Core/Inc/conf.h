@@ -28,10 +28,10 @@
 
 #define DEBUG_SERIAL
 #define DEBUG_AIN
-#define DEBUG_NTC
-#define DEBUG_SDC
-#define DEBUG_BSPD
-#define DEBUG_BRAKE_LIGHT
+//#define DEBUG_NTC
+//#define DEBUG_SDC
+//#define DEBUG_BSPD
+//#define DEBUG_BRAKE_LIGHT
 
 /* ---------- Exported macros -----------------------------------------------*/
 #define GET_VERSION_STR() "v##VERSION_MAJOR.##VERSION_MINOR.##VERSION_PATCH"
