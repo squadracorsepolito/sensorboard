@@ -16,7 +16,7 @@ jobs:
         run: |
           make
           make can_build
-          cd openbltf446re
+          cd openblt_f446re
           make
 
 
