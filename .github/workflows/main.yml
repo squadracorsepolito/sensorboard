@@ -16,3 +16,9 @@ jobs:
       - uses: actions/checkout@v4
       - uses: carlosperate/arm-none-eabi-gcc-action@v1
       - run: arm-none-eabi-gcc --version
+      - run: |
+          make
+          make can_build
+          cd openbltf446re
+          make
+      - run: ls -all
