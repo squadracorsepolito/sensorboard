@@ -1,0 +1,18 @@
+name: Generate Utils From JSON
+
+on:
+
+  workflow_dispatch:
+
+env:
+  JSON_FILES_DIR: .
+  PYTHON_VERSION: '3.10'
+  ARTIFACT_DIR: tmp/artifacts
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: carlosperate/arm-none-eabi-gcc-action@v1
+      - run: arm-none-eabi-gcc --version
