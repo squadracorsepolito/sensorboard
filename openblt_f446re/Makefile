@@ -39,6 +39,7 @@ C_SOURCES =  \
 Core/Src/main.c \
 Core/Src/stm32f4xx_it.c \
 Core/Src/stm32f4xx_hal_msp.c \
+Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_rcc.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc_ex.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_flash.c \
@@ -55,7 +56,25 @@ Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_exti.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim_ex.c \
 Core/Src/system_stm32f4xx.c \
-Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c
+Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c \
+Core/Src/BLT/asserts.c \
+Core/Src/BLT/backdoor.c \
+Core/Src/BLT/boot.c \
+Core/Src/BLT/can.c \
+Core/Src/BLT/com.c \
+Core/Src/BLT/cop.c \
+Core/Src/BLT/cpu.c \
+Core/Src/BLT/cpu_comp.c \
+Core/Src/BLT/file.c \
+Core/Src/BLT/flash.c \
+Core/Src/BLT/hooks.c \
+Core/Src/BLT/led.c \
+Core/Src/BLT/net.c \
+Core/Src/BLT/nvm.c \
+Core/Src/BLT/rs232.c \
+Core/Src/BLT/timer.c \
+Core/Src/BLT/usb.c \
+Core/Src/BLT/xcp.c 
 
 # ASM sources
 ASM_SOURCES =  \
@@ -106,6 +125,10 @@ C_DEFS =  \
 -DUSE_HAL_DRIVER \
 -DSTM32F446xx
 
+# CXX defines
+CXX_DEFS =  \
+-DSTM32F446xx \
+-DUSE_HAL_DRIVER
 
 # AS includes
 AS_INCLUDES = 
@@ -116,7 +139,8 @@ C_INCLUDES =  \
 -IDrivers/STM32F4xx_HAL_Driver/Inc \
 -IDrivers/STM32F4xx_HAL_Driver/Inc/Legacy \
 -IDrivers/CMSIS/Device/ST/STM32F4xx/Include \
--IDrivers/CMSIS/Include
+-IDrivers/CMSIS/Include \
+-ICore/Inc/BLT
 
 
 # compile gcc flags
@@ -125,9 +149,12 @@ ASFLAGS = $(MCU) $(AS_DEFS) $(AS_INCLUDES) $(OPT) -Wall -fdata-sections -ffuncti
 CFLAGS += $(MCU) $(C_DEFS) $(C_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections
 
 ifeq ($(DEBUG), 1)
-CFLAGS += -g -gdwarf-2
+CFLAGS += -g -gdwarf-2 -ggdb
 endif
 
+# Add additional flags
+CFLAGS += -DUSE_FULL_LL_DRIVER
+ASFLAGS += 
 
 # Generate dependency information
 CFLAGS += -MMD -MP -MF"$(@:%.o=%.d)"
@@ -141,8 +168,12 @@ LDSCRIPT = STM32F446RETx_FLASH.ld
 
 # libraries
 LIBS = -lc -lm -lnosys 
-LIBDIR = 
-LDFLAGS = $(MCU) -specs=nano.specs -T$(LDSCRIPT) $(LIBDIR) $(LIBS) -Wl,-Map=$(BUILD_DIR)/$(TARGET).map,--cref -Wl,--gc-sections
+LIBDIR =
+
+# Additional LD Flags from config file
+ADDITIONALLDFLAGS = -specs=nano.specs 
+
+LDFLAGS = $(MCU) $(ADDITIONALLDFLAGS) -T$(LDSCRIPT) $(LIBDIR) $(LIBS) -Wl,-Map=$(BUILD_DIR)/$(TARGET).map,--cref -Wl,--gc-sections
 
 # default action: build all
 all: $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin
@@ -176,6 +207,29 @@ $(BUILD_DIR)/%.bin: $(BUILD_DIR)/%.elf | $(BUILD_DIR)
 	
 $(BUILD_DIR):
 	mkdir $@		
+
+######################################
+# custom makefile rules
+#######################################
+
+# The openocd bin path can be either defined in make command via OPENOCD_PATH variable (> make OPENOCD_PATH=xxx)
+# either it can be added to the PATH environment variable.
+ifdef OPENOCD_PATH
+OPENOCD = "$(OPENOCD_PATH)/openocd"
+else
+OPENOCD = "openocd"
+endif
+#######################################
+# flash
+#######################################
+flash: openocd.cfg $(BUILD_DIR)/$(TARGET).elf
+	$(OPENOCD) -f ./openocd.cfg -c "program $(BUILD_DIR)/$(TARGET).elf verify reset exit"
+
+#######################################
+# erase
+#######################################
+erase: openocd.cfg $(BUILD_DIR)/$(TARGET).elf
+	$(OPENOCD) -f ./openocd.cfg -c "init; reset halt; stm32f4x mass_erase 0; exit"
 
 #######################################
 # clean up
