@@ -21,7 +21,7 @@ This will build the firmware to be flashed via `openocd` and a debug probe (STLI
 All software dependencies must be available in `$PATH`
 ```bash
 cd ./openblt_f446re
-make -f STM32Make.make
+make
 cd ..
 ```
 This will build the Bootloader firmware to be flashed via `openocd` and a debug probe (STLINK)
@@ -53,7 +53,7 @@ make flash OPENOCD_PATH=/<openocd_path>
 First flash the bootloader on the device (all dependencies must be in `$PATH`, the debugger probe must be able to talk to the target see ![before](##flash))
 ```bash
 cd ./openblt_f446re
-make -f STM32Make.make flash
+make flash
 cd ..
 ```
 Then connect the sensorboard device on a CAN bus network where you can send and receive data.
