@@ -50,14 +50,12 @@ Core/Src/bsp.c \
 Core/Src/can.c \
 Core/Src/can_send_timebase.c \
 Core/Src/can_utils.c \
-Core/Src/data_reading_timebase.c \
 Core/Src/dma.c \
 Core/Src/gpio.c \
 Core/Src/gpio_sensing.c \
 Core/Src/iwdg.c \
 Core/Src/logger_wrapper.c \
 Core/Src/main.c \
-Core/Src/sc22_evo_canlv.c \
 Core/Src/spi.c \
 Core/Src/stm32f4xx_hal_msp.c \
 Core/Src/stm32f4xx_it.c \

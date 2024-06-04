@@ -22,7 +22,6 @@
 
 /* USER CODE BEGIN 0 */
 #include "can_send_timebase.h"
-#include "data_reading_timebase.h"
 
 volatile uint32_t tim_irq_cnt = 0;
 /* USER CODE END 0 */
@@ -338,9 +337,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
     if (htim == &CAN_SEND_TIMEBASE_TIM_HANDLE) {
         tim_irq_cnt++;
         can_send_timebase_timerElapsed_irq(htim);
-    } else if (htim == &DRTB_TIM_HANDLE) {
-        //DRTB_timerElapsed_irq(htim);
     }
-    DRTB_timerElapsed_irq(htim);
 }
 /* USER CODE END 1 */

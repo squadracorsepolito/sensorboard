@@ -1,8 +1,5 @@
 #include "can_utils.h"
-#include "anal.h"
-#include "ntc.h"
 #include "logger_wrapper.h"
-//#include "utils.h"
 #include "bsp.h"
 #include "gpio_sensing.h"
 
