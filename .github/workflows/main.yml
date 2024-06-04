@@ -1,46 +1,22 @@
-name: Build Binary Executable
+name: Build and Release
 
 on:
   push:
     tags:
-      - '*'
+      - 'v*'
   workflow_dispatch:
 
 jobs:
-  generate:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: recursive
-      - uses: carlosperate/arm-none-eabi-gcc-action@v1
-      - run: arm-none-eabi-gcc --version
-      - name: Run make
-        run: |
-          make
-          make can_build
-          cd openblt_f446re
-          make
-      - name: Archive build artifacts
-        if: always()
-        uses: actions/upload-artifact@v3
-        with:
-          name: build-artifacts
-          path: |
-            build/*.bin
-            build/*.elf
-            build/*.hex
-            openblt_f446re/build/*.bin
-            openblt_f446re/build/*.elf
-            openblt_f446re/build/*.hex
-
   createrelease:
     name: Create Release
     runs-on: ubuntu-latest
-    needs: generate
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Extract tag name
+        id: extract_tag
+        run: echo "TAG_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
 
       - name: Create Release
         id: create_release
@@ -62,6 +38,48 @@ jobs:
           name: release_url
           path: release_url.txt
 
+  build:
+    name: Build packages
+    needs: createrelease
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: carlosperate/arm-none-eabi-gcc-action@v1
+
+      - run: arm-none-eabi-gcc --version
+
+      - name: Run make
+        run: |
+          make
+          make can_build
+          cd openblt_f446re
+          make
+
+      - name: Archive build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-artifacts
+          path: |
+            build/*.bin
+            build/*.elf
+            build/*.hex
+            openblt_f446re/build/*.bin
+            openblt_f446re/build/*.elf
+            openblt_f446re/build/*.hex
+
+      - name: Load Release URL File from release job
+        uses: actions/download-artifact@v3
+        with:
+          name: release_url
+
+      - name: Get Release File Name & Upload URL
+        id: get_release_info
+        shell: bash
+        run: |
+          value=$(cat release_url/release_url.txt)
+          echo "UPLOAD_URL=$value" >> $GITHUB_ENV
+
       - name: Download build artifacts
         uses: actions/download-artifact@v3
         with:
@@ -74,7 +92,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          upload_url: ${{ env.UPLOAD_URL }}
           asset_path: |
             build/*.bin
             build/*.elf
@@ -83,5 +101,4 @@ jobs:
             sensorboard.bin
             sensorboard.elf
             sensorboard.hex
-          asset_content_type: application/octet-stre
-            
+          asset_content_type: application/octet-stream
