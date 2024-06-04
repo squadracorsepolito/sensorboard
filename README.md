@@ -1,5 +1,18 @@
 # SENSORBOARD [Front|Rear]
 This repo contains the firmware and bootloader for the SensorBoard Device v3.0
+## Develop
+**PLEASE STOP USING CRLF LINE ENDING : use LF as normal people do**
+
+Git can handle this for you correctly!
+
+If you want it configured for this project only use `--local` otherwise for your whole system use `--global`.
+
+- On windows: `git config --local core.autocrlf=true`
+- On Linux/OSX: `git config --local core.autocrlf=input`
+
+Checkout out either [this](https://www.git-scm.com/book/en/v2/Customizing-Git-Git-Configuration#_formatting_and_whitespace) or [this](https://stackoverflow.com/a/46347609/9167660) for more information.
+
+Don't use `.gitattributes` it gets messy very quickly.
 
 ## Dependencies
 - `arm-none-eabi-gdb`, `arm-none-eabi-gcc`, `arm-none-eabi-newlib`,`arm-none-eabi-binutils`: ARM toolchain necessary to compile and debug the firmware
