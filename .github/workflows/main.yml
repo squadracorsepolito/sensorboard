@@ -28,5 +28,40 @@ jobs:
         with:
           name: build-artifacts
           path: |
-            build/
-            openblt_f446re/build/
+            build/*.bin
+            build/*.elf
+            build/*.hex
+            openblt_f446re/build/*.bin
+            openblt_f446re/build/*.elf
+            openblt_f446re/build/*.hex
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Assets
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: |
+            build/*.bin
+            build/*.elf
+            build/*.hex
+            openblt_f446re/build/*.bin
+            openblt_f446re/build/*.elf
+            openblt_f446re/build/*.hex
+          asset_name: |
+            sensorboard.bin
+            sensorboard.elf
+            sensorboard.hex
+          asset_content_type: application/octet-stream
+            
