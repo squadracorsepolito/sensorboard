@@ -39,6 +39,10 @@ OPT = -Og
 #######################################
 # Build path
 BUILD_DIR = build
+# Release path
+RELEASE_DIR = release
+# Bootloader path
+BOOTLOADER_DIR = openblt_f446re
 
 ######################################
 # source
@@ -264,7 +268,7 @@ erase: openocd.cfg $(BUILD_DIR)/$(TARGET).elf
 # clean up
 #######################################
 clean:
-	-rm -fR $(BUILD_DIR)
+	-rm -fR $(BUILD_DIR) $(RELEASE_DIR)
 
 
 #######################################
@@ -311,8 +315,16 @@ can_flash_front: $(BUILD_DIR)/$(TARGET)_shifted.sx
 #######################################
 can_flash_rear: $(BUILD_DIR)/$(TARGET)_shifted.sx
 	$(BOOTCOMMANDER) -t=xcp_can -d=can0 -b=1000000 -tid="$(SENS_REAR__CANID_XCP_HOST_TO_TARGET__HEX)h" -rid="$(SENS_REAR__CANID_XCP_TARGET_TO_HOST__HEX)h" $(BUILD_DIR)/$(TARGET)_shifted.sx
-      
-	
+
+#######################################
+# release 
+#######################################
+$(BOOTLOADER_DIR)/release/* : 
+	$(MAKE) -C $(BOOTLOADER_DIR) release
+
+release: $(BUILD_DIR)/$(TARGET)_shifted.sx $(BUILD_DIR)/$(TARGET).elf $(BOOTLOADER_DIR)/release/*
+	mkdir -p $(RELEASE_DIR) && cp $^ $(RELEASE_DIR)
+
 #######################################
 # dependencies
 #######################################
