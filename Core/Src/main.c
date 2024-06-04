@@ -33,13 +33,10 @@
 // clang-format off
 #include "conf.h"
 // clang-format on
-#include "anal.h"
 #include "bsp.h"
 #include "can_send_timebase.h"
 #include "can_utils.h"
-#include "data_reading_timebase.h"
 #include "logger_wrapper.h"
-//#include "utils.h"
 #include "stdio.h"
 #include "string.h"
 /* USER CODE END Includes */
@@ -120,7 +117,6 @@ int main(void) {
     logger_init();
     can_init();
     can_send_timebase_init();
-    //DRTB_init();
 
     // Show at the start the type of sensorboard in function
     if (SENS_GET_TYPE() == SENS_TYPE_FRONT) {

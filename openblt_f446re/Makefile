@@ -30,6 +30,8 @@ OPT = -Og
 #######################################
 # Build path
 BUILD_DIR = build
+# Release path
+RELEASE_DIR = release
 
 ######################################
 # source
@@ -208,9 +210,21 @@ $(BUILD_DIR)/%.bin: $(BUILD_DIR)/%.elf | $(BUILD_DIR)
 $(BUILD_DIR):
 	mkdir $@		
 
+#######################################
+# clean up
+#######################################
+clean:
+	-rm -fR $(BUILD_DIR) $(RELEASE_DIR)
+
 ######################################
 # custom makefile rules
 #######################################
+
+#######################################
+# release 
+#######################################
+release: $(BUILD_DIR)/$(TARGET).elf
+	mkdir -p $(RELEASE_DIR) && cp $^ $(RELEASE_DIR)
 
 # The openocd bin path can be either defined in make command via OPENOCD_PATH variable (> make OPENOCD_PATH=xxx)
 # either it can be added to the PATH environment variable.
@@ -231,12 +245,6 @@ flash: openocd.cfg $(BUILD_DIR)/$(TARGET).elf
 erase: openocd.cfg $(BUILD_DIR)/$(TARGET).elf
 	$(OPENOCD) -f ./openocd.cfg -c "init; reset halt; stm32f4x mass_erase 0; exit"
 
-#######################################
-# clean up
-#######################################
-clean:
-	-rm -fR $(BUILD_DIR)
-  
 #######################################
 # dependencies
 #######################################
