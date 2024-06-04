@@ -22,5 +22,11 @@ jobs:
           cd openblt_f446re
           make
 
-
-
+      - name: Archive build artifacts
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-artifacts
+          path: |
+            build/
+            openblt_f446re/build/
