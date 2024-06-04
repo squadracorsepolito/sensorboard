@@ -1,6 +1,9 @@
 name: Build Binary Executable
 
 on:
+  push:
+    tags:
+      - '*'
   workflow_dispatch:
 
 jobs:
