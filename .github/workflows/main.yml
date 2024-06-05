@@ -5,21 +5,6 @@ on:
       - '*'
   workflow_dispatch:
 jobs:
-  generate:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: recursive
-      - uses: carlosperate/arm-none-eabi-gcc-action@v1
-      - run: arm-none-eabi-gcc --version
-      - name: Run make
-        run: |
-          make
-          make can_build
-          cd openblt_f446re
-          make
-
   createrelease:
     name: Create Release
     runs-on: ubuntu-latest
@@ -52,3 +37,19 @@ jobs:
         asset_path: ./dist/${{ matrix.OUT_FILE_NAME}}
         asset_name: ${{ matrix.OUT_FILE_NAME}}
         asset_content_type: ${{ matrix.ASSET_MIME}}
+        
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: carlosperate/arm-none-eabi-gcc-action@v1
+      - run: arm-none-eabi-gcc --version
+      - name: Run make
+        run: |
+          make
+          make can_build
+          cd openblt_f446re
+          make
+
