@@ -13,7 +13,7 @@ jobs:
       matrix:
         OUT_FILE_NAME: ["output_release"]
         ASSET_MIME: ["application/zip"]
-    
+
     steps:
     - name: Set up Git
       run: |
@@ -51,7 +51,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.get_release_info.outputs.upload_url }}
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: ./dist/${{ matrix.OUT_FILE_NAME}}
         asset_name: ${{ matrix.OUT_FILE_NAME}}
         asset_content_type: ${{ matrix.ASSET_MIME}}
