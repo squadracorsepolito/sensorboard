@@ -9,8 +9,12 @@ jobs:
   createrelease:
     name: Create Release
     runs-on: ubuntu-latest
-    steps:
+    strategy:
+      matrix:
+        OUT_FILE_NAME: [output_release.zip]
+        ASSET_MIME: [application/zip]
     
+    steps:
     - name: Extract Tag Name
       id: extract_tag
       run: echo "TAG_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
