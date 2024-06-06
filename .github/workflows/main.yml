@@ -20,11 +20,6 @@ jobs:
           make can_build
           cd openblt_f446re
           make
-      - name: Save Build Artifacts
-        uses: actions/upload-artifact@v1
-        with:
-          name: build_artifacts
-          path: ./openblt_f446re/output
         
   createrelease:
     name: Create Release
