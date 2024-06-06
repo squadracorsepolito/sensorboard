@@ -15,14 +15,10 @@ jobs:
         ASSET_MIME: ["application/zip"]
 
     steps:
-    - name: Set up Git
-      run: |
-        git config --global user.name 'github-actions'
-        git config --global user.email 'github-actions@github.com'
-        
-    - name: Extract Tag Name
-      id: extract_tag
-      run: echo "TAG_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+    # - name: Set up Git
+    #   run: |
+    #     git config --global user.name 'github-actions'
+    #     git config --global user.email 'github-actions@github.com'
       
     - name: Create Release
       id: create_release
