@@ -46,69 +46,69 @@ jobs:
         fi
         
     - name: Create or Update Release
-        id: create_update_release
-        uses: actions/github-script@v3
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          script: |
-            const tagExists = process.env.TAG_EXISTS === 'true';
-            const { owner, repo } = context.repo;
-            const tagName = context.ref.replace('refs/tags/', '');
+      id: create_update_release
+      uses: actions/github-script@v3
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        script: |
+          const tagExists = process.env.TAG_EXISTS === 'true';
+          const { owner, repo } = context.repo;
+          const tagName = context.ref.replace('refs/tags/', '');
 
-            if (tagExists) {
-              // Update existing release
-              const releases = await github.repos.listReleases({
-                owner,
-                repo
-              });
+          if (tagExists) {
+            // Update existing release
+            const releases = await github.repos.listReleases({
+              owner,
+              repo
+            });
 
-              const release = releases.data.find(r => r.tag_name === tagName);
+            const release = releases.data.find(r => r.tag_name === tagName);
 
-              if (release) {
-                await github.repos.updateRelease({
-                  owner,
-                  repo,
-                  release_id: release.id,
-                  tag_name: tagName,
-                  name: `Release ${tagName}`,
-                  draft: false,
-                  prerelease: false
-                });
-
-                core.setOutput('upload_url', release.upload_url);
-              }
-            } else {
-              // Create new release
-              const release = await github.repos.createRelease({
+            if (release) {
+              await github.repos.updateRelease({
                 owner,
                 repo,
+                release_id: release.id,
                 tag_name: tagName,
                 name: `Release ${tagName}`,
                 draft: false,
                 prerelease: false
               });
 
-              core.setOutput('upload_url', release.data.upload_url);
+              core.setOutput('upload_url', release.upload_url);
             }
+          } else {
+            // Create new release
+            const release = await github.repos.createRelease({
+              owner,
+              repo,
+              tag_name: tagName,
+              name: `Release ${tagName}`,
+              draft: false,
+              prerelease: false
+            });
 
-      - name: Output Release URL File
-        run: echo "${{ steps.create_update_release.outputs.upload_url }}" > release_url.txt
+            core.setOutput('upload_url', release.data.upload_url);
+          }
 
-      - name: Save Release URL File for publish
-        uses: actions/upload-artifact@v1
-        with:
-          name: release_url
-          path: release_url.txt    
+    - name: Output Release URL File
+      run: echo "${{ steps.create_update_release.outputs.upload_url }}" > release_url.txt
 
-      - name: Upload Release Asset
-        id: upload-release-asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_update_release.outputs.upload_url }}
-          asset_path: ./dist/${{ matrix.OUT_FILE_NAME }}
-          asset_name: ${{ matrix.OUT_FILE_NAME }}
-          asset_content_type: ${{ matrix.ASSET_MIME }}
+    - name: Save Release URL File for publish
+      uses: actions/upload-artifact@v1
+      with:
+        name: release_url
+        path: release_url.txt    
+
+    - name: Upload Release Asset
+      id: upload-release-asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_update_release.outputs.upload_url }}
+        asset_path: ./dist/${{ matrix.OUT_FILE_NAME }}
+        asset_name: ${{ matrix.OUT_FILE_NAME }}
+        asset_content_type: ${{ matrix.ASSET_MIME }}
  
