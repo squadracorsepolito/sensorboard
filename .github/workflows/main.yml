@@ -6,6 +6,26 @@ on:
   workflow_dispatch:
   
 jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: carlosperate/arm-none-eabi-gcc-action@v1
+      - run: arm-none-eabi-gcc --version
+      - name: Run make
+        run: |
+          make
+          make can_build
+          cd openblt_f446re
+          make
+      - name: Save Build Artifacts
+        uses: actions/upload-artifact@v1
+        with:
+          name: build_artifacts
+          path: ./openblt_f446re/output
+        
   createrelease:
     name: Create Release
     runs-on: ubuntu-latest
@@ -19,9 +39,7 @@ jobs:
       run: |
         git config --global user.name 'github-actions'
         git config --global user.email 'github-actions@github.com'
-
-    
-    
+        
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
@@ -53,17 +71,4 @@ jobs:
         asset_name: ${{ matrix.OUT_FILE_NAME}}
         asset_content_type: ${{ matrix.ASSET_MIME}}
         
-  generate:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: recursive
-      - uses: carlosperate/arm-none-eabi-gcc-action@v1
-      - run: arm-none-eabi-gcc --version
-      - name: Run make
-        run: |
-          make
-          make can_build
-          cd openblt_f446re
-          make
+ 
