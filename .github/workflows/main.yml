@@ -1,4 +1,4 @@
-name: Generate Build and Create Release
+name: Build and Create Release
 
 on:
   push:
@@ -72,5 +72,3 @@ jobs:
         asset_path: ./output_build.zip  
         asset_name: "output_build.zip"
         asset_content_type: "application/zip"
-
-        
