@@ -3,8 +3,8 @@ name: Generate Build and Create Release
 on:
   push:
     tags:
-      - 'v5.4'
-  workflow_dispatch:
+      - 'v*'
+  # workflow_dispatch:
 
 jobs:
   generate:
