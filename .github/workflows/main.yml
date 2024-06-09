@@ -16,23 +16,20 @@ jobs:
           submodules: recursive
       - uses: carlosperate/arm-none-eabi-gcc-action@v1
       - run: arm-none-eabi-gcc --version
-      - name: Run make
-        run: |
-          make
-          make can_build
-          cd openblt_f446re
-          make
-      - name: List build directory contents
-        run: ls -al
+      - name: Make Release
+        run: make release
 
-      - name: Compress build artifacts
-        run: zip -r output_build.zip ./build
+      # - name: List build directory contents
+      #   run: ls -al
+
+      # - name: Compress build artifacts
+      #   run: zip -r output_build.zip ./build
 
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4 
         with:
           name: build 
-          path: ./output_build.zip
+          path: ./release
 
   createrelease:
     name: Create Release
