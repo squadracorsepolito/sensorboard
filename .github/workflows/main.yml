@@ -14,8 +14,13 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
-      - uses: carlosperate/arm-none-eabi-gcc-action@v1
-      - run: arm-none-eabi-gcc --version
+
+      - name: Install ARM gcc Toolchain
+        uses: carlosperate/arm-none-eabi-gcc-action@v1
+
+      - name: Verify ARM gcc Version
+        run: arm-none-eabi-gcc --version
+        
       - name: Make Release
         run: make release
 
