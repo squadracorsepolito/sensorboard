@@ -3,7 +3,7 @@ name: Build and Create Release
 on:
   push:
     tags:
-      - 'v*'
+      - 'v*.*'
   workflow_dispatch:
 
 jobs:
@@ -22,6 +22,8 @@ jobs:
           make can_build
           cd openblt_f446re
           make
+      - name: List build directory contents
+        run: ls -al
 
       - name: Compress build artifacts
         run: zip -r output_build.zip ./build
