@@ -295,6 +295,7 @@ $(BUILD_DIR)/$(TARGET)_shifted.bin: $(BUILD_DIR)/$(TARGET)_shifted.elf | $(BUILD
 #######################################
 $(BUILD_DIR)/$(TARGET)_shifted.sx: $(BUILD_DIR)/$(TARGET)_shifted.elf | $(BUILD_DIR)
 	$(SREC) $< $@	
+	$(SZ) $@
 
 # The openocd bin path can be either defined in make command via BOOTCOMMANDER_PATH variable (> make BOOTCOMMANDER_PATH=xxx)
 # either it can be added to the PATH environment variable.
