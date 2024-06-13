@@ -121,8 +121,10 @@ int main(void) {
     // Show at the start the type of sensorboard in function
     if (SENS_GET_TYPE() == SENS_TYPE_FRONT) {
         HAL_GPIO_WritePin(SENS_FRONT_LED_GPIO_PORT, SENS_FRONT_LED_GPIO_PIN, GPIO_PIN_SET);
+        can_send_msg(MCB_SENS_FRONT_HELO_FRAME_ID);
     } else {
         HAL_GPIO_WritePin(SENS_REAR_LED_GPIO_PORT, SENS_REAR_LED_GPIO_PIN, GPIO_PIN_SET);
+        can_send_msg(MCB_SENS_REAR_HELO_FRAME_ID);
     }
     uint32_t cnt1ms    = HAL_GetTick() + 1U;
     uint32_t cnt10ms   = HAL_GetTick() + 10U;
