@@ -179,14 +179,17 @@ C_INCLUDES =  \
 
 
 # compile gcc flags
-ASFLAGS = $(MCU) $(AS_DEFS) $(AS_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections -fstack-usage
+ASFLAGS = $(MCU) $(AS_DEFS) $(AS_INCLUDES) $(OPT)
 
-CFLAGS += $(MCU) $(C_DEFS) $(C_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections -fstack-usage
+CFLAGS += $(MCU) $(C_DEFS) $(C_INCLUDES) $(OPT)
 
 ifeq ($(DEBUG), 1)
 CFLAGS += -g -gdwarf-2
 endif
 
+# Add additional flags
+CFLAGS += -Wall -fdata-sections -ffunction-sections -fstack-usage
+ASFLAGS += -Wall -fdata-sections -ffunction-sections -fstack-usage
 
 # Generate dependency information
 CFLAGS += -MMD -MP -MF"$(@:%.o=%.d)"
@@ -204,7 +207,7 @@ LIBDIR =
 
 
 # Additional LD Flags from config file
-ADDITIONALLDFLAGS = -specs=nano.specs -u _printf_float
+ADDITIONALLDFLAGS = -specs=nano.specs -u_printf_float
 
 LDFLAGS = $(MCU) $(ADDITIONALLDFLAGS) -T$(LDSCRIPT) $(LIBDIR) $(LIBS) -Wl,-Map=$(BUILD_DIR)/$(TARGET).map,--cref -Wl,--gc-sections
 
@@ -234,10 +237,10 @@ $(BUILD_DIR)/$(TARGET).elf: $(OBJECTS) Makefile
 
 $(BUILD_DIR)/%.hex: $(BUILD_DIR)/%.elf | $(BUILD_DIR)
 	$(HEX) $< $@
-	
+
 $(BUILD_DIR)/%.bin: $(BUILD_DIR)/%.elf | $(BUILD_DIR)
-	$(BIN) $< $@	
-	
+	$(BIN) $< $@
+
 $(BUILD_DIR):
 	mkdir $@
 
@@ -252,6 +255,7 @@ OPENOCD = "$(OPENOCD_PATH)/openocd"
 else
 OPENOCD = "openocd"
 endif
+
 #######################################
 # flash
 #######################################
