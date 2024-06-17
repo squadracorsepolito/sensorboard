@@ -76,12 +76,14 @@ void can_send_msg(uint32_t id) {
         struct mcb_sens_front_2_t sens_front_2;
         struct mcb_sens_front_3_t sens_front_3;
         struct mcb_sens_front_ntc_t sens_front_ntc;
+        struct mcb_sens_front_helo_t sens_front_helo;
         struct mcb_sens_front_shutdown_status_t sens_front_sd_status;
 
         struct mcb_sens_rear_1_t sens_rear_1;
         struct mcb_sens_rear_2_t sens_rear_2;
         struct mcb_sens_rear_3_t sens_rear_3;
         struct mcb_sens_rear_ntc_t sens_rear_ntc;
+        struct mcb_sens_rear_helo_t sens_rear_helo;
         struct mcb_sens_rear_shutdown_status_t sens_rear_sd_status;
     } msgs;
 
@@ -172,20 +174,26 @@ void can_send_msg(uint32_t id) {
 
         tx_header.DLC = mcb_sens_rear_shutdown_status_pack(buffer, &msgs.sens_rear_sd_status, MCB_SENS_REAR_SHUTDOWN_STATUS_LENGTH);
         break;
+    case MCB_SENS_FRONT_HELO_FRAME_ID:
     //case MCB_SB_FRONT_HELO:
+          msgs.sens_front_helo.time = mcb_sens_front_helo_time_encode(HAL_GetTick());
     //    msgs.sb_front_helo.major= mcb_sb_front_helo_major_encode(VERSION_MAJOR);
     //    msgs.sb_front_helo.minor= mcb_sb_front_helo_minor_encode(VERSION_MINOR);
     //    msgs.sb_front_helo.patch= mcb_sb_front_helo_patch_encode(VERSION_PATCH);
 
     //    tx_header.DLC = mcb_sb_front_helo_pack(buffer, &msgs.sb_front_helo, MCB_SB_front_HELO_LENGTH);
     //    break;
+    case MCB_SENS_REAR_HELO_FRAME_ID:
     //case MCB_SB_REAR_HELO:
+          msgs.sens_rear_helo.time = mcb_sens_rear_helo_time_encode(HAL_GetTick());
     //    msgs.sb_rear_helo.major= mcb_sb_rear_helo_major_encode(VERSION_MAJOR);
     //    msgs.sb_rear_helo.minor= mcb_sb_rear_helo_minor_encode(VERSION_MINOR);
     //    msgs.sb_rear_helo.patch= mcb_sb_rear_helo_patch_encode(VERSION_PATCH);
 
     //    tx_header.DLC = mcb_sb_rear_helo_pack(buffer, &msgs.sb_rear_helo, MCB_SB_REAR_HELO_LENGTH);
     //    break;
+        tx_header.DLC = mcb_sens_rear_helo_pack(buffer, &msgs.sens_rear_helo, MCB_SENS_REAR_HELO_FRAME_ID);
+        break;
     default:
         return;
     }
