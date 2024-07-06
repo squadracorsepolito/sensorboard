@@ -3,6 +3,8 @@ This repo contains the firmware and bootloader for the SensorBoard Device v3.0
 ## Develop
 **PLEASE STOP USING CRLF LINE ENDING : use LF as normal people do**
 
+
+
 Git can handle this for you correctly!
 
 If you want it configured for this project only use `--local` otherwise for your whole system use `--global`.
