@@ -4,6 +4,7 @@
  * @version  V1.1.1
  * @date     10. January 2018
  ******************************************************************************/
+
 /*
  * Copyright (c) 2016-2018 Arm Limited. All rights reserved.
  *
