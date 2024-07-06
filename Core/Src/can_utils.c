@@ -34,10 +34,12 @@ void can_init(void) {
     filter.FilterIdHigh     = MCB_D_SPACE_PERIPHERALS_CTRL_FRAME_ID << 5;  // to 2^11 - 1
     filter.FilterMaskIdHigh = MCB_D_SPACE_PERIPHERALS_CTRL_FRAME_ID << 5;                 // Don't care on can id bits
     filter.FilterMaskIdLow  = MCB_D_SPACE_PERIPHERALS_CTRL_FRAME_ID << 5;                 // Don't care on can id bits
+    
     /* HAL considers IdLow and IdHigh not as just the ID of the can message but
         as the combination of: 
         STDID + RTR + IDE + 4 most significant bits of EXTID
     */
+   
     filter.FilterFIFOAssignment = CAN_FILTER_FIFO0;
     filter.FilterBank           = 1;
     filter.FilterScale          = CAN_FILTERSCALE_16BIT;

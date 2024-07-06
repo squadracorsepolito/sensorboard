@@ -1,33 +1,18 @@
 {
   "configurations": [
     {
-      "name": "STM32",
+      "name": "windows-gcc-x86",
       "includePath": [
-        "Core/Inc",
-        "Drivers/CMSIS/Device/ST/STM32F4xx/Include",
-        "Drivers/CMSIS/Include",
-        "Drivers/STM32F4xx_HAL_Driver/Inc",
-        "Drivers/STM32F4xx_HAL_Driver/Inc/Legacy",
-        "Lib/SCan/SC22EVO/artifacts/HVCB/c_source",
-        "Lib/SCan/SC22EVO/artifacts/MCB/c_source",
-        "Lib/adc1283",
-        "Lib/stmlibs",
-        "Lib/stmlibs/circular_buffer",
-        "Lib/stmlibs/critical_section",
-        "Lib/stmlibs/error_utils",
-        "Lib/stmlibs/fsm",
-        "Lib/stmlibs/lock",
-        "Lib/stmlibs/logger",
-        "Lib/stmlibs/longcounter",
-        "Lib/stmlibs/pwm",
-        "Lib/stmlibs/timebase",
-        "Lib/stmlibs/timer_utils"
+        "${workspaceFolder}/**"
       ],
       "defines": [
         "STM32F446xx",
         "USE_HAL_DRIVER"
       ],
-      "compilerPath": "/usr/bin/arm-none-eabi-gcc"
+      "compilerPath": "C:/MinGW/bin/gcc.exe",
+      "cStandard": "${default}",
+      "cppStandard": "${default}",
+      "intelliSenseMode": "windows-gcc-x86"
     }
   ],
   "version": 4
