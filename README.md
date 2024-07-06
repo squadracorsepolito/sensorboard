@@ -12,7 +12,6 @@ If you want it configured for this project only use `--local` otherwise for your
 
 Checkout out either [this](https://www.git-scm.com/book/en/v2/Customizing-Git-Git-Configuration#_formatting_and_whitespace) or [this](https://stackoverflow.com/a/46347609/9167660) for more information.
 
-
 Don't use `.gitattributes` it gets messy very quickly.
 
 ## Dependencies
