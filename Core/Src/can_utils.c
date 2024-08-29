@@ -14,10 +14,10 @@ void can_tx_header_init() {
 void can_init(void) {
     CAN_FilterTypeDef filter;
     filter.FilterMode       = CAN_FILTERMODE_IDMASK;
-    filter.FilterIdLow      = (0xa + SENS_GET_TYPE()) << 5;                 // Take all ids from 0
-    filter.FilterIdHigh     = (0xa + SENS_GET_TYPE()) << 5;  // to 2^11 - 1
-    filter.FilterMaskIdHigh = (0xa + SENS_GET_TYPE()) << 5;                 // Don't care on can id bits
-    filter.FilterMaskIdLow  = (0xa + SENS_GET_TYPE()) << 5;                 // Don't care on can id bits
+    filter.FilterIdLow      = BSP_XCP_MSG_ID << 5;                 // Take all ids from 0
+    filter.FilterIdHigh     = BSP_XCP_MSG_ID << 5;  // to 2^11 - 1
+    filter.FilterMaskIdHigh = BSP_XCP_MSG_ID << 5;                 // Don't care on can id bits
+    filter.FilterMaskIdLow  = BSP_XCP_MSG_ID << 5;                 // Don't care on can id bits
     /* HAL considers IdLow and IdHigh not as just the ID of the can message but
         as the combination of: 
         STDID + RTR + IDE + 4 most significant bits of EXTID
@@ -30,10 +30,10 @@ void can_init(void) {
     HAL_CAN_ConfigFilter(&hcan1, &filter);
 
     filter.FilterMode       = CAN_FILTERMODE_IDLIST;
-    filter.FilterIdLow      = MCB_D_SPACE_PERIPHERALS_CTRL_FRAME_ID << 5;                 // Take all ids from 0
-    filter.FilterIdHigh     = MCB_D_SPACE_PERIPHERALS_CTRL_FRAME_ID << 5;  // to 2^11 - 1
-    filter.FilterMaskIdHigh = MCB_D_SPACE_PERIPHERALS_CTRL_FRAME_ID << 5;                 // Don't care on can id bits
-    filter.FilterMaskIdLow  = MCB_D_SPACE_PERIPHERALS_CTRL_FRAME_ID << 5;                 // Don't care on can id bits
+    filter.FilterIdLow      = 0x201 << 5;                 // Take all ids from 0
+    filter.FilterIdHigh     = 0x201 << 5;  // to 2^11 - 1
+    filter.FilterMaskIdHigh = 0x201 << 5;                 // Don't care on can id bits
+    filter.FilterMaskIdLow  = 0x201 << 5;                 // Don't care on can id bits
     /* HAL considers IdLow and IdHigh not as just the ID of the can message but
         as the combination of: 
         STDID + RTR + IDE + 4 most significant bits of EXTID
@@ -72,127 +72,106 @@ HAL_StatusTypeDef can_send(CAN_HandleTypeDef *hcan, uint8_t *buffer, CAN_TxHeade
 void can_send_msg(uint32_t id) {
     uint8_t buffer[8] = {0};
     union {
-        struct mcb_sens_front_1_t sens_front_1;
-        struct mcb_sens_front_2_t sens_front_2;
-        struct mcb_sens_front_3_t sens_front_3;
-        struct mcb_sens_front_ntc_t sens_front_ntc;
-        struct mcb_sens_front_helo_t sens_front_helo;
-        struct mcb_sens_front_shutdown_status_t sens_front_sd_status;
+        struct mcb_sb_front_analog_device_t sens_front_analog;
+        struct mcb_sb_front_potentiometer_t sens_front_pot;
+        struct mcb_sb_front_ntc_resistance_t sens_front_ntc;
+        struct mcb_sb_front_hello_t sens_front_hello;
+        struct mcb_sb_front_sd_csensing_status_t sens_front_sd_status;
 
-        struct mcb_sens_rear_1_t sens_rear_1;
-        struct mcb_sens_rear_2_t sens_rear_2;
-        struct mcb_sens_rear_3_t sens_rear_3;
-        struct mcb_sens_rear_ntc_t sens_rear_ntc;
-        struct mcb_sens_rear_helo_t sens_rear_helo;
-        struct mcb_sens_rear_shutdown_status_t sens_rear_sd_status;
+        struct mcb_sb_rear_analog_device_t sens_rear_analog;
+        struct mcb_sb_rear_potentiometer_t sens_rear_pot;
+        struct mcb_sb_rear_critical_peripherals_t sens_rear_crit;
+        struct mcb_sb_rear_ntc_resistance_t sens_rear_ntc;
+        struct mcb_sb_rear_hello_t sens_rear_hello;
+        struct mcb_sb_rear_sd_csensing_status_t sens_rear_sd_status;
     } msgs;
 
     tx_header.StdId = id;
 
     switch (id)
     {
-    case MCB_SENS_FRONT_1_FRAME_ID:
-        msgs.sens_front_1.brake_straingauge_voltage_m_v = mcb_sens_front_1_brake_straingauge_voltage_m_v_encode(0.0);
-        msgs.sens_front_1.steering_voltage_m_v = mcb_sens_front_1_steering_voltage_m_v_encode(RME_get_voltage(RME_SteeringAngle)*1000.0);
-        msgs.sens_front_1.throttle_0_voltage_m_v = mcb_sens_front_1_throttle_0_voltage_m_v_encode(APPS_get_voltage(APPS_Chnl1)*1000.0);
-        msgs.sens_front_1.throttle_1_voltage_m_v = mcb_sens_front_1_throttle_1_voltage_m_v_encode(APPS_get_voltage(APPS_Chnl2)*1000.0);
+    case MCB_SB_FRONT_ANALOG_DEVICE_FRAME_ID:
+        msgs.sens_front_analog.brake_press_front_voltage = mcb_sb_front_analog_device_brake_press_front_voltage_encode(PPS_get_voltage(PPS_BrakeLine_Front)*1000.0);
+        msgs.sens_front_analog.steer_rme_voltage = mcb_sb_front_analog_device_steer_rme_voltage_encode(RME_get_voltage(RME_SteeringAngle)*1000.0);
+        msgs.sens_front_analog.apps_0_voltage = mcb_sb_front_analog_device_apps_0_voltage_encode(APPS_get_voltage(APPS_Chnl1)*1000.0);
+        msgs.sens_front_analog.apps_1_voltage = mcb_sb_front_analog_device_apps_0_voltage_encode(APPS_get_voltage(APPS_Chnl2)*1000.0);
 
-        tx_header.DLC = mcb_sens_front_1_pack(buffer, &msgs.sens_front_1, MCB_SENS_FRONT_1_LENGTH);
+        tx_header.DLC = mcb_sb_front_analog_device_pack(buffer, &msgs.sens_front_analog, MCB_SB_FRONT_ANALOG_DEVICE_LENGTH);
         break;
-    case MCB_SENS_FRONT_2_FRAME_ID:
-        msgs.sens_front_2.brake_pressure_voltage_m_v = mcb_sens_front_2_brake_pressure_voltage_m_v_encode(PPS_get_voltage(PPS_BrakeLine_Front)*1000.0);
-        msgs.sens_front_2.pot_fl_voltage_m_v = mcb_sens_front_2_pot_fl_voltage_m_v_encode(LPPS_get_voltage(LPPS_Damper_FrontLeft)*1000.0);
-        msgs.sens_front_2.pot_fr_voltage_m_v = mcb_sens_front_2_pot_fr_voltage_m_v_encode(LPPS_get_voltage(LPPS_Damper_FrontRight)*1000.0);
+    case MCB_SB_FRONT_POTENTIOMETER_FRAME_ID:
+        msgs.sens_front_pot.lpps_damper_fl_voltage = mcb_sb_front_potentiometer_lpps_damper_fl_voltage_encode(LPPS_get_voltage(LPPS_Damper_FrontLeft)*1000.0);
+        msgs.sens_front_pot.lpps_damper_fr_voltage = mcb_sb_front_potentiometer_lpps_damper_fr_voltage_encode(LPPS_get_voltage(LPPS_Damper_FrontRight)*1000.0);
 
-        tx_header.DLC = mcb_sens_front_2_pack(buffer, &msgs.sens_front_2, MCB_SENS_FRONT_2_LENGTH);
+        tx_header.DLC = mcb_sb_front_potentiometer_pack(buffer, &msgs.sens_front_pot, MCB_SB_FRONT_POTENTIOMETER_LENGTH);
         break;
-    case MCB_SENS_FRONT_3_FRAME_ID:
-        msgs.sens_front_3.straingauge_push_fl_voltage_m_v = mcb_sens_front_3_straingauge_push_fl_voltage_m_v_encode(0.0);
-        msgs.sens_front_3.straingauge_push_fr_voltage_m_v = mcb_sens_front_3_straingauge_push_fr_voltage_m_v_encode(0.0);
-        msgs.sens_front_3.straingauge_tie_fl_voltage_m_v =  mcb_sens_front_3_straingauge_tie_fl_voltage_m_v_encode(0.0);
-        msgs.sens_front_3.straingauge_tie_fr_voltage_m_v =  mcb_sens_front_3_straingauge_tie_fr_voltage_m_v_encode(0.0);
+    case MCB_SB_FRONT_NTC_RESISTANCE_FRAME_ID:
+        msgs.sens_front_ntc.jacket_fr_ntc_resistance      = mcb_sb_front_ntc_resistance_jacket_fr_ntc_resistance_encode(NTC_Device_get_resistance(NTC_MotorJacket_FrontRight));
+        msgs.sens_front_ntc.jacket_fl_ntc_resistance      = mcb_sb_front_ntc_resistance_jacket_fl_ntc_resistance_encode(NTC_Device_get_resistance(NTC_MotorJacket_FrontLeft));
+        msgs.sens_front_ntc.coldplate_l_ntc_resistance      = mcb_sb_front_ntc_resistance_coldplate_l_ntc_resistance_is_in_range(NTC_Device_get_resistance(NTC_ColdPlate_Left));
+        msgs.sens_front_ntc.coldplate_r_ntc_resistance      = mcb_sb_front_ntc_resistance_coldplate_r_ntc_resistance_is_in_range(NTC_Device_get_resistance(NTC_ColdPlate_Right));
+        msgs.sens_front_ntc.spare_ntc_0_resistance = mcb_sb_front_ntc_resistance_spare_ntc_0_resistance_encode(0.0);
+        msgs.sens_front_ntc.spare_ntc_1_resistance = mcb_sb_front_ntc_resistance_spare_ntc_1_resistance_encode(0.0);
 
-        tx_header.DLC = mcb_sens_front_3_pack(buffer, &msgs.sens_front_3, MCB_SENS_FRONT_3_LENGTH);
+        tx_header.DLC = mcb_sb_front_ntc_resistance_pack(buffer, &msgs.sens_front_ntc, MCB_SB_FRONT_NTC_RESISTANCE_LENGTH);
         break;
-    case MCB_SENS_FRONT_NTC_FRAME_ID:
-        msgs.sens_front_ntc.ntc_1_resistance      = mcb_sens_front_ntc_ntc_1_resistance_encode(NTC_Device_get_resistance(NTC_MotorJacket_FrontRight));
-        msgs.sens_front_ntc.ntc_2_resistance      = mcb_sens_front_ntc_ntc_2_resistance_encode(NTC_Device_get_resistance(NTC_MotorJacket_FrontLeft));
-        msgs.sens_front_ntc.ntc_3_resistance      = mcb_sens_front_ntc_ntc_3_resistance_encode(NTC_Device_get_resistance(NTC_ColdPlate_Left));
-        msgs.sens_front_ntc.ntc_4_resistance      = mcb_sens_front_ntc_ntc_4_resistance_encode(NTC_Device_get_resistance(NTC_ColdPlate_Right));
-        msgs.sens_front_ntc.ntc_spare1_resistance = mcb_sens_front_ntc_ntc_spare1_resistance_encode(0.0);
-        msgs.sens_front_ntc.ntc_spare2_resistance = mcb_sens_front_ntc_ntc_spare2_resistance_encode(0.0);
+    case MCB_SB_FRONT_SD_CSENSING_STATUS_FRAME_ID:
+        msgs.sens_front_sd_status.sdc_post_bots_is_active = mcb_sb_front_sd_csensing_status_sdc_post_bots_is_active_encode(SDC_Feedback_get_status(SDC_Post_BOTS));
+        msgs.sens_front_sd_status.sdc_post_cp_push_btn_is_active = mcb_sb_front_sd_csensing_status_sdc_post_cp_push_btn_is_active_encode(SDC_Feedback_get_status(SDC_Post_CockpitPushButton));
+        msgs.sens_front_sd_status.sdc_post_inertia_is_active = mcb_sb_front_sd_csensing_status_sdc_post_inertia_is_active_encode(SDC_Feedback_get_status(SDC_Post_InteriaSwitch));
 
-        tx_header.DLC = mcb_sens_front_ntc_pack(buffer, &msgs.sens_front_ntc, MCB_SENS_FRONT_NTC_LENGTH);
-        break;
-    case MCB_SENS_FRONT_SHUTDOWN_STATUS_FRAME_ID:
-        msgs.sens_front_sd_status.is_shut_closed_post_bots = mcb_sens_front_shutdown_status_is_shut_closed_post_bots_encode(SDC_Feedback_get_status(SDC_Post_BOTS));
-        msgs.sens_front_sd_status.is_shut_closed_post_cockpit = mcb_sens_front_shutdown_status_is_shut_closed_post_cockpit_encode(SDC_Feedback_get_status(SDC_Post_CockpitPushButton));
-        msgs.sens_front_sd_status.is_shut_closed_post_inertia = mcb_sens_front_shutdown_status_is_shut_closed_post_inertia_encode(SDC_Feedback_get_status(SDC_Post_InteriaSwitch));
-        //msgs.sens_front_sd_status.is_shut_closed_pre_inertia = mcb_sens_front_shutdown_status_is_shut_closed_pre_inertia_encode(SDC_Feedback_get_status(SDC_Post_FrontRightMotorInterlock));
-        msgs.sens_front_sd_status.is_shut_closed_pre_inertia = mcb_sens_front_shutdown_status_is_shut_closed_pre_inertia_encode(0U);
-
-        tx_header.DLC = mcb_sens_front_shutdown_status_pack(buffer, &msgs.sens_front_sd_status, MCB_SENS_FRONT_SHUTDOWN_STATUS_LENGTH);
+        tx_header.DLC = mcb_sb_front_sd_csensing_status_pack(buffer, &msgs.sens_front_sd_status, MCB_SB_FRONT_SD_CSENSING_STATUS_LENGTH);
         break;
 
-    case MCB_SENS_REAR_1_FRAME_ID:
-        msgs.sens_rear_1.brake_pressure_rear_voltage_m_v = mcb_sens_rear_1_brake_pressure_rear_voltage_m_v_encode(PPS_get_voltage(PPS_BrakeLine_Rear)*1000.0);
-        msgs.sens_rear_1.pot_rl_voltage_m_v = mcb_sens_rear_1_pot_rl_voltage_m_v_encode(LPPS_get_voltage(LPPS_Damper_RearLeft)*1000.0);
-        msgs.sens_rear_1.pot_rr_voltage_rr = mcb_sens_rear_1_pot_rr_voltage_rr_encode(LPPS_get_voltage(LPPS_Damper_RearRight)*1000.0);
+    case MCB_SB_REAR_ANALOG_DEVICE_FRAME_ID:
+        msgs.sens_rear_analog.brake_press_rear_voltage = mcb_sb_rear_analog_device_brake_press_rear_voltage_encode(PPS_get_voltage(PPS_BrakeLine_Rear)*1000.0);
+        msgs.sens_rear_analog.cool_press_right_voltage = mcb_sb_rear_analog_device_cool_press_right_voltage_encode(PPS_get_voltage(PPS_CoolingLine_RearRight)*1000.0);
+        msgs.sens_rear_analog.cool_press_left_voltage = mcb_sb_rear_analog_device_cool_press_left_voltage_encode(PPS_get_voltage(PPS_CoolingLine_RearLeft)*1000.0);
 
-        tx_header.DLC = mcb_sens_rear_1_pack(buffer, &msgs.sens_rear_1, MCB_SENS_REAR_1_LENGTH);
+        tx_header.DLC = mcb_sb_rear_analog_device_pack(buffer, &msgs.sens_rear_analog, MCB_SB_REAR_ANALOG_DEVICE_LENGTH);
         break;
-    case MCB_SENS_REAR_2_FRAME_ID:
-        msgs.sens_rear_2.cooling_pressure_dx_voltage_m_v = mcb_sens_rear_2_cooling_pressure_dx_voltage_m_v_encode(PPS_get_voltage(PPS_CoolingLine_RearRight)*1000.0);
-        msgs.sens_rear_2.cooling_pressure_sx_voltage_m_v = mcb_sens_rear_2_cooling_pressure_sx_voltage_m_v_encode(PPS_get_voltage(PPS_CoolingLine_RearLeft)*1000.0);
+    case MCB_SB_REAR_POTENTIOMETER_FRAME_ID:
+        msgs.sens_rear_pot.lpps_damper_rl_voltage = mcb_sb_rear_potentiometer_lpps_damper_rl_voltage_encode(LPPS_get_voltage(LPPS_Damper_RearLeft)*1000.0);
+        msgs.sens_rear_pot.lpps_damper_rr_voltage = mcb_sb_rear_potentiometer_lpps_damper_rr_voltage_encode(LPPS_get_voltage(LPPS_Damper_RearRight)*1000.0);
 
-        tx_header.DLC = mcb_sens_rear_2_pack(buffer, &msgs.sens_rear_2, MCB_SENS_REAR_2_LENGTH);
+        tx_header.DLC = mcb_sb_rear_potentiometer_pack(buffer, &msgs.sens_rear_pot, MCB_SB_REAR_POTENTIOMETER_LENGTH);
         break;
-    case MCB_SENS_REAR_3_FRAME_ID:
-        msgs.sens_rear_3.straingauge_push_rl_voltage_m_v = mcb_sens_rear_3_straingauge_push_rl_voltage_m_v_encode(0.0);
-        msgs.sens_rear_3.straingauge_push_rr_voltage_m_v = mcb_sens_rear_3_straingauge_push_rr_voltage_m_v_encode(0.0);
-        msgs.sens_rear_3.straingauge_tie_rl_voltage_m_v = mcb_sens_rear_3_straingauge_tie_rl_voltage_m_v_encode(0.0);
-        msgs.sens_rear_3.straingauge_tie_rr_voltage_m_v = mcb_sens_rear_3_straingauge_tie_rr_voltage_m_v_encode(0.0);
+    case MCB_SB_REAR_CRITICAL_PERIPHERALS_FRAME_ID:
+        msgs.sens_rear_crit.discharge_is_open = mcb_sb_rear_critical_peripherals_discharge_is_open_encode(DSCHRG_get_status());
+        msgs.sens_rear_crit.bspd_has_error = mcb_sb_rear_critical_peripherals_bspd_has_error_encode(BSPD_DEV_IS_IN_ERR());
 
-        tx_header.DLC = mcb_sens_rear_2_pack(buffer, &msgs.sens_rear_2, MCB_SENS_REAR_2_LENGTH);
+        tx_header.DLC = mcb_sb_rear_critical_peripherals_pack(buffer, &msgs.sens_rear_crit, MCB_SB_REAR_CRITICAL_PERIPHERALS_LENGTH);
         break;
-    case MCB_SENS_REAR_NTC_FRAME_ID:
-        msgs.sens_rear_ntc.ntc_1_resistance = mcb_sens_rear_ntc_ntc_1_resistance_encode(NTC_Device_get_resistance(NTC_MotorJacket_RearLeft));
-        msgs.sens_rear_ntc.ntc_2_resistance = mcb_sens_rear_ntc_ntc_2_resistance_encode(NTC_Device_get_resistance(NTC_MotorJacket_RearRight));
-        msgs.sens_rear_ntc.ntc_3_resistance = mcb_sens_rear_ntc_ntc_3_resistance_encode(NTC_Device_get_resistance(NTC_Radiator_Left1));
-        msgs.sens_rear_ntc.ntc_4_resistance = mcb_sens_rear_ntc_ntc_4_resistance_encode(NTC_Device_get_resistance(NTC_Radiator_Left2));
-        msgs.sens_rear_ntc.ntc_5_resistance = mcb_sens_rear_ntc_ntc_5_resistance_encode(NTC_Device_get_resistance(NTC_Radiator_Right1));
-        msgs.sens_rear_ntc.ntc_6_resistance = mcb_sens_rear_ntc_ntc_6_resistance_encode(NTC_Device_get_resistance(NTC_Radiator_Right2));
+    case MCB_SB_REAR_NTC_RESISTANCE_FRAME_ID:
+        msgs.sens_rear_ntc.jacket_rl_ntc_resistance = mcb_sb_rear_ntc_resistance_jacket_rl_ntc_resistance_encode(NTC_Device_get_resistance(NTC_MotorJacket_RearLeft));
+        msgs.sens_rear_ntc.jacket_rr_ntc_resistance = mcb_sb_rear_ntc_resistance_jacket_rr_ntc_resistance_encode(NTC_Device_get_resistance(NTC_MotorJacket_RearRight));
+        msgs.sens_rear_ntc.rad_rl_in_ntc_resistance = mcb_sb_rear_ntc_resistance_rad_rl_in_ntc_resistance_encode(NTC_Device_get_resistance(NTC_Radiator_Left1));
+        msgs.sens_rear_ntc.rad_rl_out_ntc_resistance = mcb_sb_rear_ntc_resistance_rad_rl_out_ntc_resistance_encode(NTC_Device_get_resistance(NTC_Radiator_Left2));
+        msgs.sens_rear_ntc.rad_rr_in_ntc_resistance = mcb_sb_rear_ntc_resistance_rad_rr_in_ntc_resistance_encode(NTC_Device_get_resistance(NTC_Radiator_Right1));
+        msgs.sens_rear_ntc.rad_rr_out_ntc_resistance = mcb_sb_rear_ntc_resistance_rad_rr_out_ntc_resistance_encode(NTC_Device_get_resistance(NTC_Radiator_Right2));
 
-        tx_header.DLC = mcb_sens_rear_ntc_pack(buffer, &msgs.sens_rear_ntc, MCB_SENS_REAR_NTC_LENGTH);
+        tx_header.DLC = mcb_sb_rear_ntc_resistance_pack(buffer, &msgs.sens_rear_ntc, MCB_SB_REAR_NTC_RESISTANCE_LENGTH);
         break;
-    case MCB_SENS_REAR_SHUTDOWN_STATUS_FRAME_ID:
-        msgs.sens_rear_sd_status.is_bsp_din_error = mcb_sens_rear_shutdown_status_is_bsp_din_error_encode(BSPD_DEV_IS_IN_ERR());
-        msgs.sens_rear_sd_status.is_shut_closed_post_bspd = mcb_sens_rear_shutdown_status_is_shut_closed_post_bspd_encode(SDC_Feedback_get_status(SDC_Post_BSPD));
-        msgs.sens_rear_sd_status.is_shut_closed_post_inv_fr = mcb_sens_rear_shutdown_status_is_shut_closed_post_inv_fr_encode(SDC_Feedback_get_status(SDC_Post_InverterFrontRightMotorInterlock));
-        msgs.sens_rear_sd_status.is_shut_closed_post_inv_mono = mcb_sens_rear_shutdown_status_is_shut_closed_post_inv_mono_encode(SDC_Feedback_get_status(SDC_Post_InverterDCBUSInterlock));
-        msgs.sens_rear_sd_status.is_shut_closed_pre_funghi = mcb_sens_rear_shutdown_status_is_shut_closed_pre_funghi_encode(SDC_Feedback_get_status(SDC_Pre_MainHoopLeftPushButton));
+    case MCB_SB_REAR_SD_CSENSING_STATUS_FRAME_ID:
+        msgs.sens_rear_sd_status.sdc_post_bspd_is_closed = mcb_sb_rear_sd_csensing_status_sdc_post_bspd_is_closed_encode(SDC_Feedback_get_status(SDC_Post_BSPD));
+        msgs.sens_rear_sd_status.sdc_post_inv_fr_is_closed = mcb_sb_rear_sd_csensing_status_sdc_post_inv_fr_is_closed_encode(SDC_Feedback_get_status(SDC_Post_InverterFrontRightMotorInterlock));
+        msgs.sens_rear_sd_status.sdc_post_dc_bus_is_closed = mcb_sb_rear_sd_csensing_status_sdc_post_dc_bus_is_closed_encode(SDC_Feedback_get_status(SDC_Post_InverterDCBUSInterlock));
+        msgs.sens_rear_sd_status.sdc_pre_push_btns_is_closed = mcb_sb_rear_sd_csensing_status_sdc_pre_push_btns_is_closed_encode(SDC_Feedback_get_status(SDC_Pre_MainHoopLeftPushButton));
 
-        tx_header.DLC = mcb_sens_rear_shutdown_status_pack(buffer, &msgs.sens_rear_sd_status, MCB_SENS_REAR_SHUTDOWN_STATUS_LENGTH);
+        tx_header.DLC = mcb_sb_rear_sd_csensing_status_pack(buffer, &msgs.sens_rear_sd_status, MCB_SB_REAR_SD_CSENSING_STATUS_LENGTH);
         break;
-    case MCB_SENS_FRONT_HELO_FRAME_ID:
-    //case MCB_SB_FRONT_HELO:
-          msgs.sens_front_helo.time = mcb_sens_front_helo_time_encode(HAL_GetTick());
-    //    msgs.sb_front_helo.major= mcb_sb_front_helo_major_encode(VERSION_MAJOR);
-    //    msgs.sb_front_helo.minor= mcb_sb_front_helo_minor_encode(VERSION_MINOR);
-    //    msgs.sb_front_helo.patch= mcb_sb_front_helo_patch_encode(VERSION_PATCH);
+    case MCB_SB_FRONT_HELLO_FRAME_ID:
+        msgs.sens_front_hello.fw_major_version = mcb_sb_front_hello_fw_major_version_encode(1);
+        msgs.sens_front_hello.fw_minor_version = mcb_sb_front_hello_fw_minor_version_encode(2);
+        msgs.sens_front_hello.fw_patch_version = mcb_sb_front_hello_fw_patch_version_encode(3);
 
-    //    tx_header.DLC = mcb_sb_front_helo_pack(buffer, &msgs.sb_front_helo, MCB_SB_front_HELO_LENGTH);
-    //    break;
-    case MCB_SENS_REAR_HELO_FRAME_ID:
-    //case MCB_SB_REAR_HELO:
-          msgs.sens_rear_helo.time = mcb_sens_rear_helo_time_encode(HAL_GetTick());
-    //    msgs.sb_rear_helo.major= mcb_sb_rear_helo_major_encode(VERSION_MAJOR);
-    //    msgs.sb_rear_helo.minor= mcb_sb_rear_helo_minor_encode(VERSION_MINOR);
-    //    msgs.sb_rear_helo.patch= mcb_sb_rear_helo_patch_encode(VERSION_PATCH);
+        tx_header.DLC = mcb_sb_front_hello_pack(buffer, &msgs.sens_front_hello, MCB_SB_FRONT_HELLO_LENGTH);
+        break;
+    case MCB_SB_REAR_HELLO_FRAME_ID:
+        msgs.sens_rear_hello.fw_major_version = mcb_sb_rear_hello_fw_major_version_encode(1);
+        msgs.sens_rear_hello.fw_minor_version = mcb_sb_rear_hello_fw_minor_version_encode(2);
+        msgs.sens_rear_hello.fw_patch_version = mcb_sb_rear_hello_fw_patch_version_encode(3);
 
-    //    tx_header.DLC = mcb_sb_rear_helo_pack(buffer, &msgs.sb_rear_helo, MCB_SB_REAR_HELO_LENGTH);
-    //    break;
-        tx_header.DLC = mcb_sens_rear_helo_pack(buffer, &msgs.sens_rear_helo, MCB_SENS_REAR_HELO_FRAME_ID);
+        tx_header.DLC = mcb_sb_rear_hello_pack(buffer, &msgs.sens_rear_hello, MCB_SB_REAR_HELLO_LENGTH);
         break;
     default:
         return;
@@ -202,7 +181,7 @@ void can_send_msg(uint32_t id) {
 }
 
 void HAL_CAN_ErrorCallback(CAN_HandleTypeDef *hcan) {
-    logger_log(LOGGER_ERROR, "sborato");
+    // logger_log(LOGGER_ERROR, "sborato");
 }
 
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
@@ -211,14 +190,14 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
 
     if(HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &rx_header, buffer) == HAL_OK) {
         // Reset when preparing for flash via CAN bus
-        if(rx_header.StdId == 0xa + SENS_GET_TYPE() && buffer[0] == 0xff && buffer[1] == 0x00) {
+        if(rx_header.StdId == BSP_XCP_MSG_ID && buffer[0] == 0xff && buffer[1] == 0x00) {
             NVIC_SystemReset();
         }
-        else if (rx_header.StdId == MCB_D_SPACE_PERIPHERALS_CTRL_FRAME_ID){
-            struct mcb_d_space_peripherals_ctrl_t periph;
-            mcb_d_space_peripherals_ctrl_unpack(&periph, buffer, MCB_D_SPACE_PERIPHERALS_CTRL_LENGTH);
+        else if (rx_header.StdId == 0x201/*MCB_D_SPACE_PERIPHERALS_CTRL_FRAME_ID*/){
+            struct mcb_dspace_peripherals_ctrl_t periph;
+            mcb_dspace_peripherals_ctrl_unpack(&periph, buffer, MCB_DSPACE_PERIPHERALS_CTRL_LENGTH);
 
-             if(periph.brake_light_on_ctrl){
+             if(periph.brake_light_active_cmd){
                 BRAKE_LIGHT_ON();
             }else{
                 BRAKE_LIGHT_OFF();

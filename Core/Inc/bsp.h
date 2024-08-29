@@ -21,6 +21,8 @@
 #include "gpio.h"
 /* ---------- Exported types ------------------------------------------------*/
 
+#define BSP_XCP_MSG_ID (SENS_GET_TYPE() == SENS_TYPE_FRONT ? MCB_DIAG_TOOL_XCP_TX_SB_FRONT_FRAME_ID : MCB_DIAG_TOOL_XCP_TX_SB_REAR_FRAME_ID)
+
 // -- NTC (Negative Temperature Coefficient) Thermistor - Mounted Devices
 
 /**
