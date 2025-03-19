@@ -1,7 +1,9 @@
 # SENSORBOARD [Front|Rear]
 This repo contains the firmware and bootloader for the SensorBoard Device v3.0
 
-![sensorboard_image](./Doc/sensorboard_v3.png)
+<div align="center">
+  <img src="./Doc/sensorboard_v3.png" height=500>
+</div>
 
 ## Develop
 **PLEASE STOP USING CRLF LINE ENDING : use LF as normal people do**
