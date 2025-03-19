@@ -333,6 +333,17 @@ release: $(BUILD_DIR)/$(TARGET)_shifted.sx $(BUILD_DIR)/$(TARGET).elf $(BOOTLOAD
 	mkdir -p $(RELEASE_DIR) && cp $^ $(RELEASE_DIR)
 
 #######################################
+# flash_boot_front
+#######################################
+flash_bootloader:
+	$(MAKE) -C $(BOOTLOADER_DIR) \
+	SENS_FRONT__CANID_XCP_HOST_TO_TARGET__HEX=0x$(SENS_FRONT__CANID_XCP_HOST_TO_TARGET__HEX) \
+	SENS_FRONT__CANID_XCP_TARGET_TO_HOST__HEX=0x$(SENS_FRONT__CANID_XCP_TARGET_TO_HOST__HEX) \
+	SENS_REAR__CANID_XCP_HOST_TO_TARGET__HEX=0x$(SENS_REAR__CANID_XCP_HOST_TO_TARGET__HEX) \
+	SENS_REAR__CANID_XCP_TARGET_TO_HOST__HEX=0x$(SENS_REAR__CANID_XCP_TARGET_TO_HOST__HEX) \
+	flash
+
+#######################################
 # dependencies
 #######################################
 -include $(wildcard $(BUILD_DIR)/*.d)

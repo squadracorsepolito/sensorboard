@@ -10,6 +10,7 @@
 #   2015-07-22 - first version
 # ------------------------------------------------
 
+
 ######################################
 # target
 ######################################
@@ -126,8 +127,11 @@ AS_DEFS =
 C_DEFS =  \
 -DUSE_HAL_DRIVER \
 -DSTM32F446xx \
--DUSE_FULL_LL_DRIVER
-
+-DUSE_FULL_LL_DRIVER \
+-DSENS_FRONT__CANID_XCP_HOST_TO_TARGET__HEX=$(SENS_FRONT__CANID_XCP_HOST_TO_TARGET__HEX)\
+-DSENS_FRONT__CANID_XCP_TARGET_TO_HOST__HEX=$(SENS_FRONT__CANID_XCP_TARGET_TO_HOST__HEX)\
+-DSENS_REAR__CANID_XCP_HOST_TO_TARGET__HEX=$(SENS_REAR__CANID_XCP_HOST_TO_TARGET__HEX)\
+-DSENS_REAR__CANID_XCP_TARGET_TO_HOST__HEX=$(SENS_REAR__CANID_XCP_TARGET_TO_HOST__HEX)
 
 # AS includes
 AS_INCLUDES = 
@@ -176,7 +180,7 @@ ADDITIONALLDFLAGS = -specs=nano.specs
 LDFLAGS = $(MCU) $(ADDITIONALLDFLAGS) -T$(LDSCRIPT) $(LIBDIR) $(LIBS) -Wl,-Map=$(BUILD_DIR)/$(TARGET).map,--cref -Wl,--gc-sections
 
 # default action: build all
-all: $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin
+all: xcp_checks $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin 
 
 
 #######################################
@@ -195,7 +199,7 @@ $(BUILD_DIR)/%.o: %.c Makefile | $(BUILD_DIR)
 $(BUILD_DIR)/%.o: %.s Makefile | $(BUILD_DIR)
 	$(AS) -c $(CFLAGS) $< -o $@
 
-$(BUILD_DIR)/$(TARGET).elf: $(OBJECTS) Makefile
+$(BUILD_DIR)/$(TARGET).elf: $(OBJECTS) xcp_checks Makefile
 	$(CC) $(OBJECTS) $(LDFLAGS) -o $@
 	$(SZ) $@
 
@@ -207,6 +211,45 @@ $(BUILD_DIR)/%.bin: $(BUILD_DIR)/%.elf | $(BUILD_DIR)
 
 $(BUILD_DIR):
 	mkdir $@
+
+xcp_checks:
+ifeq ($(origin SENS_FRONT__CANID_XCP_HOST_TO_TARGET__HEX),undefined)
+	$(error SENS_FRONT__CANID_XCP_HOST_TO_TARGET__HEX is not defined)
+else
+ifneq ($(findstring 0x,$(SENS_FRONT__CANID_XCP_HOST_TO_TARGET__HEX)),)
+	$(info Compile with SENS_FRONT__CANID_XCP_HOST_TO_TARGET__HEX=$(SENS_FRONT__CANID_XCP_HOST_TO_TARGET__HEX))
+else
+	$(error SENS_FRONT__CANID_XCP_HOST_TO_TARGET__HEX not specified as 0x<value>)
+endif
+endif
+ifeq ($(origin SENS_FRONT__CANID_XCP_TARGET_TO_HOST__HEX),undefined)
+	$(error SENS_FRONT__CANID_XCP_TARGET_TO_HOST__HEX is not defined)
+else
+ifneq ($(findstring 0x,$(SENS_FRONT__CANID_XCP_TARGET_TO_HOST__HEX)),)
+	$(info Compile with SENS_FRONT__CANID_XCP_TARGET_TO_HOST__HEX=$(SENS_FRONT__CANID_XCP_TARGET_TO_HOST__HEX))
+else
+	$(error SENS_FRONT__CANID_XCP_TARGET_TO_HOST__HEX not specified as 0x<value>)
+endif
+endif
+ifeq ($(origin SENS_REAR__CANID_XCP_HOST_TO_TARGET__HEX),undefined)
+	$(error SENS_REAR__CANID_XCP_HOST_TO_TARGET__HEX is not defined)
+else
+ifneq ($(findstring 0x,$(SENS_REAR__CANID_XCP_HOST_TO_TARGET__HEX)),)
+	$(info Compile with SENS_REAR__CANID_XCP_HOST_TO_TARGET__HEX=$(SENS_REAR__CANID_XCP_HOST_TO_TARGET__HEX))
+else
+	$(error SENS_REAR__CANID_XCP_HOST_TO_TARGET__HEX not specified as 0x<value>)
+endif
+endif
+ifeq ($(origin SENS_REAR__CANID_XCP_TARGET_TO_HOST__HEX),undefined)
+	$(error SENS_REAR__CANID_XCP_TARGET_TO_HOST__HEX is not defined)
+else
+ifneq ($(findstring 0x,$(SENS_REAR__CANID_XCP_TARGET_TO_HOST__HEX)),)
+	$(info Compile with SENS_REAR__CANID_XCP_TARGET_TO_HOST__HEX=$(SENS_REAR__CANID_XCP_TARGET_TO_HOST__HEX))
+else
+	$(error SENS_REAR__CANID_XCP_TARGET_TO_HOST__HEX not specified as 0x<value>)
+endif
+endif
+	@echo "XCP variables defined"
 
 #######################################
 # clean up
