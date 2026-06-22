@@ -88,7 +88,7 @@ Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim_ex.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_adc.c \
-Lib/SCan/SC24/artifacts/MCB/c_source/mcb.c \
+Lib/SCan/SC26/artifacts/MCB/c_source/mcb.c \
 Lib/adc1283/adc1283.c \
 Lib/stmlibs/circular_buffer/circular_buffer.c \
 Lib/stmlibs/error_utils/error_utils.c \
@@ -165,7 +165,7 @@ C_INCLUDES =  \
 -IDrivers/CMSIS/Include \
 -IDrivers/STM32F4xx_HAL_Driver/Inc \
 -IDrivers/STM32F4xx_HAL_Driver/Inc/Legacy \
--ILib/SCan/SC24/artifacts/MCB/c_source \
+-ILib/SCan/SC26/artifacts/MCB/c_source \
 -ILib/adc1283 \
 -ILib/stmlibs \
 -ILib/stmlibs/circular_buffer \

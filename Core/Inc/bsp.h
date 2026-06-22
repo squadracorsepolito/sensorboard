@@ -94,6 +94,7 @@ enum PPS_Device {
     PPS_BrakeLine_Rear,
     PPS_CoolingLine_RearRight,
     PPS_CoolingLine_RearLeft,
+    PPS_ColdplateCircuit,
     SR_PPS_DEVICES_END
 };
 
@@ -248,7 +249,8 @@ static enum ADC_ADC1_Channel SF_PPS_dev_to_adc1_chnl_map[] = {[PPS_BrakeLine_Fro
  */
 static enum ADC_ADC1_Channel SR_PPS_dev_to_adc1_chnl_map[] = {[PPS_CoolingLine_RearLeft]  = ADC_ADC1_AIN3,
                                                               [PPS_BrakeLine_Rear]        = ADC_ADC1_AIN6,
-                                                              [PPS_CoolingLine_RearRight] = ADC_ADC1_AIN7};
+                                                              [PPS_CoolingLine_RearRight] = ADC_ADC1_AIN7,
+                                                              [PPS_ColdplateCircuit]      = ADC_ADC1_AIN4};
 // -- APPS (Accelerator Position Sensor) Channels
 /**
  *@brief Sensorboard Front Accelerator Position Sensor Channels to adc1 channel mapping

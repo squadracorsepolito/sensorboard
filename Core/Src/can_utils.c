@@ -81,6 +81,7 @@ void can_send_msg(uint32_t id) {
         struct mcb_sb_rear_analog_device_t sens_rear_analog;
         struct mcb_sb_rear_potentiometer_t sens_rear_pot;
         struct mcb_sb_rear_critical_peripherals_t sens_rear_crit;
+        struct mcb_sb_rear_coldplate_circuit_pressure_t sens_rear_coldplate_pressure;
         struct mcb_sb_rear_ntc_resistance_t sens_rear_ntc;
         struct mcb_sb_rear_hello_t sens_rear_hello;
         struct mcb_sb_rear_sd_csensing_status_t sens_rear_sd_status;
@@ -136,11 +137,18 @@ void can_send_msg(uint32_t id) {
         tx_header.DLC = mcb_sb_rear_potentiometer_pack(buffer, &msgs.sens_rear_pot, MCB_SB_REAR_POTENTIOMETER_LENGTH);
         break;
     case MCB_SB_REAR_CRITICAL_PERIPHERALS_FRAME_ID:
-        msgs.sens_rear_crit.discharge_is_open = mcb_sb_rear_critical_peripherals_discharge_is_open_encode(DSCHRG_get_status());
+        msgs.sens_rear_crit.discharge_is_active = mcb_sb_rear_critical_peripherals_discharge_is_active_encode(DSCHRG_get_status());
         msgs.sens_rear_crit.bspd_has_error = mcb_sb_rear_critical_peripherals_bspd_has_error_encode(BSPD_DEV_IS_IN_ERR());
 
         tx_header.DLC = mcb_sb_rear_critical_peripherals_pack(buffer, &msgs.sens_rear_crit, MCB_SB_REAR_CRITICAL_PERIPHERALS_LENGTH);
         break;
+
+    case MCB_SB_REAR_COLDPLATE_CIRCUIT_PRESSURE_FRAME_ID:
+        msgs.sens_rear_coldplate_pressure.coldplate_circuit_press_voltage = mcb_sb_rear_coldplate_circuit_pressure_coldplate_circuit_press_voltage_encode(PPS_get_voltage(PPS_ColdplateCircuit) * 1000.0f);
+
+        tx_header.DLC = mcb_sb_rear_coldplate_circuit_pressure_pack(buffer, &msgs.sens_rear_coldplate_pressure, MCB_SB_REAR_COLDPLATE_CIRCUIT_PRESSURE_LENGTH);
+        break;
+
     case MCB_SB_REAR_NTC_RESISTANCE_FRAME_ID:
         msgs.sens_rear_ntc.jacket_rl_ntc_resistance = mcb_sb_rear_ntc_resistance_jacket_rl_ntc_resistance_encode(NTC_Device_get_resistance(NTC_MotorJacket_RearLeft));
         msgs.sens_rear_ntc.jacket_rr_ntc_resistance = mcb_sb_rear_ntc_resistance_jacket_rr_ntc_resistance_encode(NTC_Device_get_resistance(NTC_MotorJacket_RearRight));
