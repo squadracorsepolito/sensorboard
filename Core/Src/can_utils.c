@@ -96,6 +96,8 @@ void can_send_msg(uint32_t id) {
         msgs.sens_front_analog.steer_rme_voltage = mcb_sb_front_analog_device_steer_rme_voltage_encode(RME_get_voltage(RME_SteeringAngle)*1000.0);
         msgs.sens_front_analog.apps_0_voltage = mcb_sb_front_analog_device_apps_0_voltage_encode(APPS_get_voltage(APPS_Chnl1)*1000.0);
         msgs.sens_front_analog.apps_1_voltage = mcb_sb_front_analog_device_apps_0_voltage_encode(APPS_get_voltage(APPS_Chnl2)*1000.0);
+        msgs.sens_front_analog.emergency_brake_press_pneu_voltage = mcb_sb_front_analog_device_emergency_brake_press_pneu_voltage_encode(PPS_get_voltage(PPS_BrakeLine_PNEU_Emergency)*1000.0);
+        msgs.sens_front_analog.redundancy_brake_press_pneu_voltage = mcb_sb_front_analog_device_redundancy_brake_press_pneu_voltage_encode(PPS_get_voltage(PPS_BrakeLine_PNEU_Redundancy)*1000.0);
 
         tx_header.DLC = mcb_sb_front_analog_device_pack(buffer, &msgs.sens_front_analog, MCB_SB_FRONT_ANALOG_DEVICE_LENGTH);
         break;
@@ -162,7 +164,7 @@ void can_send_msg(uint32_t id) {
     case MCB_SB_REAR_SD_CSENSING_STATUS_FRAME_ID:
         msgs.sens_rear_sd_status.sdc_post_bspd_is_closed = mcb_sb_rear_sd_csensing_status_sdc_post_bspd_is_closed_encode(SDC_Feedback_get_status(SDC_Post_BSPD));
         msgs.sens_rear_sd_status.sdc_post_inv_fr_is_closed = mcb_sb_rear_sd_csensing_status_sdc_post_inv_fr_is_closed_encode(SDC_Feedback_get_status(SDC_Post_InverterFrontRightMotorInterlock));
-        msgs.sens_rear_sd_status.sdc_post_dc_bus_is_closed = mcb_sb_rear_sd_csensing_status_sdc_post_dc_bus_is_closed_encode(SDC_Feedback_get_status(SDC_Post_InverterDCBUSInterlock));
+        msgs.sens_rear_sd_status.asms_is_closed = mcb_sb_rear_sd_csensing_status_asms_is_closed_encode(SDC_Feedback_get_status(SDC_Post_InverterDCBUSInterlock));
         msgs.sens_rear_sd_status.sdc_pre_push_btns_is_closed = mcb_sb_rear_sd_csensing_status_sdc_pre_push_btns_is_closed_encode(SDC_Feedback_get_status(SDC_Pre_MainHoopLeftPushButton));
 
         tx_header.DLC = mcb_sb_rear_sd_csensing_status_pack(buffer, &msgs.sens_rear_sd_status, MCB_SB_REAR_SD_CSENSING_STATUS_LENGTH);

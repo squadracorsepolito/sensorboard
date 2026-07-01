@@ -95,6 +95,8 @@ enum PPS_Device {
     PPS_CoolingLine_RearRight,
     PPS_CoolingLine_RearLeft,
     PPS_ColdplateCircuit,
+    PPS_BrakeLine_PNEU_Emergency,
+    PPS_BrakeLine_PNEU_Redundancy,
     SR_PPS_DEVICES_END
 };
 
@@ -242,7 +244,9 @@ static enum ADC_ADC1_Channel SR_DSCHRG_dev_to_adc1_chnl_map[] = {[DSCHRG_StatusF
 /**
  *@brief Sensorboard Front Piezoresistive Pressure Sensor device to adc1 channel mapping 
  */
-static enum ADC_ADC1_Channel SF_PPS_dev_to_adc1_chnl_map[] = {[PPS_BrakeLine_Front] = ADC_ADC1_AIN3};
+static enum ADC_ADC1_Channel SF_PPS_dev_to_adc1_chnl_map[] = {[PPS_BrakeLine_Front] = ADC_ADC1_AIN3,
+                                                              [PPS_BrakeLine_PNEU_Emergency] = ADC_ADC1_AIN6,
+                                                              [PPS_BrakeLine_PNEU_Redundancy] = ADC_ADC1_AIN7,};
 
 /**
  *@brief Sensorboard Rear Piezoresistive Pressure Sensor device to adc1 channel mapping 
