@@ -65,6 +65,12 @@ STMLIBS_StatusTypeDef rear_sd_status_cb(void)
     return STMLIBS_OK;
 }
 
+STMLIBS_StatusTypeDef em_brake_sensors_cb(void)
+{
+    can_send_msg(MCB_SB_FRONT_EMERGENCY_BRAKE_SENSORS_FRAME_ID);
+    return STMLIBS_OK;
+}
+
 void can_send_timebase_init(void)
 {
     uint8_t interval;
@@ -86,6 +92,7 @@ void can_send_timebase_init(void)
     {
         TIMEBASE_register_callback(&can_send_timebase_handle, interval, front_analog_cb);
         TIMEBASE_register_callback(&can_send_timebase_handle, interval, front_pot_cb);
+        TIMEBASE_register_callback(&can_send_timebase_handle, interval, em_brake_sensors_cb);
         //TIMEBASE_register_callback(&can_send_timebase_handle, interval, front_3_cb);
         // TIMEBASE_register_callback(&can_send_timebase_handle, interval, front_ntc_cb);
         TIMEBASE_register_callback(&can_send_timebase_handle, interval, front_sd_status_cb);

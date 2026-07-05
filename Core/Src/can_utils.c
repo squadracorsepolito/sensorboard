@@ -77,6 +77,7 @@ void can_send_msg(uint32_t id) {
         struct mcb_sb_front_ntc_resistance_t sens_front_ntc;
         struct mcb_sb_front_hello_t sens_front_hello;
         struct mcb_sb_front_sd_csensing_status_t sens_front_sd_status;
+        struct mcb_sb_front_emergency_brake_sensors_t em_brake_sensors_status;
 
         struct mcb_sb_rear_analog_device_t sens_rear_analog;
         struct mcb_sb_rear_potentiometer_t sens_rear_pot;
@@ -96,8 +97,6 @@ void can_send_msg(uint32_t id) {
         msgs.sens_front_analog.steer_rme_voltage = mcb_sb_front_analog_device_steer_rme_voltage_encode(RME_get_voltage(RME_SteeringAngle)*1000.0);
         msgs.sens_front_analog.apps_0_voltage = mcb_sb_front_analog_device_apps_0_voltage_encode(APPS_get_voltage(APPS_Chnl1)*1000.0);
         msgs.sens_front_analog.apps_1_voltage = mcb_sb_front_analog_device_apps_0_voltage_encode(APPS_get_voltage(APPS_Chnl2)*1000.0);
-        msgs.sens_front_analog.emergency_brake_press_pneu_voltage = mcb_sb_front_analog_device_emergency_brake_press_pneu_voltage_encode(PPS_get_voltage(PPS_BrakeLine_PNEU_Emergency)*1000.0);
-        msgs.sens_front_analog.redundancy_brake_press_pneu_voltage = mcb_sb_front_analog_device_redundancy_brake_press_pneu_voltage_encode(PPS_get_voltage(PPS_BrakeLine_PNEU_Redundancy)*1000.0);
 
         tx_header.DLC = mcb_sb_front_analog_device_pack(buffer, &msgs.sens_front_analog, MCB_SB_FRONT_ANALOG_DEVICE_LENGTH);
         break;
@@ -123,6 +122,12 @@ void can_send_msg(uint32_t id) {
         msgs.sens_front_sd_status.sdc_post_inertia_is_active = mcb_sb_front_sd_csensing_status_sdc_post_inertia_is_active_encode(SDC_Feedback_get_status(SDC_Post_InteriaSwitch));
 
         tx_header.DLC = mcb_sb_front_sd_csensing_status_pack(buffer, &msgs.sens_front_sd_status, MCB_SB_FRONT_SD_CSENSING_STATUS_LENGTH);
+        break;
+    case MCB_SB_FRONT_EMERGENCY_BRAKE_SENSORS_FRAME_ID:
+        msgs.em_brake_sensors_status.emergency_brake_press_pneu_voltage = mcb_sb_front_emergency_brake_sensors_emergency_brake_press_pneu_voltage_encode(PPS_get_voltage(PPS_BrakeLine_PNEU_Emergency)*1000.0f);
+        msgs.em_brake_sensors_status.redundancy_brake_press_pneu_voltage = mcb_sb_front_emergency_brake_sensors_redundancy_brake_press_pneu_voltage_encode(PPS_get_voltage(PPS_BrakeLine_PNEU_Redundancy)*1000.0f);
+
+        tx_header.DLC = mcb_sb_front_emergency_brake_sensors_pack(buffer, &msgs.em_brake_sensors_status, MCB_SB_FRONT_EMERGENCY_BRAKE_SENSORS_LENGTH);
         break;
 
     case MCB_SB_REAR_ANALOG_DEVICE_FRAME_ID:
